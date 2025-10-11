@@ -20,7 +20,7 @@ export function VideoGenerator() {
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const [duration, setDuration] = useState(3)
-  const [style, setStyle] = useState<"lovely" | "express" | "express_hd" | "elite">("lovely")
+  const [style, setStyle] = useState<"lovely" | "express" | "express_hd" | "elite" | "elitist">("lovely")
   const steps = 4
   const seed = Math.floor(Math.random() * 1000000)
   const guidanceScale = 1
@@ -165,10 +165,10 @@ export function VideoGenerator() {
         throw new Error(data.error || "Failed to generate video")
       }
 
-      if (data.status === "processing" && data.jobId && style === "elite") {
-        console.log("[v0] Elite job submitted, starting polling")
+      if (data.status === "processing" && data.jobId && (style === "elite" || style === "elitist")) {
+        console.log("[v0] Elite/Elitist job submitted, starting polling")
         setEliteJobInfo({ jobId: data.jobId, statusUrl: data.statusUrl, endpoint: data.endpoint })
-        pollEliteJob(data.jobId, data.statusUrl, data.endpoint)
+        pollEliteJob(data.jobId, data.statusUrl, data.endpoint, style)
         return
       }
 
@@ -183,8 +183,13 @@ export function VideoGenerator() {
     }
   }
 
-  const pollEliteJob = async (jobId: string, statusUrl: string, endpoint: string) => {
-    console.log("[v0] Polling Elite job:", jobId)
+  const pollEliteJob = async (
+    jobId: string,
+    statusUrl: string,
+    endpoint: string,
+    videoStyle: "elite" | "elitist",
+  ) => {
+    console.log("[v0] Polling Elite/Elitist job:", jobId, "style:", videoStyle)
 
     const maxAttempts = 30 // 2.5 minutes with 5 second intervals
     let attempts = 0
@@ -202,7 +207,7 @@ export function VideoGenerator() {
 
       try {
         const formData = new FormData()
-        formData.append("style", "elite")
+        formData.append("style", videoStyle)
         formData.append("elite_job_id", jobId)
         formData.append("elite_status_url", statusUrl)
         formData.append("elite_endpoint", endpoint)
@@ -264,7 +269,7 @@ export function VideoGenerator() {
             <Select
               value={style}
               onValueChange={(value) => {
-                const newStyle = value as "lovely" | "express" | "express_hd" | "elite"
+                const newStyle = value as "lovely" | "express" | "express_hd" | "elite" | "elitist"
                 setStyle(newStyle)
                 // Reset duration to valid value for the new style
                 if (newStyle === "express_hd") {
@@ -272,6 +277,8 @@ export function VideoGenerator() {
                 } else if (newStyle === "express") {
                   setDuration(5)
                 } else if (newStyle === "elite") {
+                  setDuration(3)
+                } else if (newStyle === "elitist") {
                   setDuration(3)
                 } else {
                   setDuration(3)
@@ -286,6 +293,7 @@ export function VideoGenerator() {
                 <SelectItem value="express">Express</SelectItem>
                 <SelectItem value="express_hd">Express HD</SelectItem>
                 <SelectItem value="elite">Elite</SelectItem>
+                <SelectItem value="elitist">Elitist</SelectItem>
               </SelectContent>
             </Select>
           </div>

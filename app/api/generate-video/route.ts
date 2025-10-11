@@ -6,15 +6,16 @@ import { Client } from "@gradio/client"
 import { ensureUserExists, chargeCredits, CREDIT_COSTS } from "@/lib/credits"
 import { put } from "@vercel/blob"
 
-type VideoStyle = "lovely" | "express" | "express_hd" | "elite"
+type VideoStyle = "lovely" | "express" | "express_hd" | "elite" | "elitist"
 
 interface VideoStyleConfig {
   id: VideoStyle
   displayName: string
-  provider: "gradio" | "wavespeed" | "huggingface_router"
+  provider: "gradio" | "wavespeed" | "huggingface_router" | "huggingface_inference"
   gradioSpace?: string
   wavespeedEndpoint?: string
   huggingfaceRouterEndpoint?: string
+  huggingfaceInferenceModel?: string
 }
 
 const VIDEO_STYLE_CONFIGS: Record<VideoStyle, VideoStyleConfig> = {
@@ -42,6 +43,12 @@ const VIDEO_STYLE_CONFIGS: Record<VideoStyle, VideoStyleConfig> = {
     provider: "huggingface_router",
     huggingfaceRouterEndpoint:
       "https://router.huggingface.co/fal-ai/fal-ai/wan/v2.2-a14b/image-to-video?_subdomain=queue",
+  },
+  elitist: {
+    id: "elitist",
+    displayName: "Elitist",
+    provider: "huggingface_inference",
+    huggingfaceInferenceModel: "Wan-AI/Wan2.2-I2V-A14B",
   },
 }
 
@@ -457,6 +464,110 @@ async function generateVideoWithHuggingFaceRouter(imageBlob: Blob, prompt: strin
   }
 }
 
+async function generateVideoWithHuggingFaceInference(
+  imageBlob: Blob,
+  prompt: string,
+  model: string,
+): Promise<string> {
+  console.log("[v0] Starting video generation with HuggingFace Inference Providers")
+  console.log("[v0] Model:", model)
+  console.log("[v0] Prompt:", prompt)
+
+  const hfToken = process.env.HF_TOKEN || process.env.HUGGINGFACE_API_TOKEN
+  if (!hfToken) {
+    console.error("[v0] ✗ No HF_TOKEN or HUGGINGFACE_API_TOKEN found in environment")
+    throw new Error("HF_TOKEN not configured")
+  }
+
+  console.log("[v0] Token source:", process.env.HF_TOKEN ? "HF_TOKEN" : "HUGGINGFACE_API_TOKEN")
+
+  try {
+    console.log("[v0] Converting image to base64")
+    const imageBuffer = await imageBlob.arrayBuffer()
+    const base64Image = Buffer.from(imageBuffer).toString("base64")
+    console.log("[v0] Image converted to base64, length:", base64Image.length)
+
+    const requestBody = {
+      inputs: {
+        image: `data:image/png;base64,${base64Image}`,
+        prompt: prompt,
+      },
+    }
+
+    console.log("[v0] Submitting job to HuggingFace Inference Providers")
+    const endpoint = `https://api-inference.huggingface.co/models/${model}`
+    console.log("[v0] Endpoint:", endpoint)
+
+    const submitResponse = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${hfToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+    })
+
+    console.log("[v0] Submit response status:", submitResponse.status)
+    console.log("[v0] Submit response headers:", Object.fromEntries(submitResponse.headers.entries()))
+
+    if (!submitResponse.ok) {
+      const errorText = await submitResponse.text()
+      console.error("[v0] HuggingFace Inference error:", errorText)
+      throw new Error(`HuggingFace Inference API error (${submitResponse.status}): ${errorText}`)
+    }
+
+    const contentType = submitResponse.headers.get("content-type") || ""
+    console.log("[v0] Response content-type:", contentType)
+
+    if (contentType.includes("video")) {
+      console.log("[v0] Received video directly, uploading to Blob storage")
+      const videoBytes = await submitResponse.arrayBuffer()
+      console.log("[v0] Downloaded video:", videoBytes.byteLength, "bytes")
+
+      const fileName = `videos/elitist/${Date.now()}-${Math.random().toString(36).substring(7)}.mp4`
+      const blob = await put(fileName, videoBytes, {
+        access: "public",
+        contentType: "video/mp4",
+      })
+      console.log("[v0] ✓✓✓ Video uploaded to Blob storage:", blob.url)
+      return blob.url
+    } else {
+      const responseText = await submitResponse.text()
+      console.log("[v0] Response (first 500 chars):", responseText.substring(0, 500))
+
+      let submitData: any
+      try {
+        submitData = JSON.parse(responseText)
+        console.log("[v0] Parsed JSON response:", JSON.stringify(submitData, null, 2))
+      } catch (parseError) {
+        console.error("[v0] Failed to parse response:", parseError)
+        throw new Error(`Failed to parse HuggingFace Inference response: ${parseError}`)
+      }
+
+      const jobId =
+        submitData.id || submitData.job_id || submitData.jobId || submitData.request_id || submitData.requestId
+
+      const statusUrl = submitData.status_url || submitData.statusUrl || submitData.url || submitData.check_url
+
+      console.log("[v0] Extracted job ID:", jobId)
+      console.log("[v0] Extracted status URL:", statusUrl)
+
+      if (!jobId && !statusUrl) {
+        console.error("[v0] No job ID or status URL found in response")
+        throw new Error(`No job ID or status URL in response. Response keys: ${Object.keys(submitData).join(", ")}`)
+      }
+
+      console.log("[v0] ✓ Job submitted successfully")
+      return JSON.stringify({ jobId, statusUrl, model })
+    }
+  } catch (error) {
+    console.error("[v0] HuggingFace Inference video generation error:", error)
+    console.error("[v0] Error type:", typeof error)
+    console.error("[v0] Error details:", error instanceof Error ? error.message : String(error))
+    throw error
+  }
+}
+
 async function checkEliteJobStatus(
   jobId: string,
   statusUrl: string,
@@ -660,12 +771,12 @@ export async function POST(request: Request) {
     const eliteStatusUrl = formData.get("elite_status_url") as string | null
     const eliteEndpoint = formData.get("elite_endpoint") as string | null
 
-    if (eliteJobId && eliteStatusUrl && eliteEndpoint && style === "elite") {
-      console.log("[v0] Checking existing Elite job status")
+    if (eliteJobId && eliteStatusUrl && eliteEndpoint && (style === "elite" || style === "elitist")) {
+      console.log("[v0] Checking existing Elite/Elitist job status")
       const statusResult = await checkEliteJobStatus(eliteJobId, eliteStatusUrl, eliteEndpoint)
 
       if (statusResult.status === "completed" && statusResult.videoUrl) {
-        console.log("[v0] Elite job completed, saving to database")
+        console.log("[v0] Elite/Elitist job completed, saving to database")
         await supabase.from("videos").insert({
           user_id: user.id,
           url: statusResult.videoUrl,
@@ -793,6 +904,35 @@ export async function POST(request: Request) {
         endpoint,
         remainingCredits: chargeResult.newBalance,
       })
+    } else if (styleConfig.provider === "huggingface_inference") {
+      console.log("[v0] Step 7: Using HuggingFace Inference Providers for Elitist style")
+      console.log("[v0] Converting image to blob")
+      const imageBuffer = await image.arrayBuffer()
+      const imageBlob = new Blob([imageBuffer], { type: image.type })
+      console.log("[v0] ✓ Image blob created:", imageBlob.size, "bytes")
+
+      console.log("[v0] Step 8: Generating video with HuggingFace Inference Providers")
+      const result = await generateVideoWithHuggingFaceInference(
+        imageBlob,
+        prompt,
+        styleConfig.huggingfaceInferenceModel!,
+      )
+
+      try {
+        const { jobId, statusUrl, model } = JSON.parse(result)
+        console.log("[v0] ✓ Job submitted, returning job info for polling")
+
+        return Response.json({
+          status: "processing",
+          jobId,
+          statusUrl,
+          endpoint: model,
+          remainingCredits: chargeResult.newBalance,
+        })
+      } catch {
+        videoUrl = result
+        console.log("[v0] ✓ Video generated directly:", videoUrl)
+      }
     } else {
       console.log("[v0] Step 7: Using Gradio for Lovely style")
       console.log("[v0] Converting image to blob")
