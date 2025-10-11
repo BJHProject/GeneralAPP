@@ -1,0 +1,325 @@
+"use client"
+
+import { Card } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Download, Trash2, RefreshCw, Maximize2, X, Save } from "lucide-react"
+import Image from "next/image"
+import { useState, useEffect } from "react"
+
+interface GeneratedImage {
+  id: string
+  url: string
+  prompt: string
+  width: number
+  height: number
+  created_at: string
+  is_saved: boolean
+}
+
+export function RecentGenerations() {
+  const [images, setImages] = useState<GeneratedImage[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [deletingImages, setDeletingImages] = useState<Set<string>>(new Set())
+  const [savingImages, setSavingImages] = useState<Set<string>>(new Set())
+  const [error, setError] = useState<string | null>(null)
+  const [fullscreenImage, setFullscreenImage] = useState<string | null>(null)
+  const [activeImageId, setActiveImageId] = useState<string | null>(null)
+
+  const loadImages = async () => {
+    console.log("[v0] Loading images from API")
+    setIsLoading(true)
+    setError(null)
+    try {
+      const response = await fetch("/api/images")
+      console.log("[v0] API response status:", response.status)
+
+      const contentType = response.headers.get("content-type")
+      console.log("[v0] Content type:", contentType)
+
+      if (!contentType || !contentType.includes("application/json")) {
+        console.error("[v0] API returned non-JSON response:", contentType)
+        setError("Unable to load images in preview environment")
+        setImages([])
+        return
+      }
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      console.log("[v0] Received images:", data.images ? data.images.length : 0)
+      const unsavedImages = (data.images || []).filter((img: GeneratedImage) => !img.is_saved)
+      console.log("[v0] Filtered to unsaved images:", unsavedImages.length)
+      setImages(unsavedImages)
+    } catch (error) {
+      console.error("[v0] Failed to load images:", error)
+      setError("Unable to load images. This may not work in preview mode.")
+      setImages([])
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    loadImages()
+
+    const handleImageGenerated = () => {
+      console.log("[v0] Image generated event received, refreshing gallery")
+      loadImages()
+    }
+
+    window.addEventListener("imageGenerated", handleImageGenerated)
+
+    return () => {
+      window.removeEventListener("imageGenerated", handleImageGenerated)
+    }
+  }, [])
+
+  const handleDownload = async (imageUrl: string, prompt: string) => {
+    try {
+      const response = await fetch(imageUrl)
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = `${prompt.slice(0, 30)}.png`
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(a)
+    } catch (error) {
+      console.error("Download error:", error)
+    }
+  }
+
+  const handleDelete = async (imageId: string) => {
+    console.log("[v0] Deleting image:", imageId)
+    setDeletingImages((prev) => new Set(prev).add(imageId))
+
+    try {
+      const response = await fetch("/api/delete-image", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ imageId }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to delete image")
+      }
+
+      console.log("[v0] Image deleted successfully")
+      setImages((prev) => prev.filter((img) => img.id !== imageId))
+    } catch (error) {
+      console.error("[v0] Delete error:", error)
+    } finally {
+      setDeletingImages((prev) => {
+        const newSet = new Set(prev)
+        newSet.delete(imageId)
+        return newSet
+      })
+    }
+  }
+
+  const handleSave = async (imageId: string, imageUrl: string) => {
+    console.log("[v0] Saving image:", imageId)
+    setSavingImages((prev) => new Set(prev).add(imageId))
+
+    try {
+      const response = await fetch("/api/save-image", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          imageId,
+          imageUrl,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to save image")
+      }
+
+      console.log("[v0] Image saved successfully")
+      setImages((prev) => prev.filter((img) => img.id !== imageId))
+    } catch (error) {
+      console.error("[v0] Save error:", error)
+    } finally {
+      setSavingImages((prev) => {
+        const newSet = new Set(prev)
+        newSet.delete(imageId)
+        return newSet
+      })
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center justify-center">
+          <h2 className="text-2xl font-bold text-foreground">Recent Generations</h2>
+        </div>
+        <div className="flex items-center justify-center py-12">
+          <RefreshCw className="h-8 w-8 animate-spin text-muted-foreground" />
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center justify-center">
+          <h2 className="text-2xl font-bold text-foreground">Recent Generations</h2>
+        </div>
+        <Card className="border-border bg-card p-12">
+          <div className="text-center">
+            <p className="text-muted-foreground">{error}</p>
+            <p className="mt-2 text-sm text-muted-foreground">Try using the deployed version for full functionality.</p>
+          </div>
+        </Card>
+      </div>
+    )
+  }
+
+  if (images.length === 0) {
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center justify-center">
+          <h2 className="text-2xl font-bold text-foreground">Recent Generations</h2>
+        </div>
+        <Card className="border-border bg-card p-12">
+          <div className="text-center">
+            <p className="text-muted-foreground">No generated images yet. Create your first image to see it here!</p>
+          </div>
+        </Card>
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-center">
+        <h2 className="text-2xl font-bold text-foreground">Recent Generations</h2>
+      </div>
+
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {images.map((image) => (
+          <Card
+            key={image.id}
+            className="group overflow-hidden border-border bg-card transition-all hover:border-primary/50"
+          >
+            <div
+              className="relative aspect-[2/3] md:aspect-auto md:min-h-[400px] md:max-h-[70vh] overflow-hidden bg-black flex items-center justify-center"
+              onClick={() => {
+                if (activeImageId === image.id) {
+                  setActiveImageId(null)
+                } else {
+                  setActiveImageId(image.id)
+                }
+              }}
+            >
+              <Image src={image.url || "/placeholder.svg"} alt={image.prompt} fill className="object-contain" />
+              <div
+                className={`absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent transition-opacity ${activeImageId === image.id ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
+              />
+              <Button
+                size="sm"
+                variant="secondary"
+                className={`absolute bottom-2 right-2 z-10 h-8 w-8 p-0 transition-opacity ${activeImageId === image.id ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  console.log("[v0] Opening fullscreen for image:", image.url)
+                  setFullscreenImage(image.url)
+                }}
+              >
+                <Maximize2 className="h-4 w-4" />
+              </Button>
+              <div
+                className={`absolute bottom-0 left-0 right-0 flex items-center justify-center gap-2 p-4 transition-opacity ${activeImageId === image.id ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
+              >
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  className="gap-2"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleSave(image.id, image.url)
+                  }}
+                  disabled={savingImages.has(image.id)}
+                >
+                  <Save className="h-4 w-4" />
+                </Button>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  className="gap-2"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleDownload(image.url, image.prompt)
+                  }}
+                >
+                  <Download className="h-4 w-4" />
+                </Button>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  className="gap-2 text-red-500 hover:text-red-600"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleDelete(image.id)
+                  }}
+                  disabled={deletingImages.has(image.id)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+            <div className="p-3">
+              <p className="truncate text-xs text-muted-foreground" title={image.prompt}>
+                {image.prompt}
+              </p>
+              <p className="truncate text-xs text-muted-foreground">
+                {new Date(image.created_at).toLocaleDateString()}
+              </p>
+            </div>
+          </Card>
+        ))}
+      </div>
+
+      {fullscreenImage && (
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 p-4 backdrop-blur-sm"
+          onClick={() => {
+            console.log("[v0] Closing fullscreen")
+            setFullscreenImage(null)
+          }}
+        >
+          <Button
+            size="icon"
+            variant="ghost"
+            className="absolute right-4 top-4 z-[10000] text-white hover:bg-white/20"
+            onClick={(e) => {
+              e.stopPropagation()
+              console.log("[v0] Close button clicked")
+              setFullscreenImage(null)
+            }}
+          >
+            <X className="h-6 w-6" />
+          </Button>
+          <div className="relative max-h-[90vh] max-w-[90vw]">
+            <img
+              src={fullscreenImage || "/placeholder.svg"}
+              alt="Fullscreen view"
+              className="max-h-[90vh] max-w-[90vw] object-contain"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
