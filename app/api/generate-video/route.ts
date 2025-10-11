@@ -239,7 +239,7 @@ async function generateVideoWithGradio(
     try {
       console.log(`[v0] Connecting to Gradio space: ${spaceName}`)
       client = await Client.connect(spaceName, {
-        hf_token: token,
+        hf_token: token as `hf_${string}`,
       })
       console.log(`[v0] ✓ Successfully connected to Gradio space`)
 
@@ -680,7 +680,7 @@ const VIDEO_VALIDATION_LIMITS = {
 
 function validateVideoParameter(value: number | undefined, paramName: keyof typeof VIDEO_VALIDATION_LIMITS): number {
   const limits = VIDEO_VALIDATION_LIMITS[paramName]
-  const numValue = value !== undefined ? value : (limits.default ?? limits.min)
+  const numValue = value !== undefined ? value : ("default" in limits ? limits.default : limits.min)
 
   if (numValue < limits.min) {
     console.log(`[v0] ${paramName} ${numValue} below minimum ${limits.min}, clamping to ${limits.min}`)
