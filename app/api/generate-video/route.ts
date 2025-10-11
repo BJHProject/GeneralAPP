@@ -469,7 +469,7 @@ async function generateVideoWithHuggingFaceInference(
   prompt: string,
   model: string,
 ): Promise<string> {
-  console.log("[v0] Starting video generation with HuggingFace Inference Providers")
+  console.log("[v0] Starting video generation with HuggingFace Router API (fal-ai provider)")
   console.log("[v0] Model:", model)
   console.log("[v0] Prompt:", prompt)
 
@@ -488,14 +488,12 @@ async function generateVideoWithHuggingFaceInference(
     console.log("[v0] Image converted to base64, length:", base64Image.length)
 
     const requestBody = {
-      inputs: {
-        image: `data:image/png;base64,${base64Image}`,
-        prompt: prompt,
-      },
+      image_url: `data:image/png;base64,${base64Image}`,
+      prompt: prompt,
     }
 
-    console.log("[v0] Submitting job to HuggingFace Inference Providers")
-    const endpoint = `https://api-inference.huggingface.co/models/${model}`
+    console.log("[v0] Submitting job to HuggingFace Router API with fal-ai provider")
+    const endpoint = "https://router.huggingface.co/fal-ai/fal-ai/wan/v2.2-a14b/image-to-video?_subdomain=queue"
     console.log("[v0] Endpoint:", endpoint)
 
     const submitResponse = await fetch(endpoint, {
@@ -512,56 +510,39 @@ async function generateVideoWithHuggingFaceInference(
 
     if (!submitResponse.ok) {
       const errorText = await submitResponse.text()
-      console.error("[v0] HuggingFace Inference error:", errorText)
-      throw new Error(`HuggingFace Inference API error (${submitResponse.status}): ${errorText}`)
+      console.error("[v0] HuggingFace Router error:", errorText)
+      throw new Error(`HuggingFace Router API error (${submitResponse.status}): ${errorText}`)
     }
 
-    const contentType = submitResponse.headers.get("content-type") || ""
-    console.log("[v0] Response content-type:", contentType)
+    const responseText = await submitResponse.text()
+    console.log("[v0] Response (first 500 chars):", responseText.substring(0, 500))
 
-    if (contentType.includes("video")) {
-      console.log("[v0] Received video directly, uploading to Blob storage")
-      const videoBytes = await submitResponse.arrayBuffer()
-      console.log("[v0] Downloaded video:", videoBytes.byteLength, "bytes")
-
-      const fileName = `videos/elitist/${Date.now()}-${Math.random().toString(36).substring(7)}.mp4`
-      const blob = await put(fileName, videoBytes, {
-        access: "public",
-        contentType: "video/mp4",
-      })
-      console.log("[v0] ✓✓✓ Video uploaded to Blob storage:", blob.url)
-      return blob.url
-    } else {
-      const responseText = await submitResponse.text()
-      console.log("[v0] Response (first 500 chars):", responseText.substring(0, 500))
-
-      let submitData: any
-      try {
-        submitData = JSON.parse(responseText)
-        console.log("[v0] Parsed JSON response:", JSON.stringify(submitData, null, 2))
-      } catch (parseError) {
-        console.error("[v0] Failed to parse response:", parseError)
-        throw new Error(`Failed to parse HuggingFace Inference response: ${parseError}`)
-      }
-
-      const jobId =
-        submitData.id || submitData.job_id || submitData.jobId || submitData.request_id || submitData.requestId
-
-      const statusUrl = submitData.status_url || submitData.statusUrl || submitData.url || submitData.check_url
-
-      console.log("[v0] Extracted job ID:", jobId)
-      console.log("[v0] Extracted status URL:", statusUrl)
-
-      if (!jobId && !statusUrl) {
-        console.error("[v0] No job ID or status URL found in response")
-        throw new Error(`No job ID or status URL in response. Response keys: ${Object.keys(submitData).join(", ")}`)
-      }
-
-      console.log("[v0] ✓ Job submitted successfully")
-      return JSON.stringify({ jobId, statusUrl, model })
+    let submitData: any
+    try {
+      submitData = JSON.parse(responseText)
+      console.log("[v0] Parsed JSON response:", JSON.stringify(submitData, null, 2))
+    } catch (parseError) {
+      console.error("[v0] Failed to parse response:", parseError)
+      throw new Error(`Failed to parse HuggingFace Router response: ${parseError}`)
     }
+
+    const jobId =
+      submitData.id || submitData.job_id || submitData.jobId || submitData.request_id || submitData.requestId
+
+    const statusUrl = submitData.status_url || submitData.statusUrl || submitData.url || submitData.check_url
+
+    console.log("[v0] Extracted job ID:", jobId)
+    console.log("[v0] Extracted status URL:", statusUrl)
+
+    if (!jobId && !statusUrl) {
+      console.error("[v0] No job ID or status URL found in response")
+      throw new Error(`No job ID or status URL in response. Response keys: ${Object.keys(submitData).join(", ")}`)
+    }
+
+    console.log("[v0] ✓ Job submitted successfully")
+    return JSON.stringify({ jobId, statusUrl, model })
   } catch (error) {
-    console.error("[v0] HuggingFace Inference video generation error:", error)
+    console.error("[v0] HuggingFace Router video generation error:", error)
     console.error("[v0] Error type:", typeof error)
     console.error("[v0] Error details:", error instanceof Error ? error.message : String(error))
     throw error
