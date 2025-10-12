@@ -7,7 +7,7 @@ import { ensureUserExists } from "@/lib/credits"
 import { defaultAIClient } from "@/lib/ai-client"
 import { imageGenerationSchema } from "@/lib/validation/schemas"
 import { atomicCreditCharge, completeGenerationJob, refundFailedJob } from "@/lib/credits/transactions"
-import { rateLimitMiddleware } from "@/lib/security/rate-limit"
+import { rateLimitMiddleware } from "@/lib/security/rate-limit-db"
 import { validateModelId } from "@/lib/security/model-validator"
 
 export async function POST(request: NextRequest) {
