@@ -237,14 +237,14 @@ export function ImageGenerator() {
     <div className="space-y-8">
       <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
 
-      <Card className="border-border bg-card p-6">
-        <div className="space-y-6">
+      <Card className="border-0 bg-gradient-to-br from-card/50 to-muted/30 shadow-2xl shadow-primary/5 backdrop-blur-xl p-8">
+        <div className="space-y-8">
           <div className="space-y-2">
             <Label htmlFor="model" className="text-base font-semibold">
               Model Style
             </Label>
             <Select value={model} onValueChange={setModel}>
-              <SelectTrigger id="model" className="bg-secondary">
+              <SelectTrigger id="model" className="bg-secondary/50 border-primary/10 backdrop-blur-sm">
                 <SelectValue placeholder="Select a model" />
               </SelectTrigger>
               <SelectContent>
@@ -268,13 +268,13 @@ export function ImageGenerator() {
               placeholder="A serene landscape with mountains at sunset, vibrant colors, highly detailed..."
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
-              className="min-h-[120px] resize-none bg-secondary text-foreground"
+              className="min-h-[120px] resize-none bg-secondary/50 text-foreground border-primary/10 backdrop-blur-sm focus:border-primary/30 transition-colors"
             />
           </div>
 
           <div className="space-y-2">
             <Label className="text-base font-semibold">Resolution</Label>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-3 gap-4">
               {PRESET_RESOLUTIONS.map((preset, index) => {
                 const isLandscape = preset.width > preset.height
                 const isSquare = preset.width === preset.height
@@ -286,7 +286,7 @@ export function ImageGenerator() {
                     key={index}
                     variant={selectedResolution === index ? "default" : "outline"}
                     onClick={() => handleResolutionChange(index)}
-                    className="flex flex-col items-center gap-2 h-auto py-3"
+                    className={`flex flex-col items-center gap-2 h-auto py-3 rounded-xl transition-all ${selectedResolution === index ? "shadow-lg shadow-primary/30" : "border-primary/10 hover:border-primary/30"}`}
                   >
                     <div
                       className="border-2 border-current"
@@ -311,7 +311,7 @@ export function ImageGenerator() {
           <Button
             onClick={handleGenerate}
             disabled={isGenerating || !prompt.trim()}
-            className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+            className="w-full bg-gradient-to-r from-primary to-primary/80 text-primary-foreground hover:from-primary/90 hover:to-primary/70 shadow-lg shadow-primary/20 transition-all"
             size="lg"
           >
             {isGenerating ? (
