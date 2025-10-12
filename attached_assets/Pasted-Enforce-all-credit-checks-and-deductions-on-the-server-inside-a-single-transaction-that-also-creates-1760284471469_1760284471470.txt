@@ -1,0 +1,63 @@
+Enforce all credit checks and deductions on the server inside a single transaction that also creates the generation job, never call providers from the client, and gate every model/LoRA through a server‑side registry; combine this with Row Level Security, idempotency keys, signed Blob uploads, and rate limits to block bypass paths and double‑spend issues. Given the repository view available, a code‑level audit isn’t possible here, so the guidance below lists concrete safeguards to implement and verify in the Next.js API and Supabase schema used by the app.​
+
+Core principles
+Only server code may spend credits and talk to providers; frontends must call a single Next.js route that performs credit checks, enqueues or runs inference, stores to Vercel Blob, and returns a reference, aligning with the multi‑provider gateway pattern in Vercel’s image templates.​
+
+Provider API keys, model endpoints, and LoRA options must live in server configuration and a server‑only model registry; neither URLs nor keys should be reachable from the browser in this Next.js deployment flow.​
+
+Preventing payment bypass
+Make the generate endpoint authoritative: calculate price server‑side from model_id, resolution, and steps; ignore any client‑provided price or “free” flags to prevent spoofing in client requests used in v0/Vercel projects.​
+
+Require an idempotency key per request and store it in a unique index; if a retry occurs, return the prior result and do not re‑charge, a pattern that the unified server client makes straightforward in this stack.​
+
+Never expose the local inference gateway publicly; the Next.js server must be the only caller to local inference so a user cannot hit it without being charged in the application path shown by the repo.​
+
+Database integrity (Supabase/Postgres)
+Use a transaction that decrements balance and writes an immutable ledger row with non‑null delta and the idempotency key, then triggers the generation; if any step fails, the transaction rolls back so credits and work stay in sync, which fits the PL/pgSQL capability indicated in the repo’s language mix.​
+
+Enforce NOT NULL on delta, add a default, and a BEFORE INSERT trigger to compute signed deltas; deny UPDATE/DELETE on ledger to all roles except migrations, so entries are append‑only for auditability.​
+
+Enable Row Level Security; allow users to read their own ledger rows but only the server role can insert ledger records and mutate balances, consistent with Supabase best practices for Next.js projects.​
+
+API route hardening (Next.js)
+Centralize generation through one server route that uses a shared client for HuggingFace/fal/local, normalizing retries, timeouts, and error codes to avoid scattered bypass paths across routes, as in Vercel’s AI image examples.​
+
+Validate payloads with a schema (e.g., zod) and cap width, height, steps, and total pixels; reject over‑limits to prevent resource abuse in serverless environments like Vercel where the app is deployed.​
+
+Whitelist model_id and LoRA identifiers via a registry; never accept arbitrary file paths or URLs for LoRAs from the client, preventing path traversal or loading untrusted weights.​
+
+Storage and delivery (Vercel Blob)
+Upload images to Vercel Blob from the server route and return only a Blob key or signed URL; avoid public write access and keep Blob credentials server‑only, which matches how Vercel templates handle large image outputs.​
+
+Store metadata (prompt, model_id, seed, blob key, cost, idempotency key) in the database for reconciliation; the client should never receive raw credentials or unbounded binary payloads in this architecture.​
+
+Local inference isolation
+Bind the local runner to a private network or localhost and require a shared secret header; only the Next.js server should reach it, preventing direct, uncharged generations that bypass the ledger flow.​
+
+If multiple models run locally, gate them through the server registry and disallow client‑set endpoints, ensuring all cost decisions remain on the server side used by this app.​
+
+Rate limiting and quotas
+Add per‑user and per‑IP rate limits on the generate route to throttle abuse; store counters in a server‑side cache and fail fast before contacting providers, which aligns with resilience guidance in Vercel examples.​
+
+Implement free‑tier daily caps and a hard stop when balance <= 0; display remaining credits from server responses only, not from client‑side computed values, consistent with server‑authoritative designs.​
+
+Observability and audits
+Log request_id, idempotency key, user id, model_id, cost, and result status; reconcile ledger totals against generation counts daily to detect missed charges using the repo’s Postgres footprint.​
+
+Store provider response codes and latencies with a normalized schema; this allows quick correlation of spikes and prevents silent failures that skip ledger writes in serverless deployments.​
+
+Likely risks to check in code
+Direct client calls to provider endpoints or local inference, which would bypass credit checks; ensure all such calls route through the server API only in this Next.js app.​
+
+Accepting arbitrary LoRA paths or model URLs from the client; restrict to registry IDs and resolve paths server‑side to avoid loading untrusted artifacts.​
+
+Missing database transaction/locking around balance and ledger writes; add a single transactional function that ensures atomic deduct‑and‑record behavior leveraging PL/pgSQL or ORM transactions.​
+
+Minimal server flow (high level)
+Validate request and compute cost from registry; reject if balance < cost; create idempotency key if absent.​
+
+In one transaction: write ledger row with negative delta and idempotency key, update balance, and record a generation record referencing model/LoRAs; on failure, roll back.​
+
+Run inference, upload to Blob, update generation record with blob key and duration, or mark failed and optionally refund per policy; return blob key and metadata to the client.​
+
+If a deeper audit is desired, providing access to the specific API route code, Supabase schema (tables, constraints, RLS policies), and any local inference gateway config would enable a targeted checklist against the controls above using the same Next.js and Vercel patterns referenced here.​
