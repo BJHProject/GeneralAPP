@@ -170,7 +170,7 @@ export function RecentVideos() {
         <div className="flex items-center justify-center">
           <h2 className="text-2xl font-bold text-foreground">Recent Videos</h2>
         </div>
-        <Card className="border-border bg-card p-12">
+        <Card className="border-0 bg-gradient-to-br from-card/50 to-muted/30 shadow-xl shadow-primary/5 p-12 rounded-2xl">
           <div className="text-center">
             <p className="text-muted-foreground">{error}</p>
             <p className="mt-2 text-sm text-muted-foreground">Try using the deployed version for full functionality.</p>
@@ -186,7 +186,7 @@ export function RecentVideos() {
         <div className="flex items-center justify-center">
           <h2 className="text-2xl font-bold text-foreground">Recent Videos</h2>
         </div>
-        <Card className="border-border bg-card p-12">
+        <Card className="border-0 bg-gradient-to-br from-card/50 to-muted/30 shadow-xl shadow-primary/5 p-12 rounded-2xl">
           <div className="text-center">
             <p className="text-muted-foreground">No generated videos yet. Create your first video to see it here!</p>
           </div>
@@ -205,10 +205,10 @@ export function RecentVideos() {
         {videos.map((video) => (
           <Card
             key={video.id}
-            className="group overflow-hidden border-border bg-card transition-all hover:border-primary/50"
+            className="group overflow-hidden border-0 bg-card/50 shadow-xl shadow-primary/5 transition-all hover:shadow-2xl hover:shadow-primary/10 hover:scale-[1.02] rounded-2xl"
           >
             <div
-              className="relative aspect-video overflow-hidden bg-black"
+              className="relative aspect-video overflow-hidden bg-muted/30"
               onClick={() => {
                 if (activeVideoId === video.id) {
                   setActiveVideoId(null)
@@ -287,7 +287,7 @@ export function RecentVideos() {
 
       {fullscreenVideo && (
         <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-background/95 p-4 backdrop-blur-2xl"
           onClick={() => {
             console.log("[v0] Closing fullscreen")
             setFullscreenVideo(null)

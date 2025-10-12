@@ -136,14 +136,14 @@ export function ImageEditor() {
         onSelect={handleGalleryImageSelect}
       />
 
-      <Card className="border-border bg-card p-6">
+      <Card className="border-0 bg-gradient-to-br from-card/50 to-muted/30 shadow-2xl shadow-primary/5 backdrop-blur-xl p-8">
         <div className="space-y-6">
           {/* Image Upload */}
           <div className="space-y-2">
             <Label className="text-base font-semibold">Input Image</Label>
             {!imagePreview ? (
               <div className="space-y-2">
-                <label className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-border rounded-lg cursor-pointer bg-secondary hover:bg-secondary/80 transition-colors">
+                <label className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-primary/20 rounded-xl cursor-pointer bg-secondary/30 hover:bg-secondary/50 transition-all backdrop-blur-sm">
                   <div className="flex flex-col items-center justify-center pt-5 pb-6">
                     <Upload className="w-10 h-10 mb-3 text-muted-foreground" />
                     <p className="mb-2 text-sm text-muted-foreground">
@@ -183,14 +183,14 @@ export function ImageEditor() {
               placeholder="Turn this photo into a character figure. Behind it, place a box with the character's image printed on it..."
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
-              className="min-h-[120px] resize-none bg-secondary text-foreground"
+              className="min-h-[120px] resize-none bg-secondary/50 text-foreground border-primary/10 backdrop-blur-sm focus:border-primary/30 transition-colors"
             />
           </div>
 
           <Button
             onClick={handleEdit}
             disabled={isGenerating || !prompt.trim() || !inputImage}
-            className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+            className="w-full bg-gradient-to-r from-primary to-primary/80 text-primary-foreground hover:from-primary/90 hover:to-primary/70 shadow-lg shadow-primary/20 transition-all"
             size="lg"
           >
             {isGenerating ? (

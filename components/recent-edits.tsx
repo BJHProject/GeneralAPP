@@ -97,7 +97,7 @@ export function RecentEdits() {
 
   if (isLoading) {
     return (
-      <Card className="border-border bg-card p-12">
+      <Card className="border-0 bg-gradient-to-br from-card/50 to-muted/30 shadow-xl shadow-primary/5 p-12 rounded-2xl">
         <div className="flex items-center justify-center">
           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
         </div>
@@ -107,7 +107,7 @@ export function RecentEdits() {
 
   if (images.length === 0) {
     return (
-      <Card className="border-border bg-card p-12">
+      <Card className="border-0 bg-gradient-to-br from-card/50 to-muted/30 shadow-xl shadow-primary/5 p-12 rounded-2xl">
         <div className="text-center text-muted-foreground">
           <p>No recent edits yet. Start editing images to see them here!</p>
         </div>
@@ -116,10 +116,10 @@ export function RecentEdits() {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
       {images.map((image) => (
-        <Card key={image.id} className="border-border bg-card overflow-hidden group">
-          <div className="relative aspect-square bg-black">
+        <Card key={image.id} className="border-0 bg-card/50 shadow-xl shadow-primary/5 overflow-hidden group transition-all hover:shadow-2xl hover:shadow-primary/10 hover:scale-[1.02] rounded-2xl">
+          <div className="relative aspect-square bg-muted/30">
             <Image
               src={image.output_image_url || "/placeholder.svg"}
               alt={image.prompt}
