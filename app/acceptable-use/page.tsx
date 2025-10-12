@@ -144,33 +144,6 @@ export default function AcceptableUsePage() {
             </section>
 
             <section className="space-y-4">
-              <h2 className="text-2xl font-semibold">Enforcement Measures</h2>
-              <p className="text-muted-foreground">The Service may, at its discretion and where lawful:</p>
-              <div className="grid gap-3">
-                <div className="p-4 border rounded-lg bg-muted/30">
-                  <h3 className="font-semibold text-sm mb-1">Content Removal</h3>
-                  <p className="text-xs text-muted-foreground">Remove or disable access to offending content immediately</p>
-                </div>
-                <div className="p-4 border rounded-lg bg-muted/30">
-                  <h3 className="font-semibold text-sm mb-1">Account Actions</h3>
-                  <p className="text-xs text-muted-foreground">Temporarily suspend or permanently terminate accounts</p>
-                </div>
-                <div className="p-4 border rounded-lg bg-muted/30">
-                  <h3 className="font-semibold text-sm mb-1">Feature Restrictions</h3>
-                  <p className="text-xs text-muted-foreground">Restrict features, throttle usage, or apply additional verification</p>
-                </div>
-                <div className="p-4 border rounded-lg bg-muted/30">
-                  <h3 className="font-semibold text-sm mb-1">Legal Reporting</h3>
-                  <p className="text-xs text-muted-foreground">Report suspected unlawful conduct to competent authorities</p>
-                </div>
-                <div className="p-4 border rounded-lg bg-muted/30">
-                  <h3 className="font-semibold text-sm mb-1">Legal Remedies</h3>
-                  <p className="text-xs text-muted-foreground">Pursue legal remedies, including injunctive relief and damages</p>
-                </div>
-              </div>
-            </section>
-
-            <section className="space-y-4">
               <h2 className="text-2xl font-semibold flex items-center gap-2">
                 <Flag className="h-6 w-6 text-primary" />
                 Reporting Violations

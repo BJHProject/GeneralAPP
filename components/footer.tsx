@@ -15,12 +15,6 @@ export function Footer() {
               Terms of Service
             </Link>
             <Link 
-              href="/privacy" 
-              className="hover:text-foreground transition-colors underline-offset-4 hover:underline"
-            >
-              Privacy Policy
-            </Link>
-            <Link 
               href="/acceptable-use" 
               className="hover:text-foreground transition-colors underline-offset-4 hover:underline"
             >
