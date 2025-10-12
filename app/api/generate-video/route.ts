@@ -564,13 +564,28 @@ async function checkEliteJobStatus(
   }
 
   const pollUrl = statusUrl
-  console.log("[v0] Polling exact status URL (pre-signed, no modifications):", pollUrl.substring(0, 150) + "...")
+  console.log("[v0] Polling exact status URL:", pollUrl.substring(0, 150) + "...")
 
+  // Check if this is a fal.ai URL which requires authentication
+  const isFalAi = pollUrl.includes("queue.fal.run") || pollUrl.includes("fal.ai")
+  
   try {
-    console.log("[v0] Fetching with empty headers (no Authorization, no credentials)")
-    const pollResponse = await fetch(pollUrl, {
-      headers: {}, // Explicitly empty - no Authorization header
-    })
+    let headers: Record<string, string> = {}
+    
+    if (isFalAi) {
+      // fal.ai requires authentication for polling
+      const hfToken = process.env.HF_TOKEN || process.env.HUGGINGFACE_API_TOKEN
+      if (hfToken) {
+        headers["Authorization"] = `Bearer ${hfToken}`
+        console.log("[v0] Polling fal.ai with Authorization header")
+      } else {
+        console.warn("[v0] No HF_TOKEN found for fal.ai polling")
+      }
+    } else {
+      console.log("[v0] Polling with empty headers (pre-signed URL)")
+    }
+    
+    const pollResponse = await fetch(pollUrl, { headers })
 
     console.log("[v0] Poll response status:", pollResponse.status)
     console.log("[v0] Poll response headers:", Object.fromEntries(pollResponse.headers.entries()))
