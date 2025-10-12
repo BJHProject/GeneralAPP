@@ -6,10 +6,30 @@ This is a Next.js application that enables users to generate images, edit images
 
 ## Recent Changes
 
-### Security Hardening & Transaction Safety (October 12, 2025)
+### Production Readiness Improvements (October 12, 2025 - Evening)
+- **Database-backed rate limiting**: Replaced in-memory Maps with Supabase-based rate limiting for production scalability
+  - Created `rate_limits` table and `check_rate_limit()` PostgreSQL function
+  - All API routes now use `lib/security/rate-limit-db.ts` for durable rate limiting
+  - Supports multi-instance deployments (Autoscale)
+- **User-friendly error messages**: Updated all validation schemas and API responses
+  - Validation errors now show actionable messages (e.g., "Please select a valid image size" instead of technical dimension lists)
+  - Auth errors clarified (e.g., "Please sign in to generate images" instead of "Unauthorized")
+  - First error from validation is shown to users, not technical error objects
+- **Credit cost preview**: Verified all three interfaces show credit costs before generation
+  - Image Generator: 500 credits ✓
+  - Video Generator: 2,000-3,000 credits (dynamic based on duration) ✓
+  - Image Editor: 1,000 credits ✓
+- **Comprehensive deployment documentation**: Created PRODUCTION_DEPLOYMENT.md
+  - Complete secrets setup guide (Supabase, Vercel Blob, AI providers)
+  - Step-by-step database migration instructions
+  - Google OAuth configuration for Replit domain
+  - Post-deployment checklist and troubleshooting guide
+  - Monitoring and maintenance procedures
+
+### Security Hardening & Transaction Safety (October 12, 2025 - Day)
 - **Atomic credit transactions**: All credit operations now use single database transactions with automatic rollback
 - **Request validation**: Added Zod schemas with strict limits on dimensions, steps, and prompts
-- **Rate limiting**: Implemented per-user (10/min) and per-IP (20/min) throttling
+- **Rate limiting**: Implemented per-user (10/min) and per-IP (20/min) throttling (upgraded to database-backed in evening)
 - **Model whitelist**: Server-side validation ensures only registered models can be accessed
 - **Automatic refunds**: Failed generations automatically refund credits to users
 - **Immutable ledger**: Credit ledger is append-only with database rules preventing updates/deletes
