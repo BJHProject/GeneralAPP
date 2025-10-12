@@ -1,0 +1,163 @@
+Deployment
+Source
+Log
+2025-10-12 18:19:53.78
+7ce7d9ab
+User
+[v0] Step 4: Auth result - {
+2025-10-12 18:20:56.60
+7ce7d9ab
+User
+[v0] Step 3: Getting user from auth
+2025-10-12 18:20:56.60
+7ce7d9ab
+User
+[v0] User exists with 229000 credits
+2025-10-12 18:20:56.60
+7ce7d9ab
+User
+[v0] User record ensured in database
+2025-10-12 18:20:56.66
+7ce7d9ab
+User
+[v0] Step 4: Auth result - {
+2025-10-12 18:20:56.66
+7ce7d9ab
+User
+hasUser: true,
+2025-10-12 18:20:56.66
+7ce7d9ab
+User
+userId: '16f09afb-b861-4e57-b7bb-b4adeba007f4',
+2025-10-12 18:20:56.66
+7ce7d9ab
+User
+email: 'test@gmail.com',
+2025-10-12 18:20:56.66
+7ce7d9ab
+User
+authError: undefined
+2025-10-12 18:20:56.66
+7ce7d9ab
+User
+}
+2025-10-12 18:20:56.66
+7ce7d9ab
+User
+[v0] Step 6: Querying users table for user: 16f09afb-b861-4e57-b7bb-b4adeba007f4
+2025-10-12 18:20:56.77
+7ce7d9ab
+User
+[v0] Step 7: Database query result - { hasData: true, credits: 229000, tier: 'free', dbError: undefined }
+2025-10-12 18:20:56.77
+7ce7d9ab
+User
+[v0] Step 12: Returning existing user credits: 229000
+2025-10-12 18:20:56.78
+7ce7d9ab
+User
+[v0] Found images: 0 ( 0 saved, 0 recent)
+2025-10-12 18:21:05.58
+7ce7d9ab
+User
+[Security] ========== SECURE IMAGE GENERATION API ==========
+2025-10-12 18:21:05.77
+7ce7d9ab
+User
+[Security] User authenticated: 16f09afb-b861-4e57-b7bb-b4adeba007f4
+2025-10-12 18:21:05.77
+7ce7d9ab
+User
+[v0] ensureUserExists called for user: 16f09afb-b861-4e57-b7bb-b4adeba007f4 test@gmail.com
+2025-10-12 18:21:05.84
+7ce7d9ab
+User
+[v0] User exists with 229000 credits
+2025-10-12 18:21:05.85
+7ce7d9ab
+User
+[Security] Invalid request payload: {
+2025-10-12 18:21:05.85
+7ce7d9ab
+User
+_errors: [],
+2025-10-12 18:21:05.85
+7ce7d9ab
+User
+width: {
+2025-10-12 18:21:05.85
+7ce7d9ab
+User
+_errors: [ 'Width must be one of: 512, 768, 1024, 1280, 1536, 2048' ]
+2025-10-12 18:21:05.85
+7ce7d9ab
+User
+},
+2025-10-12 18:21:05.85
+7ce7d9ab
+User
+height: {
+2025-10-12 18:21:05.85
+7ce7d9ab
+User
+_errors: [ 'Height must be one of: 512, 768, 1024, 1280, 1536, 2048' ]
+2025-10-12 18:21:05.85
+7ce7d9ab
+User
+}
+2025-10-12 18:21:05.85
+7ce7d9ab
+User
+}
+2025-10-12 18:21:13.00
+7ce7d9ab
+User
+[Security] ========== SECURE IMAGE GENERATION API ==========
+2025-10-12 18:21:13.16
+7ce7d9ab
+User
+[Security] User authenticated: 16f09afb-b861-4e57-b7bb-b4adeba007f4
+2025-10-12 18:21:13.16
+7ce7d9ab
+User
+[v0] ensureUserExists called for user: 16f09afb-b861-4e57-b7bb-b4adeba007f4 test@gmail.com
+2025-10-12 18:21:13.25
+7ce7d9ab
+User
+[v0] User exists with 229000 credits
+2025-10-12 18:21:13.25
+7ce7d9ab
+User
+[Security] Invalid request payload: {
+2025-10-12 18:21:13.25
+7ce7d9ab
+User
+_errors: [],
+2025-10-12 18:21:13.25
+7ce7d9ab
+User
+width: {
+2025-10-12 18:21:13.25
+7ce7d9ab
+User
+_errors: [ 'Width must be one of: 512, 768, 1024, 1280, 1536, 2048' ]
+2025-10-12 18:21:13.25
+7ce7d9ab
+User
+},
+2025-10-12 18:21:13.25
+7ce7d9ab
+User
+height: {
+2025-10-12 18:21:13.25
+7ce7d9ab
+User
+_errors: [ 'Height must be one of: 512, 768, 1024, 1280, 1536, 2048' ]
+2025-10-12 18:21:13.25
+7ce7d9ab
+User
+}
+2025-10-12 18:21:13.25
+7ce7d9ab
+User
+}

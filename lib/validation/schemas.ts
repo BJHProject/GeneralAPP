@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 const MAX_PROMPT_LENGTH = 2000
 const MAX_PIXELS = 2048 * 2048
-const ALLOWED_DIMENSIONS = [512, 768, 1024, 1280, 1536, 2048] as const
+const ALLOWED_DIMENSIONS = [512, 768, 832, 1024, 1248, 1280, 1344, 1536, 2048] as const
 
 export const imageGenerationSchema = z.object({
   model: z.string().optional(),
@@ -10,11 +10,11 @@ export const imageGenerationSchema = z.object({
   negative_prompt: z.string().max(MAX_PROMPT_LENGTH, 'Negative prompt too long').optional(),
   width: z.number().int().min(512).max(2048).refine(
     (val) => ALLOWED_DIMENSIONS.includes(val as any),
-    { message: 'Width must be one of: 512, 768, 1024, 1280, 1536, 2048' }
+    { message: 'Width must be one of: 512, 768, 832, 1024, 1248, 1280, 1344, 1536, 2048' }
   ).optional().default(1024),
   height: z.number().int().min(512).max(2048).refine(
     (val) => ALLOWED_DIMENSIONS.includes(val as any),
-    { message: 'Height must be one of: 512, 768, 1024, 1280, 1536, 2048' }
+    { message: 'Height must be one of: 512, 768, 832, 1024, 1248, 1280, 1344, 1536, 2048' }
   ).optional().default(1024),
   guidance_scale: z.number().min(1).max(20).optional().default(7.5),
   num_inference_steps: z.number().int().min(1).max(50).optional().default(20),
