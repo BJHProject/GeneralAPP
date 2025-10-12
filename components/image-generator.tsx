@@ -21,8 +21,9 @@ const PRESET_RESOLUTIONS = [
 export function ImageGenerator() {
   const [prompt, setPrompt] = useState("")
   const [model, setModel] = useState("realistic")
-  const negativePrompt =
-    "nsfw, (low quality, worst quality:1.2), very displeasing, 3d, watermark, signature, ugly, poorly drawn"
+  const [negativePrompt, setNegativePrompt] = useState(
+    "(low quality, worst quality:1.2), very displeasing, 3d, watermark, signature, ugly, poorly drawn"
+  )
   const [isGenerating, setIsGenerating] = useState(false)
   const [imageWidth, setImageWidth] = useState(832)
   const [imageHeight, setImageHeight] = useState(1248)
@@ -270,6 +271,22 @@ export function ImageGenerator() {
               onChange={(e) => setPrompt(e.target.value)}
               className="min-h-[120px] resize-none bg-secondary/50 text-foreground border-primary/10 backdrop-blur-sm focus:border-primary/30 transition-colors"
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="negative-prompt" className="text-base font-semibold">
+              Negative Prompt (Optional)
+            </Label>
+            <Textarea
+              id="negative-prompt"
+              placeholder="What you DON'T want to see in the image..."
+              value={negativePrompt}
+              onChange={(e) => setNegativePrompt(e.target.value)}
+              className="min-h-[80px] resize-none bg-secondary/50 text-foreground border-primary/10 backdrop-blur-sm focus:border-primary/30 transition-colors"
+            />
+            <p className="text-xs text-muted-foreground">
+              Specify elements you want to avoid in the generated image. Safety terms are automatically added.
+            </p>
           </div>
 
           <div className="space-y-2">
