@@ -1,0 +1,88 @@
+Acceptable Use Policy (Content Policy)
+
+Introduction
+This Acceptable Use Policy (the Policy) is part of the Terms of Service governing the website, applications, and related features (the Service). By accessing, browsing, registering, uploading content, or otherwise using the Service, the user (the User) agrees to comply with this Policy.
+
+Purpose
+This Policy exists to preserve the safety, legality, and integrity of the Service, to protect Users, and to ensure compliance with applicable laws, including child protection, intellectual property, privacy/data protection, and online safety requirements.
+
+General principles
+
+Act in good faith and refrain from conduct that violates law, infringes third‑party rights, or threatens the safety or rights of others.
+
+Do not expose other Users or the Service to harm, liability, loss, or undue risk.
+
+Do not interfere with or disrupt the proper functioning, security, or integrity of the Service.
+
+Prohibited content
+Users must not generate, upload, transmit, request, or otherwise make available content that:
+
+Involves minors or persons under eighteen (18), or that may reasonably be perceived as depicting such persons, whether fictional or realistic.
+
+Depicts or promotes non‑consensual sexual activity, sexual assault, exploitation, or coercion.
+
+Depicts bestiality, incest, or other illegal or extreme sexual conduct.
+
+Is excessively violent, degrading, or otherwise unlawful.
+
+Infringes copyrights, trademarks, trade secrets, moral rights, or other intellectual property rights.
+
+Misappropriates the likeness or identity of real persons, including public figures or private individuals, without lawful authority and documented consent.
+
+Promotes terrorism, hate, discrimination, harassment, or abuse based on protected characteristics or status.
+
+Contains viruses, malware, spyware, or any code intended to disrupt, damage, or compromise systems, data, or networks.
+
+Prohibited conduct
+Users must not:
+
+Use the Service for unlawful purposes or in furtherance of unlawful activities.
+
+Reverse engineer, decompile, scrape, or otherwise interfere with code, infrastructure, rate limits, access controls, or technical protections.
+
+Circumvent or attempt to circumvent security, authentication, or authorization measures.
+
+Harass, threaten, or abuse other Users or Service moderators/maintainers.
+
+Exploit the Service for commercial gain unless expressly permitted by the Service’s terms or a written authorization.
+
+Use bots, scripts, or automated tools to scrape, mine, harvest, or collect data beyond what is expressly allowed.
+
+Intellectual property protection and notice‑and‑takedown (EU/DMCA)
+
+The Service respects the intellectual property rights of others and expects Users to do the same.
+
+The Service will respond expeditiously to valid notices of alleged infringement under applicable law, including the EU legal framework and, where relevant, the U.S. DMCA.
+
+A notice should include: identification of the copyrighted work; identification and location (URL) of the allegedly infringing material; the notifier’s name, postal address, telephone number, and email; a good‑faith statement that the use is not authorized; a statement made under penalty of perjury that the information is accurate and that the notifier is authorized to act; and an electronic or physical signature.
+
+Send notices to: [contact email] or [web form URL].
+
+A repeat‑infringer policy may result in account restrictions or termination where appropriate.
+
+Where applicable, Users may submit a counter‑notice that meets legal requirements; disputed materials may remain disabled as required by law.
+
+Enforcement measures
+The Service may, at its discretion and where lawful:
+
+Remove or disable access to offending content immediately.
+
+Temporarily suspend or permanently terminate accounts.
+
+Restrict features, throttle usage, or apply additional verification.
+
+Report suspected unlawful conduct to competent authorities.
+
+Pursue legal remedies, including injunctive relief and damages.
+
+Indemnification
+The User agrees to indemnify and hold harmless the Service’s operators, maintainers, and contributors from claims, damages, liabilities, losses, costs, and expenses (including reasonable legal fees) arising out of the User’s violation of this Policy, User Content, misuse of the Service, or violation of third‑party rights.
+
+Reporting
+To report suspected violations, security issues, or illegal content, contact: [contact email] or [web form URL]. Include sufficient detail (links, timestamps, screenshots) to allow assessment and action.
+
+Policy updates
+This Policy may be amended or updated to reflect legal, regulatory, or operational requirements. Material changes will be communicated via the Service or by notice where required. Continued use after the effective date of changes constitutes acceptance of the updated Policy.
+
+Relationship to other terms
+This Policy supplements the Terms of Service and Privacy Policy. If there is a conflict, the Terms of Service control to the extent permitted by applicable law. Mandatory consumer and data‑protection rights under EU law remain unaffected.
