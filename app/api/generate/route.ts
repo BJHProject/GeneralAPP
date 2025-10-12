@@ -1,13 +1,17 @@
 export const runtime = "nodejs"
 export const maxDuration = 60
 
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { createServerClient } from "@/lib/supabase/server"
-import { chargeCredits, checkIdempotency, createIdempotencyKey, updateIdempotencyKey, ensureUserExists } from "@/lib/credits"
+import { ensureUserExists } from "@/lib/credits"
 import { defaultAIClient } from "@/lib/ai-client"
+import { imageGenerationSchema } from "@/lib/validation/schemas"
+import { atomicCreditCharge, completeGenerationJob, refundFailedJob } from "@/lib/credits/transactions"
+import { rateLimitMiddleware } from "@/lib/security/rate-limit"
+import { validateModelId } from "@/lib/security/model-validator"
 
-export async function POST(request: Request) {
-  console.log("[v0] ========== IMAGE GENERATION API ==========")
+export async function POST(request: NextRequest) {
+  console.log("[Security] ========== SECURE IMAGE GENERATION API ==========")
 
   try {
     const supabase = await createServerClient()
@@ -21,30 +25,11 @@ export async function POST(request: Request) {
     const appEnabled = settings?.setting_value ?? true
 
     if (!appEnabled) {
-      console.log("[v0] Image generation is currently disabled")
+      console.log("[Security] Image generation is currently disabled")
       return NextResponse.json(
         { error: "Image generation is temporarily disabled. Please try again later." },
         { status: 503 },
       )
-    }
-
-    const body = await request.json()
-    const { 
-      model, 
-      prompt, 
-      negative_prompt, 
-      width, 
-      height, 
-      guidance_scale, 
-      num_inference_steps, 
-      seed,
-      idempotency_key 
-    } = body
-
-    console.log("[v0] Request:", { model, prompt: prompt?.substring(0, 50) + "..." })
-
-    if (!prompt) {
-      return NextResponse.json({ error: "Prompt is required" }, { status: 400 })
     }
 
     const {
@@ -52,49 +37,77 @@ export async function POST(request: Request) {
     } = await supabase.auth.getUser()
 
     if (!user) {
-      console.log("[v0] No authenticated user")
+      console.log("[Security] No authenticated user")
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    console.log("[v0] User authenticated:", user.id)
+    const rateLimitResponse = await rateLimitMiddleware(request, user.id)
+    if (rateLimitResponse) {
+      return rateLimitResponse
+    }
+
+    console.log("[Security] User authenticated:", user.id)
     await ensureUserExists(user.id, user.email!, user.user_metadata?.full_name, user.user_metadata?.avatar_url)
 
-    if (idempotency_key) {
-      const existing = await checkIdempotency(idempotency_key, user.id)
-      if (existing.exists) {
-        if (existing.status === "succeeded" && existing.result) {
-          console.log("[v0] Returning cached result from idempotency key")
-          return NextResponse.json(existing.result)
-        }
-        if (existing.status === "started") {
-          return NextResponse.json({ error: "Request already processing" }, { status: 409 })
-        }
-      }
-    }
-
-    if (idempotency_key) {
-      await createIdempotencyKey(idempotency_key, user.id, "image", "started")
-    }
-
-    const modelId = model || "flux-dev"
-    const chargeResult = await chargeCredits(user.id, "image", idempotency_key)
-
-    if (!chargeResult.success) {
-      if (idempotency_key) {
-        await updateIdempotencyKey(idempotency_key, "failed")
-      }
+    const body = await request.json()
+    
+    const validation = imageGenerationSchema.safeParse(body)
+    if (!validation.success) {
+      console.warn("[Security] Invalid request payload:", validation.error.format())
       return NextResponse.json(
         { 
-          error: chargeResult.error || "Failed to charge credits",
-          ...(chargeResult.error === "insufficient credits" && { 
-            insufficientCredits: true 
-          })
+          error: "Invalid request parameters",
+          details: validation.error.flatten().fieldErrors,
         },
-        { status: chargeResult.error === "insufficient credits" ? 402 : 500 },
+        { status: 400 }
       )
     }
 
-    console.log("[v0] Credits charged, new balance:", chargeResult.newBalance)
+    const { model, prompt, negative_prompt, width, height, guidance_scale, num_inference_steps, seed, idempotency_key } = validation.data
+
+    const modelId = model || "flux-dev"
+    const modelValidation = validateModelId(modelId)
+    
+    if (!modelValidation.valid) {
+      console.warn("[Security] Invalid model ID:", modelId)
+      return NextResponse.json(
+        { error: modelValidation.error },
+        { status: 400 }
+      )
+    }
+
+    console.log("[Security] Request validated:", { 
+      model: modelId, 
+      prompt: prompt.substring(0, 50) + "...",
+      width,
+      height,
+    })
+
+    const chargeResult = await atomicCreditCharge(
+      user.id,
+      "image",
+      idempotency_key,
+      { model: modelId, prompt: prompt.substring(0, 100) }
+    )
+
+    if (!chargeResult.success) {
+      console.warn("[Security] Credit charge failed:", chargeResult.error)
+      return NextResponse.json(
+        { 
+          error: chargeResult.error || "Failed to charge credits",
+          ...(chargeResult.code === 'INSUFFICIENT_CREDITS' && { 
+            insufficientCredits: true 
+          })
+        },
+        { 
+          status: chargeResult.code === 'INSUFFICIENT_CREDITS' ? 402 : 
+                  chargeResult.code === 'DUPLICATE_REQUEST' ? 409 : 500
+        },
+      )
+    }
+
+    const jobId = chargeResult.jobId!
+    console.log("[Security] ✓ Credits charged atomically. Job ID:", jobId, "Balance:", chargeResult.newBalance)
 
     const result = await defaultAIClient.generate({
       type: "image",
@@ -109,14 +122,14 @@ export async function POST(request: Request) {
     })
 
     if (!result.success) {
-      console.error("[v0] Generation failed:", result.error)
-      if (idempotency_key) {
-        await updateIdempotencyKey(idempotency_key, "failed")
-      }
+      console.error("[Security] Generation failed, refunding credits:", result.error)
+      await refundFailedJob(jobId, result.error || 'Generation failed')
       return NextResponse.json({ error: result.error }, { status: 500 })
     }
 
-    console.log("[v0] ✓ Image generated:", result.mediaUrl)
+    console.log("[Security] ✓ Image generated successfully:", result.mediaUrl)
+
+    await completeGenerationJob(jobId, true, result.mediaUrl)
 
     const { error: insertError } = await supabase.from("images").insert({
       user_id: user.id,
@@ -128,22 +141,19 @@ export async function POST(request: Request) {
     })
 
     if (insertError) {
-      console.error("[v0] Failed to save image metadata:", insertError)
+      console.error("[Security] Failed to save image metadata:", insertError)
     }
 
-    const responseData = {
+    return NextResponse.json({
       url: result.mediaUrl,
       credits: chargeResult.newBalance,
-      metadata: result.metadata,
-    }
-
-    if (idempotency_key) {
-      await updateIdempotencyKey(idempotency_key, "succeeded", responseData)
-    }
-
-    return NextResponse.json(responseData)
+      metadata: {
+        ...result.metadata,
+        jobId,
+      },
+    })
   } catch (error: any) {
-    console.error("[v0] Generation error:", error)
+    console.error("[Security] Generation error:", error)
     return NextResponse.json(
       { error: error.message || "Generation failed" },
       { status: 500 },

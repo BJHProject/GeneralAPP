@@ -6,6 +6,16 @@ This is a Next.js application that enables users to generate images, edit images
 
 ## Recent Changes
 
+### Security Hardening & Transaction Safety (October 12, 2025)
+- **Atomic credit transactions**: All credit operations now use single database transactions with automatic rollback
+- **Request validation**: Added Zod schemas with strict limits on dimensions, steps, and prompts
+- **Rate limiting**: Implemented per-user (10/min) and per-IP (20/min) throttling
+- **Model whitelist**: Server-side validation ensures only registered models can be accessed
+- **Automatic refunds**: Failed generations automatically refund credits to users
+- **Immutable ledger**: Credit ledger is append-only with database rules preventing updates/deletes
+- **Observability**: Added provider logging, reconciliation tools, and anomaly detection
+- **Database migrations**: Created atomic credit functions and generation job tracking
+
 ### Unified AI Client Architecture (October 12, 2025)
 - **Created unified AI client system** (`lib/ai-client/`) to abstract all AI providers
 - **Provider adapters**: HuggingFace, Wavespeed, fal.ai, and Gradio with standardized error handling
@@ -136,11 +146,20 @@ Preferred communication style: Simple, everyday language.
 - Pre-flight credit checks before expensive operations
 - Full audit trail in `credit_ledger` table
 
-**Credit Operations** (`/lib/credits.ts`):
-- `chargeCredits()`: Atomically deduct credits with balance validation
-- `ensureUserExists()`: Create user record with initial 3000 credits on first generation
-- `checkIdempotency()`: Prevent duplicate charges
-- `getUserCredits()`: Fetch current balance
+**Credit Operations**:
+- **Legacy** (`/lib/credits.ts`): Basic credit functions (deprecated in favor of atomic system)
+- **Secure Atomic System** (`/lib/credits/transactions.ts`):
+  - `atomicCreditCharge()`: Single-transaction credit deduction with job creation and ledger entry
+  - `completeGenerationJob()`: Mark jobs as completed with result URL
+  - `refundFailedJob()`: Automatically refund credits for failed generations
+- **Security** (`/lib/security/`):
+  - Rate limiting middleware (per-user and per-IP)
+  - Model whitelist validation
+  - Request schema validation with Zod
+- **Observability** (`/lib/observability/`):
+  - Provider request logging with latency tracking
+  - Credit reconciliation tools
+  - Anomaly detection for suspicious activity
 
 ### Admin Features
 

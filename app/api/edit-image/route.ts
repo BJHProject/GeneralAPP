@@ -1,12 +1,15 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
-import { ensureUserExists, chargeCredits } from "@/lib/credits"
+import { ensureUserExists } from "@/lib/credits"
 import { defaultAIClient } from "@/lib/ai-client"
+import { imageEditSchema } from "@/lib/validation/schemas"
+import { atomicCreditCharge, completeGenerationJob, refundFailedJob } from "@/lib/credits/transactions"
+import { rateLimitMiddleware } from "@/lib/security/rate-limit"
 
 export const maxDuration = 60
 
 export async function POST(request: NextRequest) {
-  console.log("[v0] ========== IMAGE EDIT API ==========")
+  console.log("[Security] ========== SECURE IMAGE EDIT API ==========")
 
   try {
     const supabase = await createClient()
@@ -16,37 +19,61 @@ export async function POST(request: NextRequest) {
     } = await supabase.auth.getUser()
 
     if (!user) {
-      console.log("[v0] No authenticated user")
+      console.log("[Security] No authenticated user")
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    console.log("[v0] User authenticated:", user.id)
+    const rateLimitResponse = await rateLimitMiddleware(request, user.id)
+    if (rateLimitResponse) {
+      return rateLimitResponse
+    }
+
+    console.log("[Security] User authenticated:", user.id)
     await ensureUserExists(user.id, user.email!, user.user_metadata?.full_name, user.user_metadata?.avatar_url)
 
     const body = await request.json()
-    const { imageUrl, prompt } = body
-
-    if (!imageUrl || !prompt) {
-      return NextResponse.json({ error: "Image URL and prompt are required" }, { status: 400 })
-    }
-
-    console.log("[v0] Edit request:", { prompt: prompt.substring(0, 50) + "..." })
-
-    const chargeResult = await chargeCredits(user.id, "edit")
-
-    if (!chargeResult.success) {
+    
+    const validation = imageEditSchema.safeParse(body)
+    if (!validation.success) {
+      console.warn("[Security] Invalid request payload:", validation.error.format())
       return NextResponse.json(
         { 
-          error: chargeResult.error || "Failed to charge credits",
-          ...(chargeResult.error === "insufficient credits" && { 
-            insufficientCredits: true 
-          })
+          error: "Invalid request parameters",
+          details: validation.error.flatten().fieldErrors,
         },
-        { status: chargeResult.error === "insufficient credits" ? 402 : 500 },
+        { status: 400 }
       )
     }
 
-    console.log("[v0] Credits charged, new balance:", chargeResult.newBalance)
+    const { imageUrl, prompt, idempotency_key } = validation.data
+
+    console.log("[Security] Edit request validated:", { prompt: prompt.substring(0, 50) + "..." })
+
+    const chargeResult = await atomicCreditCharge(
+      user.id,
+      "edit",
+      idempotency_key,
+      { prompt: prompt.substring(0, 100), imageUrl }
+    )
+
+    if (!chargeResult.success) {
+      console.warn("[Security] Credit charge failed:", chargeResult.error)
+      return NextResponse.json(
+        { 
+          error: chargeResult.error || "Failed to charge credits",
+          ...(chargeResult.code === 'INSUFFICIENT_CREDITS' && { 
+            insufficientCredits: true 
+          })
+        },
+        { 
+          status: chargeResult.code === 'INSUFFICIENT_CREDITS' ? 402 : 
+                  chargeResult.code === 'DUPLICATE_REQUEST' ? 409 : 500
+        },
+      )
+    }
+
+    const jobId = chargeResult.jobId!
+    console.log("[Security] ✓ Credits charged atomically. Job ID:", jobId, "Balance:", chargeResult.newBalance)
 
     const result = await defaultAIClient.generate({
       type: "edited-image",
@@ -57,11 +84,14 @@ export async function POST(request: NextRequest) {
     })
 
     if (!result.success) {
-      console.error("[v0] Edit failed:", result.error)
+      console.error("[Security] Edit failed, refunding credits:", result.error)
+      await refundFailedJob(jobId, result.error || 'Edit failed')
       return NextResponse.json({ error: result.error }, { status: 500 })
     }
 
-    console.log("[v0] ✓ Image edited:", result.mediaUrl)
+    console.log("[Security] ✓ Image edited successfully:", result.mediaUrl)
+
+    await completeGenerationJob(jobId, true, result.mediaUrl)
 
     const { error: insertError } = await supabase.from("edited_images").insert({
       user_id: user.id,
@@ -72,16 +102,19 @@ export async function POST(request: NextRequest) {
     })
 
     if (insertError) {
-      console.error("[v0] Failed to save edited image metadata:", insertError)
+      console.error("[Security] Failed to save edited image metadata:", insertError)
     }
 
     return NextResponse.json({
       url: result.mediaUrl,
       credits: chargeResult.newBalance,
-      metadata: result.metadata,
+      metadata: {
+        ...result.metadata,
+        jobId,
+      },
     })
   } catch (error: any) {
-    console.error("[v0] Edit error:", error)
+    console.error("[Security] Edit error:", error)
     return NextResponse.json(
       { error: error.message || "Edit failed" },
       { status: 500 },
