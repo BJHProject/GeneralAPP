@@ -1,0 +1,41 @@
+Short answer: Keep the current Next.js backend and add a shared TypeScript client that abstracts HuggingFace, fal.ai, and the local runner behind one generateImage() call, storing outputs in Vercel Blob and recording credit deltas in Supabase/Postgres; this reduces duplicate code, standardizes retries/errors, and lets models and LoRAs be switched via config instead of route rewrites.​
+
+What it changes
+One typed entrypoint replaces per‑route fetch code, so adding or moving a model (e.g., from HuggingFace to local) is just a registry update rather than touching multiple API routes, which matches the pattern used by Vercel’s AI templates for multi‑provider image generation.​
+
+Centralized retries, timeouts, error normalization, and logging improve reliability in serverless environments without changing the framework or deployment model already used by the project.​
+
+Fit for this repo
+The repository is a Next.js app deployed on Vercel via v0, so a TypeScript client in lib/ works natively and avoids a Python rewrite; the repo metadata also shows Postgres/PLpgSQL usage, consistent with a Supabase ledger for credits.​
+
+A single API route (e.g., POST /api/generate) can call the shared client, which mirrors the “single input → multiple providers” approach in the AI SDK image generator template.​
+
+Vercel Blob integration
+Generate on the server, immediately stream or upload the image bytes to Vercel Blob, and return only a Blob URL or key to the client to keep responses small and compatible with serverless limits shown in similar Vercel templates.​
+
+Store only metadata (prompt, seed, model_id, blob key) in the database, letting Blob handle storage while Supabase handles indexing and access rules.​
+
+Supabase credit ledger
+Use a transaction that decrements balance and writes a ledger row with a non‑null delta, enforced by a NOT NULL + default and a small PL/pgSQL trigger to auto‑compute delta if omitted, which aligns with the Postgres usage indicated by the repo’s language stats.​
+
+Add an idempotency key per request so retries from the shared client don’t double‑charge on transient provider failures, a pattern common in API gateway designs that the unified client helps centralize.​
+
+Models and LoRAs
+Maintain a model registry: model_id → {provider, endpoint/modelRef, defaults, allowed LoRAs}; the route passes loras:[{id|path, scale}] through to the chosen provider so popular styles can be pre‑merged as separate model_ids while others load on‑the‑fly, matching multi‑provider configuration in existing templates ​.
+
+This makes switching a model or scaling to an additional provider configuration‑only, without touching route logic or frontend handling, which keeps the codebase simpler as more styles are added.​
+
+Reliability and observability
+The shared client enforces per‑request caps (width/height/steps), retries with backoff, request_id logging, and standardized error codes, which aligns with production guidance in Vercel’s examples for stable image workflows on serverless runtimes.​
+
+This concentrates failure handling in one place, so a provider schema change or throttling event is fixed once and benefits every route immediately.​
+
+Why not switch frameworks
+Next.js already fits the deployed architecture and v0 workflow, and Vercel provides proven templates for multi‑provider image generation in this stack, so a FastAPI rewrite increases risk without improving the core needs here.​
+
+Keeping TypeScript end‑to‑end maintains a single language for UI, routes, and the shared client, which speeds iteration and reduces integration errors as features expand.​
+
+What’s needed to proceed
+The repo page shared contains deployment metadata but not a browsable file tree here, so specific line‑level references aren’t available in this context; placing the shared client under lib/ and routing all image calls through a single /api/generate endpoint will integrate cleanly with the current app layout and deployment links shown.​
+
+Once the unified client is in place, add the model registry, plug in Blob uploads and ledger writes, and migrate existing routes to call generateImage() to gain the reliability and maintainability benefits immediately.​
