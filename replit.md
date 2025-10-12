@@ -6,6 +6,15 @@ This is a Next.js application that enables users to generate images, edit images
 
 ## Recent Changes
 
+### Unified AI Client Architecture (October 12, 2025)
+- **Created unified AI client system** (`lib/ai-client/`) to abstract all AI providers
+- **Provider adapters**: HuggingFace, Wavespeed, fal.ai, and Gradio with standardized error handling
+- **Model registry**: Centralized configuration for all models with pricing, timeouts, and defaults
+- **Retry logic**: Exponential backoff with automatic retries for transient failures
+- **Refactored API routes**: Simplified `/api/generate`, `/api/edit-image`, and `/api/generate-video` to use unified client
+- **Fixed credit ledger**: Changed `amount` column to `delta` across all insertion points for proper audit tracking
+- **Code reduction**: Reduced API route complexity from ~1000+ lines to ~150 lines combined
+
 ### Replit Migration (October 11, 2025)
 - Migrated project from Vercel to Replit
 - Updated dev and production scripts to bind to `0.0.0.0:5000` for Replit compatibility
@@ -38,19 +47,27 @@ Preferred communication style: Simple, everyday language.
 
 **API Routes**: Next.js API routes (`/app/api/*`) with edge and Node.js runtimes
 - **Edge Runtime**: For lightweight operations and middleware
-- **Node.js Runtime**: For AI generation tasks requiring longer execution times (up to 60 seconds)
+- **Node.js Runtime**: For AI generation tasks requiring longer execution times (up to 180 seconds for videos)
 
 **Key Services**:
-1. **Image Generation** (`/api/generate`): Supports multiple AI models via Gradio, Wavespeed, and HuggingFace endpoints
-2. **Image Editing** (`/api/edit-image`): Uses Wavespeed API for AI-powered image modifications
-3. **Video Generation** (`/api/generate-video`): Supports multiple styles (Lovely, Express, Express HD, Elite) with different quality/speed tradeoffs
+1. **Image Generation** (`/api/generate`): Clean interface to unified AI client for image generation
+2. **Image Editing** (`/api/edit-image`): Wavespeed-powered image modifications via unified client
+3. **Video Generation** (`/api/generate-video`): Multi-style video generation (Lovely, Express, Express HD, Elite/Elitist)
 4. **Media Ingestion** (`/api/ingest`): Server-side proxy that fetches AI-generated content and stores it in Vercel Blob
 5. **Cron Jobs** (`/api/cleanup-temp`): Automated cleanup of expired temporary media (runs daily at 2 AM)
 
+**Unified AI Client** (`lib/ai-client/`):
+- **Provider Abstraction**: Single interface for HuggingFace, Wavespeed, fal.ai, and Gradio providers
+- **Model Registry**: Centralized configuration mapping model IDs to providers, endpoints, and pricing
+- **Automatic Retries**: Exponential backoff with configurable retry logic for transient failures
+- **Error Normalization**: Standardized error codes (QUOTA_EXCEEDED, PROVIDER_ERROR, TIMEOUT, etc.)
+- **Request Tracking**: Unique request IDs for debugging and observability
+
 **Architecture Decisions**:
-- **Server-Side Proxying**: AI-generated image URLs are never exposed to clients. The server fetches and re-hosts content in Vercel Blob to maintain control and prevent hotlinking.
+- **Server-Side Proxying**: AI-generated media URLs are never exposed to clients. The server fetches and re-hosts content in Vercel Blob to maintain control and prevent hotlinking.
 - **Idempotency Protection**: Credit charges include idempotency keys to prevent duplicate charges on retry/refresh scenarios.
-- **Multi-Provider Strategy**: Multiple AI model providers (Gradio, Wavespeed, HuggingFace) with fallback mechanisms for rate limiting and availability issues.
+- **Provider Swapping**: Models can be moved between providers (e.g., HuggingFace to Wavespeed) via config changes only, no code changes needed.
+- **Retry Strategy**: Automatic retries for rate limits (429), timeouts, and 5xx errors with intelligent backoff.
 
 ### Authentication & Authorization
 
