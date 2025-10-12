@@ -6,6 +6,15 @@ This is a Next.js application that enables users to generate images, edit images
 
 ## Recent Changes
 
+### Negative Prompt Support & Safety Enforcement (October 12, 2025 - Late Evening)
+- **User-editable negative prompts**: Added textarea input field in image generator for users to specify what to exclude from generations
+- **Mandatory safety filters**: Backend ALWAYS includes prohibited terms (child, childish, toddler, underage, fused bodies, crossed eyes) in negative prompts regardless of user input
+- **Full provider support**: All AI providers now support negative prompts:
+  - HuggingFace: Uses `negative_prompt` parameter
+  - Wavespeed: Uses `negative_prompt` parameter  
+  - Gradio: Added as second positional parameter after prompt
+- **Safety cannot be bypassed**: Server-side enforcement ensures safety terms are always included, users cannot override or remove them
+
 ### Production Readiness Improvements (October 12, 2025 - Evening)
 - **Database-backed rate limiting**: Replaced in-memory Maps with Supabase-based rate limiting for production scalability
   - Created `rate_limits` table and `check_rate_limit()` PostgreSQL function
