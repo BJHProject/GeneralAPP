@@ -175,7 +175,7 @@ export function RecentGenerations() {
         <div className="flex items-center justify-center">
           <h2 className="text-2xl font-bold text-foreground">Recent Generations</h2>
         </div>
-        <Card className="border-border bg-card p-12">
+        <Card className="border-0 bg-gradient-to-br from-card/50 to-muted/30 shadow-xl shadow-primary/5 p-12 rounded-2xl">
           <div className="text-center">
             <p className="text-muted-foreground">{error}</p>
             <p className="mt-2 text-sm text-muted-foreground">Try using the deployed version for full functionality.</p>
@@ -191,7 +191,7 @@ export function RecentGenerations() {
         <div className="flex items-center justify-center">
           <h2 className="text-2xl font-bold text-foreground">Recent Generations</h2>
         </div>
-        <Card className="border-border bg-card p-12">
+        <Card className="border-0 bg-gradient-to-br from-card/50 to-muted/30 shadow-xl shadow-primary/5 p-12 rounded-2xl">
           <div className="text-center">
             <p className="text-muted-foreground">No generated images yet. Create your first image to see it here!</p>
           </div>
@@ -206,14 +206,14 @@ export function RecentGenerations() {
         <h2 className="text-2xl font-bold text-foreground">Recent Generations</h2>
       </div>
 
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {images.map((image) => (
           <Card
             key={image.id}
-            className="group overflow-hidden border-border bg-card transition-all hover:border-primary/50"
+            className="group overflow-hidden border-0 bg-card/50 shadow-xl shadow-primary/5 transition-all hover:shadow-2xl hover:shadow-primary/10 hover:scale-[1.02] rounded-2xl"
           >
             <div
-              className="relative aspect-[2/3] md:aspect-auto md:min-h-[400px] md:max-h-[70vh] overflow-hidden bg-black flex items-center justify-center"
+              className="relative aspect-[2/3] md:aspect-auto md:min-h-[400px] md:max-h-[70vh] overflow-hidden bg-muted/30 flex items-center justify-center"
               onClick={() => {
                 if (activeImageId === image.id) {
                   setActiveImageId(null)
@@ -224,12 +224,12 @@ export function RecentGenerations() {
             >
               <Image src={image.url || "/placeholder.svg"} alt={image.prompt} fill className="object-contain" />
               <div
-                className={`absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent transition-opacity ${activeImageId === image.id ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
+                className={`absolute inset-0 bg-gradient-to-t from-background/90 via-background/40 to-transparent backdrop-blur-[2px] transition-opacity ${activeImageId === image.id ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
               />
               <Button
                 size="sm"
                 variant="secondary"
-                className={`absolute bottom-2 right-2 z-10 h-8 w-8 p-0 transition-opacity ${activeImageId === image.id ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
+                className={`absolute bottom-2 right-2 z-10 h-8 w-8 p-0 transition-opacity backdrop-blur-md bg-background/60 border-primary/20 ${activeImageId === image.id ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
                 onClick={(e) => {
                   e.stopPropagation()
                   console.log("[v0] Opening fullscreen for image:", image.url)
@@ -244,7 +244,7 @@ export function RecentGenerations() {
                 <Button
                   size="sm"
                   variant="secondary"
-                  className="gap-2"
+                  className="gap-2 backdrop-blur-md bg-background/60 border-primary/20"
                   onClick={(e) => {
                     e.stopPropagation()
                     handleSave(image.id, image.url)
@@ -256,7 +256,7 @@ export function RecentGenerations() {
                 <Button
                   size="sm"
                   variant="secondary"
-                  className="gap-2"
+                  className="gap-2 backdrop-blur-md bg-background/60 border-primary/20"
                   onClick={(e) => {
                     e.stopPropagation()
                     handleDownload(image.url, image.prompt)
@@ -267,7 +267,7 @@ export function RecentGenerations() {
                 <Button
                   size="sm"
                   variant="secondary"
-                  className="gap-2 text-red-500 hover:text-red-600"
+                  className="gap-2 backdrop-blur-md bg-background/60 border-primary/20 text-red-500 hover:text-red-600"
                   onClick={(e) => {
                     e.stopPropagation()
                     handleDelete(image.id)
@@ -278,11 +278,11 @@ export function RecentGenerations() {
                 </Button>
               </div>
             </div>
-            <div className="p-3">
+            <div className="p-4 bg-gradient-to-br from-muted/20 to-transparent">
               <p className="truncate text-xs text-muted-foreground" title={image.prompt}>
                 {image.prompt}
               </p>
-              <p className="truncate text-xs text-muted-foreground">
+              <p className="truncate text-xs text-muted-foreground/80">
                 {new Date(image.created_at).toLocaleDateString()}
               </p>
             </div>
@@ -292,7 +292,7 @@ export function RecentGenerations() {
 
       {fullscreenImage && (
         <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-background/95 p-4 backdrop-blur-2xl"
           onClick={() => {
             console.log("[v0] Closing fullscreen")
             setFullscreenImage(null)
