@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
 
     if (!user) {
       console.log("[Security] No authenticated user")
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+      return NextResponse.json({ error: "Please sign in to generate videos" }, { status: 401 })
     }
 
     const rateLimitResponse = await rateLimitMiddleware(request, user.id)
@@ -53,10 +53,12 @@ export async function POST(request: NextRequest) {
     
     if (!validation.success) {
       console.warn("[Security] Invalid request payload:", validation.error.format())
+      const errors = validation.error.flatten().fieldErrors
+      const firstError = Object.values(errors)[0]?.[0] || "Please check your input and try again"
       return NextResponse.json(
         { 
-          error: "Invalid request parameters",
-          details: validation.error.flatten().fieldErrors,
+          error: firstError,
+          details: errors,
         },
         { status: 400 }
       )

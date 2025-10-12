@@ -6,15 +6,15 @@ const ALLOWED_DIMENSIONS = [512, 768, 832, 1024, 1248, 1280, 1344, 1536, 2048] a
 
 export const imageGenerationSchema = z.object({
   model: z.string().optional(),
-  prompt: z.string().min(1, 'Prompt is required').max(MAX_PROMPT_LENGTH, 'Prompt too long'),
-  negative_prompt: z.string().max(MAX_PROMPT_LENGTH, 'Negative prompt too long').optional(),
+  prompt: z.string().min(1, 'Please describe what you want to create').max(MAX_PROMPT_LENGTH, 'Your prompt is too long. Please keep it under 2000 characters.'),
+  negative_prompt: z.string().max(MAX_PROMPT_LENGTH, 'Negative prompt is too long. Please keep it under 2000 characters.').optional(),
   width: z.number().int().min(512).max(2048).refine(
     (val) => ALLOWED_DIMENSIONS.includes(val as any),
-    { message: 'Width must be one of: 512, 768, 832, 1024, 1248, 1280, 1344, 1536, 2048' }
+    { message: 'Please select a valid image size from the available options' }
   ).optional().default(1024),
   height: z.number().int().min(512).max(2048).refine(
     (val) => ALLOWED_DIMENSIONS.includes(val as any),
-    { message: 'Height must be one of: 512, 768, 832, 1024, 1248, 1280, 1344, 1536, 2048' }
+    { message: 'Please select a valid image size from the available options' }
   ).optional().default(1024),
   guidance_scale: z.number().min(1).max(20).optional().default(7.5),
   num_inference_steps: z.number().int().min(1).max(50).optional().default(20),
@@ -26,20 +26,20 @@ export const imageGenerationSchema = z.object({
     return totalPixels <= MAX_PIXELS
   },
   {
-    message: `Total pixels cannot exceed ${MAX_PIXELS} (2048x2048)`,
+    message: 'The selected image size is too large. Please choose a smaller size.',
   }
 )
 
 export const imageEditSchema = z.object({
-  imageUrl: z.string().url('Invalid image URL'),
-  prompt: z.string().min(1, 'Prompt is required').max(MAX_PROMPT_LENGTH, 'Prompt too long'),
+  imageUrl: z.string().url('Please upload a valid image'),
+  prompt: z.string().min(1, 'Please describe how you want to edit the image').max(MAX_PROMPT_LENGTH, 'Your prompt is too long. Please keep it under 2000 characters.'),
   idempotency_key: z.string().uuid().optional(),
 })
 
 export const videoGenerationSchema = z.object({
   model: z.string().optional(),
-  prompt: z.string().min(1, 'Prompt is required').max(MAX_PROMPT_LENGTH, 'Prompt too long'),
-  imageUrl: z.string().url('Invalid image URL').optional(),
+  prompt: z.string().min(1, 'Please describe the video you want to create').max(MAX_PROMPT_LENGTH, 'Your prompt is too long. Please keep it under 2000 characters.'),
+  imageUrl: z.string().url('Please upload a valid image').optional(),
   duration: z.enum(['1', '3', '5']).optional().default('3'),
   idempotency_key: z.string().uuid().optional(),
 })
