@@ -130,14 +130,14 @@ export async function getGenerationStats(sinceHours = 24): Promise<GenerationSta
     }
     acc[job.operation_type].push(job)
     return acc
-  }, {} as Record<string, typeof jobs>)
+  }, {} as Record<string, Array<typeof jobs[0]>>)
 
   for (const [operation, opJobs] of Object.entries(operationGroups)) {
-    const completed = opJobs.filter(j => j.status === 'completed').length
+    const completed = opJobs.filter((j: any) => j.status === 'completed').length
     stats.byOperation[operation] = {
       count: opJobs.length,
       successRate: completed / opJobs.length,
-      avgCost: opJobs.reduce((sum, j) => sum + j.cost, 0) / opJobs.length,
+      avgCost: opJobs.reduce((sum: number, j: any) => sum + j.cost, 0) / opJobs.length,
     }
   }
 
