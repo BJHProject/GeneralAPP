@@ -32,6 +32,10 @@ export class HuggingFaceProvider implements ProviderAdapter {
         },
       }
 
+      if (request.negativePrompt) {
+        payload.parameters.negative_prompt = request.negativePrompt
+      }
+
       if (request.seed !== undefined) {
         payload.parameters.seed = request.seed
       }

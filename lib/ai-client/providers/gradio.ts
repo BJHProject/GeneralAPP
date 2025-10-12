@@ -29,6 +29,7 @@ export class GradioProvider implements ProviderAdapter {
 
       const params = [
         request.prompt,
+        request.negativePrompt || "",
         request.width || config.defaults?.width || 1024,
         request.height || config.defaults?.height || 1024,
         request.steps || config.defaults?.steps || 20,

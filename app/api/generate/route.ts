@@ -111,10 +111,19 @@ export async function POST(request: NextRequest) {
     const jobId = chargeResult.jobId!
     console.log("[Security] ✓ Credits charged atomically. Job ID:", jobId, "Balance:", chargeResult.newBalance)
 
+    // MANDATORY: Always enforce safety negative prompts
+    const MANDATORY_NEGATIVE_PROMPTS = "child, childish, toddler, underage, fused bodies, crossed eyes"
+    const finalNegativePrompt = negative_prompt 
+      ? `${MANDATORY_NEGATIVE_PROMPTS}, ${negative_prompt}`
+      : MANDATORY_NEGATIVE_PROMPTS
+    
+    console.log("[Security] Enforced negative prompts:", finalNegativePrompt.substring(0, 100))
+
     const result = await defaultAIClient.generate({
       type: "image",
       modelId,
       prompt,
+      negativePrompt: finalNegativePrompt,
       userId: user.id,
       width,
       height,

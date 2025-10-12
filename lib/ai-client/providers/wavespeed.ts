@@ -40,6 +40,7 @@ export class WavespeedProvider implements ProviderAdapter {
           prompt: request.prompt,
         }
 
+        if (request.negativePrompt) payload.negative_prompt = request.negativePrompt
         if (request.width) payload.width = request.width
         if (request.height) payload.height = request.height
         if (request.steps) payload.num_inference_steps = request.steps

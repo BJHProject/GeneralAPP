@@ -11,6 +11,7 @@ export interface LoRA {
 export interface GenerationRequest {
   type: MediaType
   prompt: string
+  negativePrompt?: string
   modelId: string
   userId: string
   requestId: string
