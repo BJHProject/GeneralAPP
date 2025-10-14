@@ -48,11 +48,12 @@ The project is hosted on Replit, using pnpm as the package manager. Development 
 - **Settings**: 1024x1024 default, 28 steps, guidance scale 7
 - **UI**: Added to model selection dropdown in image generator
 
-### Video Generation JSON Parsing Fix (October 14, 2025)
-- **Critical Fix**: Fixed "No number after minus sign in JSON at position 1" error in video generation
-- **Root Cause**: Frontend was sending FormData but backend was trying to parse as JSON
-- **Solution**: Updated `/api/generate-video` route to correctly parse FormData instead of JSON
-- **Impact**: Video generation now works correctly with all styles (lovely, express, elite, wan-ai)
+### Video Generation File Upload Fix (October 14, 2025)
+- **Critical Fix**: Fixed video generation image handling where imageUrl and idempotency_key were null
+- **Root Cause**: Frontend sends image File but backend expected imageUrl string
+- **Solution**: Updated `/api/generate-video` to accept File upload, automatically upload to Vercel Blob, and generate idempotency keys
+- **Flow**: Frontend sends File → Backend uploads to Blob → Gets URL → Generates video
+- **Impact**: All video styles (lovely, express, elite, elitist, wan-ai) now work correctly with proper image handling
 - **Rate Limiting**: Temporarily disabled for testing - can be re-enabled by uncommenting code in API routes
 
 ### Database Rate Limiting Migration Applied (October 14, 2025)

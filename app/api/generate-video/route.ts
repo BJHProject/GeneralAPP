@@ -10,6 +10,8 @@ import { atomicCreditCharge, completeGenerationJob, refundFailedJob } from "@/li
 import { rateLimitMiddleware } from "@/lib/security/rate-limit-db"
 import { validateModelId } from "@/lib/security/model-validator"
 import type { CreditOperation } from "@/lib/credits"
+import { put } from '@vercel/blob'
+import crypto from 'crypto'
 
 const STYLE_TO_MODEL: Record<string, { modelId: string; operation: CreditOperation }> = {
   lovely: { modelId: "video-lovely", operation: "video3" },
@@ -44,12 +46,30 @@ export async function POST(request: NextRequest) {
     console.log("[Security] User authenticated:", user.id)
     await ensureUserExists(user.id, user.email!, user.user_metadata?.full_name, user.user_metadata?.avatar_url)
 
-    // Parse FormData instead of JSON
+    // Parse FormData to get image file and other params
     const formData = await request.formData()
-    const imageUrl = formData.get('imageUrl') as string
+    const imageFile = formData.get('image') as File | null
     const prompt = formData.get('prompt') as string
     const style = (formData.get('style') as string)?.toLowerCase() || 'lovely'
-    const idempotency_key = formData.get('idempotency_key') as string
+    
+    // Generate idempotency key if not provided
+    const idempotency_key = formData.get('idempotency_key') as string || crypto.randomUUID()
+    
+    // Validate we have image and prompt
+    if (!imageFile || !prompt) {
+      return NextResponse.json({ error: "Image and prompt are required" }, { status: 400 })
+    }
+
+    // Upload image to Vercel Blob to get imageUrl
+    console.log("[Security] Uploading image to Blob:", imageFile.name, imageFile.size)
+    const imageBuffer = await imageFile.arrayBuffer()
+    const fileName = `temp/${user.id}/${Date.now()}-${imageFile.name}`
+    const blob = await put(fileName, imageBuffer, {
+      access: 'public',
+      contentType: imageFile.type,
+    })
+    const imageUrl = blob.url
+    console.log("[Security] Image uploaded to:", imageUrl)
     
     // Build body object for validation
     const body = {
@@ -73,10 +93,6 @@ export async function POST(request: NextRequest) {
         },
         { status: 400 }
       )
-    }
-
-    if (!imageUrl || !prompt) {
-      return NextResponse.json({ error: "Image URL and prompt are required" }, { status: 400 })
     }
 
     console.log("[Security] Video request validated:", { style, prompt: prompt.substring(0, 50) + "..." })
