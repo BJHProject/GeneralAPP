@@ -13,9 +13,9 @@ import { DiamondIcon } from "@/components/ui/diamond-icon"
 import { Progress } from "@/components/ui/progress"
 
 const PRESET_RESOLUTIONS = [
-  { label: "Portrait", ratio: "2:3", width: 832, height: 1248 },
+  { label: "Portrait", ratio: "2:3", width: 832, height: 1216 },
   { label: "Square", ratio: "1:1", width: 1024, height: 1024 },
-  { label: "Landscape", ratio: "3:2", width: 1344, height: 768 },
+  { label: "Landscape", ratio: "3:2", width: 1216, height: 832 },
 ]
 
 export function ImageGenerator() {
@@ -26,7 +26,7 @@ export function ImageGenerator() {
   )
   const [isGenerating, setIsGenerating] = useState(false)
   const [imageWidth, setImageWidth] = useState(832)
-  const [imageHeight, setImageHeight] = useState(1248)
+  const [imageHeight, setImageHeight] = useState(1216)
   const [selectedResolution, setSelectedResolution] = useState(0)
   const guidanceScale = 7
   const inferenceSteps = 28
