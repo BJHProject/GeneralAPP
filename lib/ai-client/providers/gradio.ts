@@ -27,14 +27,27 @@ export class GradioProvider implements ProviderAdapter {
         hf_token: token,
       })
 
+      // Different Gradio models have different parameter requirements
+      const width = request.width || config.defaults?.width || 1024
+      const height = request.height || config.defaults?.height || 1024
+      const steps = request.steps || config.defaults?.steps || 20
+      const guidance = request.guidance || config.defaults?.guidance || 3.5
+      const seed = request.seed !== undefined ? request.seed : -1
+
+      // Ensure minimum values for Gradio models
+      // Some models require min 256 for dimensions, some require specific step counts
+      const safeWidth = Math.max(width, 512)  // Safe minimum
+      const safeHeight = Math.max(height, 512) // Safe minimum
+      const safeSteps = Math.max(steps, 20)  // Ensure reasonable step count
+
       const params = [
         request.prompt,
         request.negativePrompt || "",
-        request.width || config.defaults?.width || 1024,
-        request.height || config.defaults?.height || 1024,
-        request.steps || config.defaults?.steps || 20,
-        request.guidance || config.defaults?.guidance || 3.5,
-        request.seed !== undefined ? request.seed : -1,
+        safeWidth,
+        safeHeight,
+        safeSteps,
+        guidance,
+        seed,
         true,
       ]
 
