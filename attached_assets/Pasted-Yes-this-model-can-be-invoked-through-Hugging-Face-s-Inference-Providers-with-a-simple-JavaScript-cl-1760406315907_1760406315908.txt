@@ -1,0 +1,72 @@
+Yes—this model can be invoked through Hugging Face’s Inference Providers with a simple JavaScript client, without managing servers or custom URLs.​
+
+Node.js script (ESM)
+js
+// npm i @huggingface/inference dotenv
+import { InferenceClient } from "@huggingface/inference";
+import fs from "node:fs";
+import path from "node:path";
+import "dotenv/config";
+
+// 1) Put an HF token with Inference permissions in .env as HF_TOKEN=...
+const client = new InferenceClient(process.env.HF_TOKEN);
+
+// 2) Read the input image (PNG/JPG/WebP)
+const inputPath = "input.png";
+const imageBytes = fs.readFileSync(inputPath);
+
+// 3) Call image→video on a provider that supports Wan 2.2 I2V
+const blob = await client.imageToVideo({
+  provider: "fal-ai",                       // or "auto" to let HF pick a provider
+  model: "Wan-AI/Wan2.2-I2V-A14B",          // model id on the Hub
+  inputs: imageBytes,                        // bytes (Buffer/Uint8Array)
+  // Common Wan parameters – providers may support a subset
+  prompt: "make this image come alive, cinematic motion",
+  negative_prompt: "static, watermark, low quality",
+  num_inference_steps: 16,
+  guidance_scale: 3.0,
+  // Some providers expose extra options like num_frames/seed/width/height
+});
+
+// 4) Save result (Blob -> Buffer)
+const out = Buffer.from(await blob.arrayBuffer());
+const outPath = path.join("out.mp4");
+fs.writeFileSync(outPath, out);
+console.log("Saved:", outPath);
+This uses the official JS SDK’s imageToVideo method which abstracts provider routing and returns a Blob with the generated MP4.​
+
+Browser example (vanilla)
+xml
+<input type="file" id="img" accept="image/*" />
+<button id="go">Generate</button>
+<video id="vid" controls></video>
+<script type="module">
+  import { InferenceClient } from "https://cdn.skypack.dev/@huggingface/inference";
+
+  const client = new InferenceClient("<HF_TOKEN>"); // store securely in backend for production
+
+  document.getElementById("go").onclick = async () => {
+    const file = document.getElementById("img").files[0];
+    if (!file) return;
+
+    const blob = await client.imageToVideo({
+      provider: "fal-ai",
+      model: "Wan-AI/Wan2.2-I2V-A14B",
+      inputs: await file.arrayBuffer(),
+      prompt: "smooth camera pan, natural motion",
+      num_inference_steps: 14,
+      guidance_scale: 3.0,
+    });
+
+    const url = URL.createObjectURL(blob);
+    const v = document.getElementById("vid");
+    v.src = url;
+    v.play();
+  };
+</script>
+The same imageToVideo API works in the browser; for production, proxy the token via a backend because client-side tokens can be abused.​
+
+Parameter tips
+Wan I2V pipelines commonly accept prompt, negative_prompt, num_inference_steps, guidance_scale, guidance_scale_2, num_frames, seed, width, and height; providers may expose a subset, so start with prompt, steps, and guidance, then add others as supported.​
+
+The model id to reference is the Wan 2.2 I2V A14B weights on the Hub; the Diffusers variant is also available if self‑hosting later.​

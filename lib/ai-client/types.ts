@@ -1,6 +1,6 @@
 export type MediaType = 'image' | 'video' | 'edited-image'
 
-export type ProviderType = 'huggingface' | 'wavespeed' | 'fal' | 'gradio'
+export type ProviderType = 'huggingface' | 'huggingface-i2v' | 'wavespeed' | 'fal' | 'gradio'
 
 export interface LoRA {
   id: string
