@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 const MAX_PROMPT_LENGTH = 2000
 const MAX_PIXELS = 2048 * 2048
-const ALLOWED_DIMENSIONS = [512, 768, 832, 1024, 1248, 1280, 1344, 1536, 2048] as const
+const ALLOWED_DIMENSIONS = [512, 768, 832, 1024, 1216, 1280, 1536, 2048] as const
 
 export const imageGenerationSchema = z.object({
   model: z.string().optional(),
