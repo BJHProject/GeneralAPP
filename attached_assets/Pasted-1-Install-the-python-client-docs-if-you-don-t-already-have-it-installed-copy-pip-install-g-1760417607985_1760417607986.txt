@@ -1,0 +1,183 @@
+1. Install the python client (docs) if you don't already have it installed.
+
+copy
+$ pip install gradio_client
+2. Find the API endpoint below corresponding to your desired function in the app. Copy the code snippet, replacing the placeholder values with your own input data. If this is a private Space, you may need to pass your Hugging Face token as well (read more). Or use the 
+API Recorder
+
+ to automatically generate your API requests.
+
+API name: /boost_prompt
+copy
+from gradio_client import Client
+
+client = Client("Heartsync/NSFW-Uncensored-image")
+result = client.predict(
+		keyword="random",
+		api_name="/boost_prompt"
+)
+print(result)
+Accepts 1 parameter:
+keyword str Default: "random"
+
+The input value that is provided in the "Keyword Input" Textbox component.
+
+Returns 1 element
+str
+
+The output value that appears in the "Prompt" Textbox component.
+
+API name: /get_random_prompt
+copy
+from gradio_client import Client
+
+client = Client("Heartsync/NSFW-Uncensored-image")
+result = client.predict(
+		api_name="/get_random_prompt"
+)
+print(result)
+Accepts 0 parameters:
+Returns 1 element
+str
+
+The output value that appears in the "Prompt" Textbox component.
+
+API name: /infer 중요: 프롬프트 텍스트에 한글이나 다른 비영어 문자가 있으면 반드시 영어로 번역해야 합니다.
+copy
+from gradio_client import Client
+
+client = Client("Heartsync/NSFW-Uncensored-image")
+result = client.predict(
+		prompt="Hello!!",
+		negative_prompt="text, talk bubble, low quality, watermark, signature",
+		seed=0,
+		randomize_seed=True,
+		width=1024,
+		height=1024,
+		guidance_scale=7,
+		num_inference_steps=28,
+		api_name="/infer"
+)
+print(result)
+Accepts 8 parameters:
+prompt str Required
+
+The input value that is provided in the "Prompt" Textbox component.
+
+negative_prompt str Default: "text, talk bubble, low quality, watermark, signature"
+
+The input value that is provided in the "Negative prompt" Textbox component.
+
+seed float Default: 0
+
+The input value that is provided in the "Seed" Slider component.
+
+randomize_seed bool Default: True
+
+The input value that is provided in the "Randomize seed" Checkbox component.
+
+width float Default: 1024
+
+The input value that is provided in the "Width" Slider component.
+
+height float Default: 1024
+
+The input value that is provided in the "Height" Slider component.
+
+guidance_scale float Default: 7
+
+The input value that is provided in the "Guidance scale" Slider component.
+
+num_inference_steps float Default: 28
+
+The input value that is provided in the "Inference steps" Slider component.
+
+Returns 1 element
+dict(path: str | None (Path to a local file), url: str | None (Publicly available url or base64 encoded image), size: int | None (Size of image in bytes), orig_name: str | None (Original filename), mime_type: str | None (mime type of image), is_stream: bool (Can always be set to False), meta: dict(str, Any))
+
+The output value that appears in the "Generated Image" Image component.
+
+API name: /update_image_state
+copy
+from gradio_client import Client, handle_file
+
+client = Client("Heartsync/NSFW-Uncensored-image")
+result = client.predict(
+		img=handle_file('https://raw.githubusercontent.com/gradio-app/gradio/main/test/test_files/bus.png'),
+		api_name="/update_image_state"
+)
+print(result)
+Accepts 1 parameter:
+img dict(path: str | None (Path to a local file), url: str | None (Publicly available url or base64 encoded image), size: int | None (Size of image in bytes), orig_name: str | None (Original filename), mime_type: str | None (mime type of image), is_stream: bool (Can always be set to False), meta: dict(str, Any)) Required
+
+The input value that is provided in the "Generated Image" Image component. For input, either path or url must be provided. For output, path is always provided.
+
+Returns 1 element
+API name: /img2img_infer Image-to-Image generation function
+copy
+from gradio_client import Client, handle_file
+
+client = Client("Heartsync/NSFW-Uncensored-image")
+result = client.predict(
+		init_image=handle_file('https://raw.githubusercontent.com/gradio-app/gradio/main/test/test_files/bus.png'),
+		prompt="Hello!!",
+		negative_prompt="low quality, watermark, signature",
+		strength=0.75,
+		seed=0,
+		randomize_seed=True,
+		width=1024,
+		height=1024,
+		guidance_scale=7.5,
+		num_inference_steps=30,
+		api_name="/img2img_infer"
+)
+print(result)
+Accepts 10 parameters:
+init_image dict(path: str | None (Path to a local file), url: str | None (Publicly available url or base64 encoded image), size: int | None (Size of image in bytes), orig_name: str | None (Original filename), mime_type: str | None (mime type of image), is_stream: bool (Can always be set to False), meta: dict(str, Any)) Required
+
+The input value that is provided in the "Input Image" Image component. For input, either path or url must be provided. For output, path is always provided.
+
+prompt str Required
+
+The input value that is provided in the "Prompt" Textbox component.
+
+negative_prompt str Default: "low quality, watermark, signature"
+
+The input value that is provided in the "Negative prompt" Textbox component.
+
+strength float Default: 0.75
+
+The input value that is provided in the "Transformation Strength" Slider component.
+
+seed float Default: 0
+
+The input value that is provided in the "Seed" Slider component.
+
+randomize_seed bool Default: True
+
+The input value that is provided in the "Randomize seed" Checkbox component.
+
+width float Default: 1024
+
+The input value that is provided in the "Width" Slider component.
+
+height float Default: 1024
+
+The input value that is provided in the "Height" Slider component.
+
+guidance_scale float Default: 7.5
+
+The input value that is provided in the "Guidance scale" Slider component.
+
+num_inference_steps float Default: 30
+
+The input value that is provided in the "Inference steps" Slider component.
+
+Returns tuple of 2 elements
+[0] dict(path: str | None (Path to a local file), url: str | None (Publicly available url or base64 encoded image), size: int | None (Size of image in bytes), orig_name: str | None (Original filename), mime_type: str | None (mime type of image), is_stream: bool (Can always be set to False), meta: dict(str, Any))
+
+The output value that appears in the "Transformed Image" Image component.
+
+[1] float
+
+The output value that appears in the "Seed" Slider component.
