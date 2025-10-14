@@ -6,6 +6,14 @@ This is a Next.js application that enables users to generate images, edit images
 
 ## Recent Changes
 
+### Wan-AI Image-to-Video Integration (October 14, 2025)
+- **New HuggingFace I2V provider**: Created dedicated provider adapter using @huggingface/inference imageToVideo API
+- **Wan-AI/Wan2.2-I2V-A14B model**: Added to model registry as "video-wan-ai" with 5-second duration, 16 steps, 3.0 guidance scale
+- **Provider routing**: Uses fal-ai as provider through HuggingFace Inference Providers for optimal performance
+- **UI integration**: Added "Wan AI 2.2" style option to video generator with fixed 5-second duration
+- **Pricing**: 3,000 credits for 5-second video generation (same as other premium models)
+- **Package dependency**: Installed @huggingface/inference v4.11.1 for image-to-video API support
+
 ### Negative Prompt Support & Safety Enforcement (October 12, 2025 - Late Evening)
 - **User-editable negative prompts**: Added textarea input field in image generator for users to specify what to exclude from generations
 - **Mandatory safety filters**: Backend ALWAYS includes prohibited terms (child, childish, toddler, underage, fused bodies, crossed eyes) in negative prompts regardless of user input
