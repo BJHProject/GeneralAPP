@@ -41,9 +41,14 @@ The project is hosted on Replit, using pnpm as the package manager. Development 
 
 ## Recent Changes
 
+### Video Generation JSON Parsing Fix (October 14, 2025)
+- **Critical Fix**: Fixed "No number after minus sign in JSON at position 1" error in video generation
+- **Root Cause**: Frontend was sending FormData but backend was trying to parse as JSON
+- **Solution**: Updated `/api/generate-video` route to correctly parse FormData instead of JSON
+- **Impact**: Video generation now works correctly with all styles (lovely, express, elite, wan-ai)
+- **Rate Limiting**: Temporarily disabled for testing - can be re-enabled by uncommenting code in API routes
+
 ### Database Rate Limiting Migration Applied (October 14, 2025)
-- **Critical Fix**: Applied missing rate limiting database migration (`add-rate-limiting.sql`)
-- **Created**: `rate_limits` table for production-ready, database-backed rate limiting
-- **Added Functions**: `check_rate_limit()` for atomic rate limit checks and `cleanup_expired_rate_limits()` for maintenance
-- **Resolved**: "Could not find the function public.check_rate_limit" error that was blocking video generation
-- **Verified**: Function tested successfully with proper request counting and limit enforcement
+- **Setup**: Applied database migration for production-ready rate limiting system
+- **Created**: `rate_limits` table and PostgreSQL functions (`check_rate_limit`, `cleanup_expired_rate_limits`)
+- **Status**: Currently disabled for testing - will be enabled after validation

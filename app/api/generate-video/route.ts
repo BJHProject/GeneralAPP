@@ -44,14 +44,23 @@ export async function POST(request: NextRequest) {
     console.log("[Security] User authenticated:", user.id)
     await ensureUserExists(user.id, user.email!, user.user_metadata?.full_name, user.user_metadata?.avatar_url)
 
-    const body = await request.json()
+    // Parse FormData instead of JSON
+    const formData = await request.formData()
+    const imageUrl = formData.get('imageUrl') as string
+    const prompt = formData.get('prompt') as string
+    const style = (formData.get('style') as string)?.toLowerCase() || 'lovely'
+    const idempotency_key = formData.get('idempotency_key') as string
     
-    const validation = videoGenerationSchema.safeParse({
-      ...body,
-      duration: body.style ? 
-        (body.style === 'lovely' || body.style === 'express' ? '3' : '5') : 
-        '3',
-    })
+    // Build body object for validation
+    const body = {
+      imageUrl,
+      prompt,
+      idempotency_key,
+      style,
+      duration: style === 'lovely' || style === 'express' ? '3' : '5',
+    }
+    
+    const validation = videoGenerationSchema.safeParse(body)
     
     if (!validation.success) {
       console.warn("[Security] Invalid request payload:", validation.error.format())
@@ -65,9 +74,6 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       )
     }
-
-    const { imageUrl, prompt, idempotency_key } = validation.data
-    const style = body.style?.toLowerCase() || 'lovely'
 
     if (!imageUrl || !prompt) {
       return NextResponse.json({ error: "Image URL and prompt are required" }, { status: 400 })
