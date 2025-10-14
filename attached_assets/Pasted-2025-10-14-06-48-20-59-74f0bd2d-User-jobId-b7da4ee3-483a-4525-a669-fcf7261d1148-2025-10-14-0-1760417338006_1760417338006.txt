@@ -1,0 +1,156 @@
+2025-10-14 06:48:20.59
+74f0bd2d
+User
+jobId: 'b7da4ee3-483a-4525-a669-fcf7261d1148',
+2025-10-14 06:48:20.59
+74f0bd2d
+User
+reason: 'Unknown error'
+2025-10-14 06:48:20.59
+74f0bd2d
+User
+}
+2025-10-14 06:48:20.80
+74f0bd2d
+User
+[Security] ✓ Credits refunded: 500
+2025-10-14 06:48:41.94
+74f0bd2d
+User
+[v0] ===== CREDITS API CALLED =====
+2025-10-14 06:48:41.94
+74f0bd2d
+User
+[v0] Step 1: Creating Supabase client
+2025-10-14 06:48:41.95
+74f0bd2d
+User
+[v0] Step 2: Supabase client created successfully
+2025-10-14 06:48:41.95
+74f0bd2d
+User
+[v0] Step 3: Getting user from auth
+2025-10-14 06:48:42.02
+74f0bd2d
+User
+[v0] Step 4: Auth result - {
+2025-10-14 06:48:42.02
+74f0bd2d
+User
+hasUser: true,
+2025-10-14 06:48:42.02
+74f0bd2d
+User
+userId: '16f09afb-b861-4e57-b7bb-b4adeba007f4',
+2025-10-14 06:48:42.02
+74f0bd2d
+User
+email: 'test@gmail.com',
+2025-10-14 06:48:42.02
+74f0bd2d
+User
+authError: undefined
+2025-10-14 06:48:42.02
+74f0bd2d
+User
+}
+2025-10-14 06:48:42.02
+74f0bd2d
+User
+[v0] Step 6: Querying users table for user: 16f09afb-b861-4e57-b7bb-b4adeba007f4
+2025-10-14 06:48:42.09
+74f0bd2d
+User
+[v0] Step 7: Database query result - { hasData: true, credits: 227000, tier: 'free', dbError: undefined }
+2025-10-14 06:48:42.09
+74f0bd2d
+User
+[v0] Step 12: Returning existing user credits: 227000
+2025-10-14 06:48:42.34
+74f0bd2d
+User
+[v0] ===== CREDITS API CALLED =====
+2025-10-14 06:48:42.34
+74f0bd2d
+User
+[v0] Step 1: Creating Supabase client
+2025-10-14 06:48:42.34
+74f0bd2d
+User
+[v0] Step 2: Supabase client created successfully
+2025-10-14 06:48:42.34
+74f0bd2d
+User
+[v0] Step 3: Getting user from auth
+2025-10-14 06:48:42.42
+74f0bd2d
+User
+[v0] Step 4: Auth result - {
+2025-10-14 06:48:42.42
+74f0bd2d
+User
+hasUser: true,
+2025-10-14 06:48:42.42
+74f0bd2d
+User
+userId: '16f09afb-b861-4e57-b7bb-b4adeba007f4',
+2025-10-14 06:48:42.42
+74f0bd2d
+User
+email: 'test@gmail.com',
+2025-10-14 06:48:42.42
+74f0bd2d
+User
+authError: undefined
+2025-10-14 06:48:42.42
+74f0bd2d
+User
+}
+2025-10-14 06:48:42.42
+74f0bd2d
+User
+[v0] Step 6: Querying users table for user: 16f09afb-b861-4e57-b7bb-b4adeba007f4
+2025-10-14 06:48:42.50
+74f0bd2d
+User
+[v0] Step 7: Database query result - { hasData: true, credits: 227000, tier: 'free', dbError: undefined }
+2025-10-14 06:48:42.50
+74f0bd2d
+User
+[v0] Step 12: Returning existing user credits: 227000
+2025-10-14 06:48:47.48
+74f0bd2d
+User
+[Security] ========== SECURE IMAGE GENERATION API ==========
+2025-10-14 06:48:47.76
+74f0bd2d
+User
+[Security] Rate limit check failed: {
+2025-10-14 06:48:47.76
+74f0bd2d
+User
+code: 'PGRST202',
+2025-10-14 06:48:47.76
+74f0bd2d
+User
+details: 'Searched for the function public.check_rate_limit with parameters p_identifier, p_max_requests, p_type, p_window_seconds or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.',
+2025-10-14 06:48:47.76
+74f0bd2d
+User
+hint: 'Perhaps you meant to call the function public.deduct_credits_atomic',
+2025-10-14 06:48:47.76
+74f0bd2d
+User
+message: 'Could not find the function public.check_rate_limit(p_identifier, p_max_requests, p_type, p_window_seconds) in the schema cache'
+2025-10-14 06:48:47.76
+74f0bd2d
+User
+}
+2025-10-14 06:48:47.83
+74f0bd2d
+User
+[Security] Rate limit check failed: {
+2025-10-14 06:48:47.83
+74f0bd2d
+User
+code: 'PGRST202',
