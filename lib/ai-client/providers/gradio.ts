@@ -27,28 +27,24 @@ export class GradioProvider implements ProviderAdapter {
         hf_token: token,
       })
 
-      // Different Gradio models have different parameter requirements
+      // Gradio models expect specific parameter order based on API docs:
+      // [prompt, negative_prompt, seed, randomize_seed, width, height, guidance_scale, num_inference_steps]
       const width = request.width || config.defaults?.width || 1024
       const height = request.height || config.defaults?.height || 1024
-      const steps = request.steps || config.defaults?.steps || 20
-      const guidance = request.guidance || config.defaults?.guidance || 3.5
-      const seed = request.seed !== undefined ? request.seed : -1
-
-      // Ensure minimum values for Gradio models
-      // Some models require min 256 for dimensions, some require specific step counts
-      const safeWidth = Math.max(width, 512)  // Safe minimum
-      const safeHeight = Math.max(height, 512) // Safe minimum
-      const safeSteps = Math.max(steps, 20)  // Ensure reasonable step count
+      const steps = request.steps || config.defaults?.steps || 28
+      const guidance = request.guidance || config.defaults?.guidance || 7
+      const seed = request.seed !== undefined ? request.seed : 0
+      const randomizeSeed = request.seed === undefined || request.seed === -1
 
       const params = [
-        request.prompt,
-        request.negativePrompt || "",
-        safeWidth,
-        safeHeight,
-        safeSteps,
-        guidance,
-        seed,
-        true,
+        request.prompt,                    // 1. prompt
+        request.negativePrompt || "",      // 2. negative_prompt
+        seed,                              // 3. seed
+        randomizeSeed,                     // 4. randomize_seed
+        width,                             // 5. width
+        height,                            // 6. height
+        guidance,                          // 7. guidance_scale
+        steps,                             // 8. num_inference_steps
       ]
 
       console.log(`[Gradio ${requestId}] Predict params:`, params)

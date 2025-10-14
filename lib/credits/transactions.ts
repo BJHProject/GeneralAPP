@@ -77,17 +77,18 @@ export async function atomicCreditCharge(
       }
     }
 
-    const jobData = result.data
+    // RPC functions that return TABLE return an array, even with one row
+    const jobData = Array.isArray(result.data) ? result.data[0] : result.data
 
     console.log('[Security] ✓ Atomic credit charge successful:', {
-      jobId: jobData.job_id,
-      newBalance: jobData.new_balance,
+      jobId: jobData?.job_id,
+      newBalance: jobData?.new_balance,
     })
 
     return {
       success: true,
-      jobId: jobData.job_id,
-      newBalance: jobData.new_balance,
+      jobId: jobData?.job_id,
+      newBalance: jobData?.new_balance,
     }
   } catch (error: any) {
     console.error('[Security] Exception in atomic charge:', error)
