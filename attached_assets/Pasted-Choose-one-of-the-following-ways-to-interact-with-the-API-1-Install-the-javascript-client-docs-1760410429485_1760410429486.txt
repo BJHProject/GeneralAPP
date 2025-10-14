@@ -1,0 +1,191 @@
+Choose one of the following ways to interact with the API.
+
+1. Install the javascript client (docs) if you don't already have it installed.
+
+copy
+$ npm i -D @gradio/client
+2. Find the API endpoint below corresponding to your desired function in the app. Copy the code snippet, replacing the placeholder values with your own input data. If this is a private Space, you may need to pass your Hugging Face token as well (read more). Or use the 
+API Recorder
+
+ to automatically generate your API requests.
+
+API name: /boost_prompt
+copy
+import { Client } from "@gradio/client";
+
+const client = await Client.connect("Heartsync/NSFW-Uncensored-image");
+const result = await client.predict("/boost_prompt", { 		
+		keyword: "Hello!!", 
+});
+
+console.log(result.data);
+Accepts 1 parameter:
+keyword string Default: "random"
+
+The input value that is provided in the "Keyword Input" Textbox component.
+
+Returns 1 element
+string
+
+The output value that appears in the "Prompt" Textbox component.
+
+API name: /get_random_prompt
+copy
+import { Client } from "@gradio/client";
+
+const client = await Client.connect("Heartsync/NSFW-Uncensored-image");
+const result = await client.predict("/get_random_prompt", { 
+});
+
+console.log(result.data);
+Accepts 0 parameters:
+Returns 1 element
+string
+
+The output value that appears in the "Prompt" Textbox component.
+
+API name: /infer 중요: 프롬프트 텍스트에 한글이나 다른 비영어 문자가 있으면 반드시 영어로 번역해야 합니다.
+copy
+import { Client } from "@gradio/client";
+
+const client = await Client.connect("Heartsync/NSFW-Uncensored-image");
+const result = await client.predict("/infer", { 		
+		prompt: "Hello!!", 		
+		negative_prompt: "Hello!!", 		
+		seed: 0, 		
+		randomize_seed: true, 		
+		width: 256, 		
+		height: 256, 		
+		guidance_scale: 0, 		
+		num_inference_steps: 1, 
+});
+
+console.log(result.data);
+Accepts 8 parameters:
+prompt string Required
+
+The input value that is provided in the "Prompt" Textbox component.
+
+negative_prompt string Default: "text, talk bubble, low quality, watermark, signature"
+
+The input value that is provided in the "Negative prompt" Textbox component.
+
+seed number Default: 0
+
+The input value that is provided in the "Seed" Slider component.
+
+randomize_seed boolean Default: True
+
+The input value that is provided in the "Randomize seed" Checkbox component.
+
+width number Default: 1024
+
+The input value that is provided in the "Width" Slider component.
+
+height number Default: 1024
+
+The input value that is provided in the "Height" Slider component.
+
+guidance_scale number Default: 7
+
+The input value that is provided in the "Guidance scale" Slider component.
+
+num_inference_steps number Default: 28
+
+The input value that is provided in the "Inference steps" Slider component.
+
+Returns 1 element
+string
+
+The output value that appears in the "Generated Image" Image component.
+
+API name: /update_image_state
+copy
+import { Client } from "@gradio/client";
+
+const response_0 = await fetch("https://raw.githubusercontent.com/gradio-app/gradio/main/test/test_files/bus.png");
+const exampleImage = await response_0.blob();
+						
+const client = await Client.connect("Heartsync/NSFW-Uncensored-image");
+const result = await client.predict("/update_image_state", { 
+				img: exampleImage, 
+});
+
+console.log(result.data);
+Accepts 1 parameter:
+img Blob | File | Buffer Required
+
+The input value that is provided in the "Generated Image" Image component. For input, either path or url must be provided. For output, path is always provided.
+
+Returns 1 element
+API name: /img2img_infer Image-to-Image generation function
+copy
+import { Client } from "@gradio/client";
+
+const response_0 = await fetch("https://raw.githubusercontent.com/gradio-app/gradio/main/test/test_files/bus.png");
+const exampleImage = await response_0.blob();
+						
+const client = await Client.connect("Heartsync/NSFW-Uncensored-image");
+const result = await client.predict("/img2img_infer", { 
+				init_image: exampleImage, 		
+		prompt: "Hello!!", 		
+		negative_prompt: "Hello!!", 		
+		strength: 0, 		
+		seed: 0, 		
+		randomize_seed: true, 		
+		width: 256, 		
+		height: 256, 		
+		guidance_scale: 0, 		
+		num_inference_steps: 1, 
+});
+
+console.log(result.data);
+Accepts 10 parameters:
+init_image Blob | File | Buffer Required
+
+The input value that is provided in the "Input Image" Image component. For input, either path or url must be provided. For output, path is always provided.
+
+prompt string Required
+
+The input value that is provided in the "Prompt" Textbox component.
+
+negative_prompt string Default: "low quality, watermark, signature"
+
+The input value that is provided in the "Negative prompt" Textbox component.
+
+strength number Default: 0.75
+
+The input value that is provided in the "Transformation Strength" Slider component.
+
+seed number Default: 0
+
+The input value that is provided in the "Seed" Slider component.
+
+randomize_seed boolean Default: True
+
+The input value that is provided in the "Randomize seed" Checkbox component.
+
+width number Default: 1024
+
+The input value that is provided in the "Width" Slider component.
+
+height number Default: 1024
+
+The input value that is provided in the "Height" Slider component.
+
+guidance_scale number Default: 7.5
+
+The input value that is provided in the "Guidance scale" Slider component.
+
+num_inference_steps number Default: 30
+
+The input value that is provided in the "Inference steps" Slider component.
+
+Returns list of 2 elements
+[0] string
+
+The output value that appears in the "Transformed Image" Image component.
+
+[1] number
+
+The output value that appears in the "Seed" Slider component.

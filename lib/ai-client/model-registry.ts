@@ -72,6 +72,25 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
     timeout: 90000,
     maxRetries: 1,
   },
+
+  'anime-new': {
+    id: 'anime-new',
+    name: 'Anime New',
+    provider: 'gradio',
+    endpoint: 'Heartsync/NSFW-Uncensored-image',
+    type: 'image',
+    defaults: {
+      width: 1024,
+      height: 1024,
+      steps: 28,
+      guidance: 7,
+    },
+    pricing: {
+      credits: 500,
+    },
+    timeout: 90000,
+    maxRetries: 1,
+  },
   
   'wavespeed-edit': {
     id: 'wavespeed-edit',

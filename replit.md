@@ -41,6 +41,13 @@ The project is hosted on Replit, using pnpm as the package manager. Development 
 
 ## Recent Changes
 
+### Anime New Model Added (October 14, 2025)
+- **New Model**: Added "Anime New" image generation model using Gradio API
+- **Provider**: Heartsync/NSFW-Uncensored-image Gradio space
+- **Cost**: 500 credits per image (same as other Gradio models)
+- **Settings**: 1024x1024 default, 28 steps, guidance scale 7
+- **UI**: Added to model selection dropdown in image generator
+
 ### Video Generation JSON Parsing Fix (October 14, 2025)
 - **Critical Fix**: Fixed "No number after minus sign in JSON at position 1" error in video generation
 - **Root Cause**: Frontend was sending FormData but backend was trying to parse as JSON
