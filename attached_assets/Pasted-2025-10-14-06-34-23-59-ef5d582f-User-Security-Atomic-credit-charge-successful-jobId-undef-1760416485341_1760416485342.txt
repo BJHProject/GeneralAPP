@@ -1,0 +1,156 @@
+2025-10-14 06:34:23.59
+ef5d582f
+User
+[Security] ✓ Atomic credit charge successful: { jobId: undefined, newBalance: undefined }
+2025-10-14 06:34:23.59
+ef5d582f
+User
+[Security] ✓ Credits charged atomically. Job ID: undefined Balance: undefined
+2025-10-14 06:34:23.59
+ef5d582f
+User
+[Security] Enforced negative prompts: child, childish, toddler, underage, fused bodies, crossed eyes, (low quality, worst quality:1.2), ve
+2025-10-14 06:34:23.59
+ef5d582f
+User
+[AIClient 1760416463592-fq1lxbnm1] Starting generation: {
+2025-10-14 06:34:23.59
+ef5d582f
+User
+type: 'image',
+2025-10-14 06:34:23.59
+ef5d582f
+User
+modelId: 'realistic',
+2025-10-14 06:34:23.59
+ef5d582f
+User
+userId: '16f09afb-b861-4e57-b7bb-b4adeba007f4'
+2025-10-14 06:34:23.59
+ef5d582f
+User
+}
+2025-10-14 06:34:23.59
+ef5d582f
+User
+[Gradio 1760416463592-fq1lxbnm1] Generating with space: aiqtech/NSFW-Real
+2025-10-14 06:34:23.59
+ef5d582f
+User
+[Gradio 1760416463592-fq1lxbnm1] Connecting to space: aiqtech/NSFW-Real
+2025-10-14 06:34:24.14
+ef5d582f
+User
+[Gradio 1760416463592-fq1lxbnm1] Predict params: [
+2025-10-14 06:34:24.14
+ef5d582f
+User
+'ikopčkl',
+2025-10-14 06:34:24.14
+ef5d582f
+User
+'child, childish, toddler, underage, fused bodies, crossed eyes, (low quality, worst quality:1.2), very displeasing, 3d, watermark, signature, ugly, poorly drawn',
+2025-10-14 06:34:24.14
+ef5d582f
+User
+832,
+2025-10-14 06:34:24.14
+ef5d582f
+User
+1248,
+2025-10-14 06:34:24.14
+ef5d582f
+User
+28,
+2025-10-14 06:34:24.14
+ef5d582f
+User
+7,
+2025-10-14 06:34:24.14
+ef5d582f
+User
+-1,
+2025-10-14 06:34:24.14
+ef5d582f
+User
+true
+2025-10-14 06:34:24.14
+ef5d582f
+User
+]
+2025-10-14 06:34:24.29
+ef5d582f
+User
+[Gradio 1760416463592-fq1lxbnm1] Error: {
+2025-10-14 06:34:24.29
+ef5d582f
+User
+type: 'status',
+2025-10-14 06:34:24.29
+ef5d582f
+User
+endpoint: '/infer',
+2025-10-14 06:34:24.29
+ef5d582f
+User
+fn_index: 0,
+2025-10-14 06:34:24.29
+ef5d582f
+User
+time: 2025-10-14T04:34:24.298Z,
+2025-10-14 06:34:24.29
+ef5d582f
+User
+original_msg: undefined,
+2025-10-14 06:34:24.29
+ef5d582f
+User
+queue: true,
+2025-10-14 06:34:24.29
+ef5d582f
+User
+title: 'Error',
+2025-10-14 06:34:24.29
+ef5d582f
+User
+message: 'Value 28 is less than minimum value 256.',
+2025-10-14 06:34:24.29
+ef5d582f
+User
+visible: true,
+2025-10-14 06:34:24.29
+ef5d582f
+User
+duration: 10,
+2025-10-14 06:34:24.29
+ef5d582f
+User
+stage: 'error',
+2025-10-14 06:34:24.29
+ef5d582f
+User
+code: undefined,
+2025-10-14 06:34:24.29
+ef5d582f
+User
+success: false
+2025-10-14 06:34:24.29
+ef5d582f
+User
+}
+2025-10-14 06:34:24.30
+ef5d582f
+User
+[Security] Generation failed, refunding credits: Unknown error
+2025-10-14 06:34:24.30
+ef5d582f
+User
+[AIClient 1760416463592-fq1lxbnm1] Generation failed
+2025-10-14 06:34:24.30
+ef5d582f
+User
+[Security] Refunding failed job: { jobId: undefined, reason: 'Unknown error' }
+2025-10-14 06:34:24.37
+ef5d582f
+User
+[Security] Job not found for refund: undefined
