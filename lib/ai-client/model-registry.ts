@@ -149,6 +149,24 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
     timeout: 180000,
     maxRetries: 1,
   },
+
+  'video-wan-ai': {
+    id: 'video-wan-ai',
+    name: 'Wan AI 2.2 (5s)',
+    provider: 'huggingface-i2v',
+    endpoint: 'Wan-AI/Wan2.2-I2V-A14B',
+    type: 'video',
+    defaults: {
+      duration: 5,
+      steps: 16,
+      guidance: 3.0,
+    },
+    pricing: {
+      credits: 3000,
+    },
+    timeout: 180000,
+    maxRetries: 2,
+  },
 }
 
 export function getModelConfig(modelId: string): ModelConfig {

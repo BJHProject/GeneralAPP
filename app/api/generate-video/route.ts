@@ -17,6 +17,7 @@ const STYLE_TO_MODEL: Record<string, { modelId: string; operation: CreditOperati
   "express-hd": { modelId: "video-express-hd", operation: "video5" },
   elite: { modelId: "video-elite", operation: "video5" },
   elitist: { modelId: "video-elite", operation: "video5" },
+  "wan-ai": { modelId: "video-wan-ai", operation: "video5" },
 }
 
 export async function POST(request: NextRequest) {
