@@ -2,82 +2,7 @@
 
 ## Overview
 
-This is a Next.js application that enables users to generate images, edit images, and create videos using various AI models. The application features a credit-based system for managing usage, with Supabase handling authentication and data persistence, and Vercel Blob for media storage.
-
-## Recent Changes
-
-### Model Registry Update (October 14, 2025)
-- **Updated all model endpoints**: Fixed model ID mismatch between UI and backend
-- **Added Anime V3 model**: New Gradio model `Heartsync/NSFW-Uncensored-image` for anime generation
-- **Corrected model mappings**:
-  - `realistic` → `aiqtech/NSFW-Real` (Gradio)
-  - `realistic_w` → `wavespeed-ai/female-human` (Wavespeed)
-  - `anime` → `dhead/waiNSFWIllustrious_v110` (Gradio)
-  - `anime_v2` → `Menyu/wainsfw` (Gradio)
-  - `anime_v3` → `Heartsync/NSFW-Uncensored-image` (Gradio) **[NEW]**
-  - `neon` → `black-forest-labs/FLUX.1-dev` (HuggingFace)
-  - `preview` → `black-forest-labs/FLUX.1-schnell` (HuggingFace)
-  - `preview_anime` → `wavespeed-ai/flux-1.1-pro` (Wavespeed)
-- **Updated video models**:
-  - `video-lovely` → `zerogpu-aoti/wan2-2-fp8da-aoti-faster` (Gradio)
-  - `video-express` → `wavespeed-ai/wan-2.2/i2v-480p-ultra-fast` (Wavespeed)
-  - `video-express-hd` → `wavespeed-ai/wan-2.2/i2v-720p-ultra-fast` (Wavespeed)
-
-### Negative Prompt Support & Safety Enforcement (October 12, 2025 - Late Evening)
-- **User-editable negative prompts**: Added textarea input field in image generator for users to specify what to exclude from generations
-- **Mandatory safety filters**: Backend ALWAYS includes prohibited terms (child, childish, toddler, underage, fused bodies, crossed eyes) in negative prompts regardless of user input
-- **Full provider support**: All AI providers now support negative prompts:
-  - HuggingFace: Uses `negative_prompt` parameter
-  - Wavespeed: Uses `negative_prompt` parameter  
-  - Gradio: Added as second positional parameter after prompt
-- **Safety cannot be bypassed**: Server-side enforcement ensures safety terms are always included, users cannot override or remove them
-
-### Production Readiness Improvements (October 12, 2025 - Evening)
-- **Database-backed rate limiting**: Replaced in-memory Maps with Supabase-based rate limiting for production scalability
-  - Created `rate_limits` table and `check_rate_limit()` PostgreSQL function
-  - All API routes now use `lib/security/rate-limit-db.ts` for durable rate limiting
-  - Supports multi-instance deployments (Autoscale)
-- **User-friendly error messages**: Updated all validation schemas and API responses
-  - Validation errors now show actionable messages (e.g., "Please select a valid image size" instead of technical dimension lists)
-  - Auth errors clarified (e.g., "Please sign in to generate images" instead of "Unauthorized")
-  - First error from validation is shown to users, not technical error objects
-- **Credit cost preview**: Verified all three interfaces show credit costs before generation
-  - Image Generator: 500 credits ✓
-  - Video Generator: 2,000-3,000 credits (dynamic based on duration) ✓
-  - Image Editor: 1,000 credits ✓
-- **Comprehensive deployment documentation**: Created PRODUCTION_DEPLOYMENT.md
-  - Complete secrets setup guide (Supabase, Vercel Blob, AI providers)
-  - Step-by-step database migration instructions
-  - Google OAuth configuration for Replit domain
-  - Post-deployment checklist and troubleshooting guide
-  - Monitoring and maintenance procedures
-
-### Security Hardening & Transaction Safety (October 12, 2025 - Day)
-- **Atomic credit transactions**: All credit operations now use single database transactions with automatic rollback
-- **Request validation**: Added Zod schemas with strict limits on dimensions, steps, and prompts
-- **Rate limiting**: Implemented per-user (10/min) and per-IP (20/min) throttling (upgraded to database-backed in evening)
-- **Model whitelist**: Server-side validation ensures only registered models can be accessed
-- **Automatic refunds**: Failed generations automatically refund credits to users
-- **Immutable ledger**: Credit ledger is append-only with database rules preventing updates/deletes
-- **Observability**: Added provider logging, reconciliation tools, and anomaly detection
-- **Database migrations**: Created atomic credit functions and generation job tracking
-
-### Unified AI Client Architecture (October 12, 2025)
-- **Created unified AI client system** (`lib/ai-client/`) to abstract all AI providers
-- **Provider adapters**: HuggingFace, Wavespeed, fal.ai, and Gradio with standardized error handling
-- **Model registry**: Centralized configuration for all models with pricing, timeouts, and defaults
-- **Retry logic**: Exponential backoff with automatic retries for transient failures
-- **Refactored API routes**: Simplified `/api/generate`, `/api/edit-image`, and `/api/generate-video` to use unified client
-- **Fixed credit ledger**: Changed `amount` column to `delta` across all insertion points for proper audit tracking
-- **Code reduction**: Reduced API route complexity from ~1000+ lines to ~150 lines combined
-
-### Replit Migration (October 11, 2025)
-- Migrated project from Vercel to Replit
-- Updated dev and production scripts to bind to `0.0.0.0:5000` for Replit compatibility
-- Configured workflow to run development server on port 5000
-- Set up deployment configuration for production (autoscale mode)
-- All environment variables migrated to Replit Secrets
-- Package manager: pnpm (detected from pnpm-lock.yaml)
+This Next.js application allows users to generate and edit images, and create videos using various AI models. It incorporates a credit-based system, Supabase for authentication and data persistence, and Vercel Blob for media storage. The project aims to provide a robust, scalable, and user-friendly platform for AI-powered content creation.
 
 ## User Preferences
 
@@ -87,208 +12,39 @@ Preferred communication style: Simple, everyday language.
 
 ### Frontend Architecture
 
-**Framework**: Next.js 14+ with App Router
-- **UI Components**: Radix UI primitives with shadcn/ui styling system
-- **Styling**: Tailwind CSS with custom CSS variables for theming
-- **State Management**: React hooks (useState, useEffect) for local state
-- **Client-Side Data Fetching**: Native fetch API with real-time updates via custom events
-
-**Key Design Patterns**:
-- Tab-based interface for switching between Images, Videos, and Editor modes
-- Modal authentication flow for unauthenticated users
-- Real-time UI updates via browser events (e.g., `window.dispatchEvent` for image generation completion)
-- Separation of "recent" (temporary) and "saved" (permanent) content galleries
+The frontend is built with Next.js 14+ (App Router), utilizing Radix UI primitives and shadcn/ui for components, styled with Tailwind CSS. It features a tab-based interface for different generation modes, modal authentication, and real-time UI updates. Content is categorized into "recent" (temporary) and "saved" (permanent) galleries.
 
 ### Backend Architecture
 
-**API Routes**: Next.js API routes (`/app/api/*`) with edge and Node.js runtimes
-- **Edge Runtime**: For lightweight operations and middleware
-- **Node.js Runtime**: For AI generation tasks requiring longer execution times (up to 180 seconds for videos)
-
-**Key Services**:
-1. **Image Generation** (`/api/generate`): Clean interface to unified AI client for image generation
-2. **Image Editing** (`/api/edit-image`): Wavespeed-powered image modifications via unified client
-3. **Video Generation** (`/api/generate-video`): Multi-style video generation (Lovely, Express, Express HD, Elite/Elitist)
-4. **Media Ingestion** (`/api/ingest`): Server-side proxy that fetches AI-generated content and stores it in Vercel Blob
-5. **Cron Jobs** (`/api/cleanup-temp`): Automated cleanup of expired temporary media (runs daily at 2 AM)
-
-**Unified AI Client** (`lib/ai-client/`):
-- **Provider Abstraction**: Single interface for HuggingFace, Wavespeed, fal.ai, and Gradio providers
-- **Model Registry**: Centralized configuration mapping model IDs to providers, endpoints, and pricing
-- **Automatic Retries**: Exponential backoff with configurable retry logic for transient failures
-- **Error Normalization**: Standardized error codes (QUOTA_EXCEEDED, PROVIDER_ERROR, TIMEOUT, etc.)
-- **Request Tracking**: Unique request IDs for debugging and observability
-
-**Architecture Decisions**:
-- **Server-Side Proxying**: AI-generated media URLs are never exposed to clients. The server fetches and re-hosts content in Vercel Blob to maintain control and prevent hotlinking.
-- **Idempotency Protection**: Credit charges include idempotency keys to prevent duplicate charges on retry/refresh scenarios.
-- **Provider Swapping**: Models can be moved between providers (e.g., HuggingFace to Wavespeed) via config changes only, no code changes needed.
-- **Retry Strategy**: Automatic retries for rate limits (429), timeouts, and 5xx errors with intelligent backoff.
+The backend uses Next.js API routes, with edge runtimes for lightweight tasks and Node.js runtimes for AI generation. A unified AI client (`lib/ai-client/`) abstracts various AI providers (HuggingFace, Wavespeed, fal.ai, Gradio) with a centralized model registry, automatic retries with exponential backoff, and standardized error handling. Key API services include image generation, image editing, video generation, media ingestion (proxying AI output to Vercel Blob), and a daily cron job for temporary media cleanup. Architectural decisions include server-side proxying of AI-generated media, idempotency protection for credit charges, easy provider swapping via configuration, and robust retry strategies.
 
 ### Authentication & Authorization
 
-**Provider**: Supabase Auth
-- **Methods**: Email/password and Google OAuth
-- **Session Management**: Server-side session validation via Supabase SSR
-- **Middleware**: Automatic session refresh on each request
-
-**Row-Level Security (RLS)**:
-- All database tables enforce user_id-based policies
-- Users can only access their own generated content
-- Admin endpoints protected by separate password authentication
+Supabase Auth handles authentication via email/password and Google OAuth, with server-side session validation. Row-Level Security (RLS) in Supabase ensures users can only access their own data.
 
 ### Data Storage
 
-**Database**: Supabase (PostgreSQL)
-
-**Tables**:
-1. **users**: User profiles with credit balances
-   - `id` (references auth.users)
-   - `email`, `credits`, `membership_tier`, `total_generations`
-   
-2. **images**: Generated images metadata
-   - `user_id`, `url`, `prompt`, `width`, `height`, `is_saved`, `created_at`
-   
-3. **videos**: Generated videos metadata
-   - `user_id`, `url`, `prompt`, `duration_seconds`, `is_saved`, `created_at`
-   
-4. **edited_images**: Edited image pairs
-   - `user_id`, `input_image_url`, `output_image_url`, `prompt`, `is_saved`, `created_at`
-   
-5. **credit_ledger**: Transaction history for auditing
-   - `user_id`, `amount`, `operation_type`, `description`, `metadata`, `created_at`
-   
-6. **idempotency_keys**: Prevents duplicate charges
-   - `user_id`, `idempotency_key`, `created_at`
-   
-7. **user_sessions**: Login tracking and analytics
-   - `user_id`, `email`, `provider`, `ip_address`, `user_agent`, `logged_in_at`
-   
-8. **media**: Unified media storage metadata (optional/future)
-   - `user_id`, `status` (temp/saved), `storage_key`, `mime_type`, `size_bytes`, `expires_at`
-
-**Data Lifecycle**:
-- New users receive 3000 free credits on signup
-- Temporary media (unsaved generations) limited to last 10 items per user
-- Temporary media auto-expires after 24 hours and is deleted by cron job
-- Saved media persists indefinitely
-
-**Storage**: Vercel Blob
-- **Structure**: `/temp/{userId}/{uuid}.{ext}` and `/permanent/{userId}/{uuid}.{ext}`
-- **Access Control**: Public URLs with obscure paths (no sensitive data in URLs)
-- **Cleanup**: Automated removal of expired temp files via cron job
+The application uses Supabase (PostgreSQL) for its database, with tables for `users`, `images`, `videos`, `edited_images`, `credit_ledger`, `idempotency_keys`, and `user_sessions`. New users receive initial credits, and temporary media is managed with expiry and cleanup. Vercel Blob is used for storing generated media, organized into temporary and permanent folders, with automated cleanup for expired temporary files.
 
 ### Credit System
 
-**Pricing**:
-- Image Generation: 500 credits
-- Image Editing: 1000 credits  
-- Video (3 seconds): 2000 credits
-- Video (5 seconds): 3000 credits
-
-**Implementation**:
-- Server-enforced pricing (client cannot manipulate costs)
-- Atomic database transactions for credit deduction
-- Pre-flight credit checks before expensive operations
-- Full audit trail in `credit_ledger` table
-
-**Credit Operations**:
-- **Legacy** (`/lib/credits.ts`): Basic credit functions (deprecated in favor of atomic system)
-- **Secure Atomic System** (`/lib/credits/transactions.ts`):
-  - `atomicCreditCharge()`: Single-transaction credit deduction with job creation and ledger entry
-  - `completeGenerationJob()`: Mark jobs as completed with result URL
-  - `refundFailedJob()`: Automatically refund credits for failed generations
-- **Security** (`/lib/security/`):
-  - Rate limiting middleware (per-user and per-IP)
-  - Model whitelist validation
-  - Request schema validation with Zod
-- **Observability** (`/lib/observability/`):
-  - Provider request logging with latency tracking
-  - Credit reconciliation tools
-  - Anomaly detection for suspicious activity
+A server-enforced credit system dictates pricing for generations (e.g., 500 credits for image generation, 1000 for editing, 2000-3000 for video). All credit operations are atomic database transactions with pre-flight checks, an audit trail in the `credit_ledger`, and automatic refunds for failed generations. Security features include rate limiting, model whitelisting, and Zod schema validation.
 
 ### Admin Features
 
-**Admin Control Panel** (`/admin-control`):
-- Password-protected access (hardcoded: "admin123")
-- App-wide enable/disable toggle
-- Credit management for users
-- No user management UI (handled via Supabase dashboard)
-
-**Admin Dashboard** (`/admin`):
-- User statistics and analytics
-- Generation counts and activity tracking
-- Session logs with IP and user agent tracking
+A password-protected admin control panel (`/admin-control`) allows app-wide toggles and user credit management. An admin dashboard (`/admin`) provides user statistics, generation counts, and activity tracking.
 
 ## External Dependencies
 
 ### Third-Party Services
 
-1. **Supabase** (Authentication & Database)
-   - Required environment variables: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
-   - Uses: User authentication, database, row-level security
-
-2. **Vercel Blob** (Media Storage)
-   - Required environment variables: `BLOB_READ_WRITE_TOKEN`
-   - Uses: Storing generated images and videos
-
-3. **Wavespeed AI** (Image Generation & Editing)
-   - Required environment variables: `WAVESPEED_API_KEY`
-   - Endpoints: `/api/v3/wavespeed-ai/*` for various models
-   - Uses: High-quality image generation and video creation
-
-4. **HuggingFace** (AI Model Hosting)
-   - Required environment variables: `HUGGINGFACE_API_TOKEN`, `HUGGINGFACE_API_TOKEN_2`, `HUGGINGFACE_API_TOKEN_3`
-   - Uses: Multiple tokens for rate limit distribution
-   - Endpoints: Gradio Spaces and HuggingFace Router API
-
-5. **Gradio Client** (AI Model Interface)
-   - NPM package: `@gradio/client`
-   - Uses: Connecting to Gradio-hosted AI models
-
-6. **FAL.ai** (Video Generation)
-   - NPM package: `@fal-ai/client`
-   - Uses: Elite-tier video generation
-
-### API Integrations
-
-**AI Model Providers**:
-- **Gradio Spaces**: Community-hosted models (e.g., `aiqtech/NSFW-Real`, `dhead/WaiNSFWIllustrious_V130`)
-- **Wavespeed**: Commercial API for fast inference with various models
-- **HuggingFace Router**: Load-balanced endpoints for popular models
-- **FAL.ai**: High-quality video generation service
-
-**Integration Pattern**:
-- Multiple fallback tokens for HuggingFace to handle rate limiting
-- Provider-specific request/response formats abstracted in route handlers
-- Polling-based status checking for async operations (Wavespeed, FAL.ai)
+1.  **Supabase**: Provides authentication and PostgreSQL database services.
+2.  **Vercel Blob**: Used for storing all generated image and video media files.
+3.  **Wavespeed AI**: Powers high-quality image generation and video creation.
+4.  **HuggingFace**: Hosts various AI models, accessed with multiple API tokens for load distribution.
+5.  **Gradio Client**: NPM package for interacting with Gradio-hosted AI models.
+6.  **FAL.ai**: Utilized for elite-tier video generation.
 
 ### Development & Deployment
 
-**Current Platform**: Replit
-- **Package Manager**: pnpm
-- **Development**: Next.js dev server on port 5000 (binds to 0.0.0.0 for Replit compatibility)
-- **Production**: Autoscale deployment with `next build` and `next start`
-- **Workflow**: Server workflow runs `pnpm run dev` and waits for port 5000
-- **Note**: Cron jobs from Vercel need to be handled separately if needed
-
-**Previous Platform**: Vercel
-- **Features Used**: Serverless functions, edge middleware, cron jobs, blob storage
-- **Configuration**: Custom cron schedule in `vercel.json` (no longer active on Replit)
-
-**Analytics**: Vercel Analytics
-- NPM package: `@vercel/analytics`
-
-**Environment Variables Required** (All stored in Replit Secrets):
-```
-NEXT_PUBLIC_SUPABASE_URL (should be https://your-project.supabase.co format)
-NEXT_PUBLIC_SUPABASE_ANON_KEY
-SUPABASE_SERVICE_ROLE_KEY
-BLOB_READ_WRITE_TOKEN
-WAVESPEED_API_TOKEN
-WAVESPEED_API_TOKEN_2 (optional)
-WAVESPEED_API_TOKEN_3 (optional)
-HUGGINGFACE_API_TOKEN
-HUGGINGFACE_API_TOKEN_2 (optional)
-HUGGINGFACE_API_TOKEN_3 (optional)
-```
+The project is currently hosted on **Replit**, using `pnpm` as the package manager. Development runs on port `5000`, and production deployments are configured for autoscale. Required environment variables for all services are managed via Replit Secrets.
