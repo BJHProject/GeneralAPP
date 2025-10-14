@@ -6,6 +6,23 @@ This is a Next.js application that enables users to generate images, edit images
 
 ## Recent Changes
 
+### Model Registry Update (October 14, 2025)
+- **Updated all model endpoints**: Fixed model ID mismatch between UI and backend
+- **Added Anime V3 model**: New Gradio model `Heartsync/NSFW-Uncensored-image` for anime generation
+- **Corrected model mappings**:
+  - `realistic` → `aiqtech/NSFW-Real` (Gradio)
+  - `realistic_w` → `wavespeed-ai/female-human` (Wavespeed)
+  - `anime` → `dhead/waiNSFWIllustrious_v110` (Gradio)
+  - `anime_v2` → `Menyu/wainsfw` (Gradio)
+  - `anime_v3` → `Heartsync/NSFW-Uncensored-image` (Gradio) **[NEW]**
+  - `neon` → `black-forest-labs/FLUX.1-dev` (HuggingFace)
+  - `preview` → `black-forest-labs/FLUX.1-schnell` (HuggingFace)
+  - `preview_anime` → `wavespeed-ai/flux-1.1-pro` (Wavespeed)
+- **Updated video models**:
+  - `video-lovely` → `zerogpu-aoti/wan2-2-fp8da-aoti-faster` (Gradio)
+  - `video-express` → `wavespeed-ai/wan-2.2/i2v-480p-ultra-fast` (Wavespeed)
+  - `video-express-hd` → `wavespeed-ai/wan-2.2/i2v-720p-ultra-fast` (Wavespeed)
+
 ### Negative Prompt Support & Safety Enforcement (October 12, 2025 - Late Evening)
 - **User-editable negative prompts**: Added textarea input field in image generator for users to specify what to exclude from generations
 - **Mandatory safety filters**: Backend ALWAYS includes prohibited terms (child, childish, toddler, underage, fused bodies, crossed eyes) in negative prompts regardless of user input
