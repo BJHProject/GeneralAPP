@@ -10,8 +10,8 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
     defaults: {
       width: 1024,
       height: 1024,
-      steps: 20,
-      guidance: 7.5,
+      steps: 28,
+      guidance: 7,
     },
     pricing: {
       credits: 500,
@@ -45,9 +45,9 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
     type: 'image',
     defaults: {
       width: 1024,
-      height: 1024,
-      steps: 20,
-      guidance: 7.5,
+      height: 1216,
+      steps: 28,
+      guidance: 7,
     },
     pricing: {
       credits: 500,
@@ -63,10 +63,10 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
     endpoint: 'Menyu/wainsfw',
     type: 'image',
     defaults: {
-      width: 1024,
-      height: 1024,
-      steps: 20,
-      guidance: 7.5,
+      width: 832,
+      height: 1216,
+      steps: 28,
+      guidance: 7,
     },
     pricing: {
       credits: 500,

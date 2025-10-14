@@ -1,0 +1,156 @@
+2025-10-14 06:55:46.57
+74f0bd2d
+User
+'child, childish, toddler, underage, fused bodies, crossed eyes, (low quality, worst quality:1.2), very displeasing, 3d, watermark, signature, ugly, poorly drawn',
+2025-10-14 06:55:46.57
+74f0bd2d
+User
+0,
+2025-10-14 06:55:46.57
+74f0bd2d
+User
+true,
+2025-10-14 06:55:46.57
+74f0bd2d
+User
+832,
+2025-10-14 06:55:46.57
+74f0bd2d
+User
+1248,
+2025-10-14 06:55:46.57
+74f0bd2d
+User
+7,
+2025-10-14 06:55:46.57
+74f0bd2d
+User
+28
+2025-10-14 06:55:46.57
+74f0bd2d
+User
+]
+2025-10-14 06:55:46.83
+74f0bd2d
+User
+endpoint: '/infer',
+2025-10-14 06:55:46.83
+74f0bd2d
+User
+time: 2025-10-14T04:55:46.829Z,
+2025-10-14 06:55:46.83
+74f0bd2d
+User
+visible: true,
+2025-10-14 06:55:46.83
+74f0bd2d
+User
+}
+2025-10-14 06:55:46.83
+74f0bd2d
+User
+[AIClient 1760417745918-c37h7xkj2] Generation failed
+2025-10-14 06:55:46.83
+74f0bd2d
+User
+[Security] Generation failed, refunding credits: Unknown error
+2025-10-14 06:55:46.83
+74f0bd2d
+User
+reason: 'Unknown error'
+2025-10-14 06:55:46.83
+74f0bd2d
+User
+}
+2025-10-14 06:55:47.04
+74f0bd2d
+User
+[Security] ✓ Credits refunded: 500
+2025-10-14 06:55:46.83
+74f0bd2d
+User
+[Gradio 1760417745918-c37h7xkj2] Error: {
+2025-10-14 06:55:46.83
+74f0bd2d
+User
+type: 'status',
+2025-10-14 06:55:46.83
+74f0bd2d
+User
+endpoint: '/infer',
+2025-10-14 06:55:46.83
+74f0bd2d
+User
+fn_index: 2,
+2025-10-14 06:55:46.83
+74f0bd2d
+User
+time: 2025-10-14T04:55:46.829Z,
+2025-10-14 06:55:46.83
+74f0bd2d
+User
+original_msg: undefined,
+2025-10-14 06:55:46.83
+74f0bd2d
+User
+queue: true,
+2025-10-14 06:55:46.83
+74f0bd2d
+User
+title: 'Error',
+2025-10-14 06:55:46.83
+74f0bd2d
+User
+message: 'Value 1248 is greater than maximum value 1216.',
+2025-10-14 06:55:46.83
+74f0bd2d
+User
+visible: true,
+2025-10-14 06:55:46.83
+74f0bd2d
+User
+duration: 10,
+2025-10-14 06:55:46.83
+74f0bd2d
+User
+stage: 'error',
+2025-10-14 06:55:46.83
+74f0bd2d
+User
+code: undefined,
+2025-10-14 06:55:46.83
+74f0bd2d
+User
+success: false
+2025-10-14 06:55:46.83
+74f0bd2d
+User
+}
+2025-10-14 06:55:46.83
+74f0bd2d
+User
+[AIClient 1760417745918-c37h7xkj2] Generation failed
+2025-10-14 06:55:46.83
+74f0bd2d
+User
+[Security] Generation failed, refunding credits: Unknown error
+2025-10-14 06:55:46.83
+74f0bd2d
+User
+[Security] Refunding failed job: {
+2025-10-14 06:55:46.83
+74f0bd2d
+User
+jobId: 'b1f01ded-bbeb-4dfa-9016-e8c2178624f6',
+2025-10-14 06:55:46.83
+74f0bd2d
+User
+reason: 'Unknown error'
+2025-10-14 06:55:46.83
+74f0bd2d
+User
+}
+2025-10-14 06:55:47.04
+74f0bd2d
+User
+[Security] ✓ Credits refunded: 500
