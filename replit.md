@@ -41,6 +41,13 @@ The project is hosted on Replit, using pnpm as the package manager. Development 
 
 ## Recent Changes
 
+### Credit Ledger Column Name Fix (October 14, 2025)
+- **Critical Fix**: Fixed "null value in column 'amount' violates not-null constraint" database error
+- **Root Cause**: Code was using `delta` column name but database table has `amount` column
+- **Solution**: Updated all credit_ledger inserts to use `amount` instead of `delta`
+- **Files Updated**: lib/credits-supabase.ts, lib/credits.ts, app/api/user/credits/route.ts, database/migrations/atomic-credit-system.sql
+- **Impact**: Credit transactions now work correctly without database constraint violations
+
 ### Anime New Model Added (October 14, 2025)
 - **New Model**: Added "Anime New" image generation model using Gradio API
 - **Provider**: Heartsync/NSFW-Uncensored-image Gradio space

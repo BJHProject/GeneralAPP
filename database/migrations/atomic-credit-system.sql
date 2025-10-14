@@ -23,10 +23,10 @@ CREATE INDEX IF NOT EXISTS idx_generation_jobs_user_id ON generation_jobs(user_i
 CREATE INDEX IF NOT EXISTS idx_generation_jobs_status ON generation_jobs(status);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_generation_jobs_idempotency ON generation_jobs(idempotency_key) WHERE idempotency_key IS NOT NULL;
 
--- 2. Add constraints to credit_ledger (make immutable and enforce delta)
+-- 2. Add constraints to credit_ledger (make immutable and enforce amount)
 ALTER TABLE credit_ledger 
-    ALTER COLUMN delta SET NOT NULL,
-    ALTER COLUMN delta SET DEFAULT 0;
+    ALTER COLUMN amount SET NOT NULL,
+    ALTER COLUMN amount SET DEFAULT 0;
 
 -- Prevent updates and deletes on credit_ledger (append-only)
 CREATE OR REPLACE RULE credit_ledger_no_update AS 
@@ -95,7 +95,7 @@ BEGIN
     -- Insert immutable ledger entry
     INSERT INTO credit_ledger (
         user_id,
-        delta,
+        amount,
         balance_after,
         operation_type,
         description,
@@ -157,7 +157,7 @@ BEGIN
     -- Record refund in ledger
     INSERT INTO credit_ledger (
         user_id,
-        delta,
+        amount,
         balance_after,
         operation_type,
         description,
@@ -202,12 +202,12 @@ ALTER TABLE users
     CHECK (credits >= 0);
 
 -- 7. Create audit trigger for credit_ledger
-CREATE OR REPLACE FUNCTION verify_ledger_delta()
+CREATE OR REPLACE FUNCTION verify_ledger_amount()
 RETURNS TRIGGER AS $$
 BEGIN
-    -- Ensure delta is set
-    IF NEW.delta IS NULL THEN
-        RAISE EXCEPTION 'Delta cannot be NULL';
+    -- Ensure amount is set
+    IF NEW.amount IS NULL THEN
+        RAISE EXCEPTION 'Amount cannot be NULL';
     END IF;
 
     -- Ensure balance_after is correct
@@ -222,7 +222,7 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER verify_ledger_before_insert
     BEFORE INSERT ON credit_ledger
     FOR EACH ROW
-    EXECUTE FUNCTION verify_ledger_delta();
+    EXECUTE FUNCTION verify_ledger_amount();
 
 -- 8. Grant necessary permissions
 GRANT SELECT ON generation_jobs TO authenticated;

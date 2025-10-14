@@ -70,7 +70,7 @@ export async function GET() {
       console.log("[v0] Step 10: User created successfully, adding signup bonus to ledger")
       await supabase.from("credit_ledger").insert({
         user_id: user.id,
-        delta: 3000,
+        amount: 3000,
         operation_type: "signup",
         balance_after: 3000,
       })

@@ -82,7 +82,7 @@ export async function chargeCredits(params: ChargeCreditsParams): Promise<{ succ
   // Record transaction in ledger
   const { error: ledgerError } = await supabase.from("credit_ledger").insert({
     user_id: userId,
-    delta: -amount,
+    amount: -amount,
     balance_after: newBalance,
     operation_type: operationType,
     description: description || `${operationType} generation`,
@@ -131,7 +131,7 @@ export async function addCredits(
   // Record transaction in ledger
   await supabase.from("credit_ledger").insert({
     user_id: userId,
-    delta: amount,
+    amount: amount,
     balance_after: newBalance,
     operation_type: "BONUS",
     description,
