@@ -1,0 +1,96 @@
+025-10-14 06:12:24.79
+d70f7af8
+User
+message: 'Could not find the function public.check_rate_limit(p_identifier, p_max_requests, p_type, p_window_seconds) in the schema cache'
+2025-10-14 06:12:24.79
+d70f7af8
+User
+}
+2025-10-14 06:12:24.79
+d70f7af8
+User
+[Security] User authenticated: 16f09afb-b861-4e57-b7bb-b4adeba007f4
+2025-10-14 06:12:24.79
+d70f7af8
+User
+[v0] ensureUserExists called for user: 16f09afb-b861-4e57-b7bb-b4adeba007f4 test@gmail.com
+2025-10-14 06:12:24.86
+d70f7af8
+User
+[v0] User exists with 229000 credits
+2025-10-14 06:12:24.86
+d70f7af8
+User
+[Security] Request validated: {
+2025-10-14 06:12:24.86
+d70f7af8
+User
+model: 'realistic_w',
+2025-10-14 06:12:24.86
+d70f7af8
+User
+prompt: 'sefsefes...',
+2025-10-14 06:12:24.86
+d70f7af8
+User
+width: 832,
+2025-10-14 06:12:24.86
+d70f7af8
+User
+height: 1248
+2025-10-14 06:12:24.86
+d70f7af8
+User
+}
+2025-10-14 06:12:24.87
+d70f7af8
+User
+[Security] Starting atomic credit charge: {
+2025-10-14 06:12:24.87
+d70f7af8
+User
+userId: '16f09afb-b861-4e57-b7bb-b4adeba007f4',
+2025-10-14 06:12:24.87
+d70f7af8
+User
+operation: 'image',
+2025-10-14 06:12:24.87
+d70f7af8
+User
+cost: 500,
+2025-10-14 06:12:24.87
+d70f7af8
+User
+idempotencyKey: undefined
+2025-10-14 06:12:24.87
+d70f7af8
+User
+}
+2025-10-14 06:12:24.93
+d70f7af8
+User
+[Security] Atomic charge failed: {
+2025-10-14 06:12:24.93
+d70f7af8
+User
+code: '23502',
+2025-10-14 06:12:24.93
+d70f7af8
+User
+details: 'Failing row contains (261a9f83-6ff6-4794-a9ab-b0605093f88b, 16f09afb-b861-4e57-b7bb-b4adeba007f4, null, 228500, image, image generation, {"model": "realistic_w", "job_id": "5e67ecee-b03d-4a08-85dc-4245..., 2025-10-14 04:12:24.911106+00, -500, null, null).',
+2025-10-14 06:12:24.93
+d70f7af8
+User
+hint: null,
+2025-10-14 06:12:24.93
+d70f7af8
+User
+message: 'null value in column "amount" of relation "credit_ledger" violates not-null constraint'
+2025-10-14 06:12:24.93
+d70f7af8
+User
+}
+2025-10-14 06:12:24.93
+d70f7af8
+User
+[Security] Credit charge failed: null value in column "amount" of relation "credit_ledger" violates not-null constraint
