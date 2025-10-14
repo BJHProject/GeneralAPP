@@ -72,25 +72,6 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
     timeout: 90000,
     maxRetries: 1,
   },
-
-  'anime-new': {
-    id: 'anime-new',
-    name: 'Anime New',
-    provider: 'gradio',
-    endpoint: 'Heartsync/NSFW-Uncensored-image',
-    type: 'image',
-    defaults: {
-      width: 1024,
-      height: 1024,
-      steps: 28,
-      guidance: 7,
-    },
-    pricing: {
-      credits: 500,
-    },
-    timeout: 90000,
-    maxRetries: 1,
-  },
   
   'wavespeed-edit': {
     id: 'wavespeed-edit',
@@ -167,24 +148,6 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
     },
     timeout: 180000,
     maxRetries: 1,
-  },
-
-  'video-wan-ai': {
-    id: 'video-wan-ai',
-    name: 'Wan AI 2.2 (5s)',
-    provider: 'huggingface-i2v',
-    endpoint: 'Wan-AI/Wan2.2-I2V-A14B',
-    type: 'video',
-    defaults: {
-      duration: 5,
-      steps: 16,
-      guidance: 3.0,
-    },
-    pricing: {
-      credits: 3000,
-    },
-    timeout: 180000,
-    maxRetries: 2,
   },
 }
 

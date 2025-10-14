@@ -23,11 +23,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Please sign in to edit images" }, { status: 401 })
     }
 
-    // Rate limiting temporarily disabled for testing
-    // const rateLimitResponse = await rateLimitMiddleware(request, user.id)
-    // if (rateLimitResponse) {
-    //   return rateLimitResponse
-    // }
+    const rateLimitResponse = await rateLimitMiddleware(request, user.id)
+    if (rateLimitResponse) {
+      return rateLimitResponse
+    }
 
     console.log("[Security] User authenticated:", user.id)
     await ensureUserExists(user.id, user.email!, user.user_metadata?.full_name, user.user_metadata?.avatar_url)

@@ -253,7 +253,6 @@ export function ImageGenerator() {
                 <SelectItem value="realistic_w">Realistic W</SelectItem>
                 <SelectItem value="anime">Anime</SelectItem>
                 <SelectItem value="anime_v2">Anime V2</SelectItem>
-                <SelectItem value="anime-new">Anime New</SelectItem>
                 <SelectItem value="neon">Neon</SelectItem>
                 <SelectItem value="preview">Preview</SelectItem>
                 <SelectItem value="preview_anime">Preview Anime</SelectItem>

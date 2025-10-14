@@ -10,8 +10,6 @@ import { atomicCreditCharge, completeGenerationJob, refundFailedJob } from "@/li
 import { rateLimitMiddleware } from "@/lib/security/rate-limit-db"
 import { validateModelId } from "@/lib/security/model-validator"
 import type { CreditOperation } from "@/lib/credits"
-import { put } from '@vercel/blob'
-import crypto from 'crypto'
 
 const STYLE_TO_MODEL: Record<string, { modelId: string; operation: CreditOperation }> = {
   lovely: { modelId: "video-lovely", operation: "video3" },
@@ -19,7 +17,6 @@ const STYLE_TO_MODEL: Record<string, { modelId: string; operation: CreditOperati
   "express-hd": { modelId: "video-express-hd", operation: "video5" },
   elite: { modelId: "video-elite", operation: "video5" },
   elitist: { modelId: "video-elite", operation: "video5" },
-  "wan-ai": { modelId: "video-wan-ai", operation: "video5" },
 }
 
 export async function POST(request: NextRequest) {
@@ -37,50 +34,22 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Please sign in to generate videos" }, { status: 401 })
     }
 
-    // Rate limiting temporarily disabled for testing
-    // const rateLimitResponse = await rateLimitMiddleware(request, user.id)
-    // if (rateLimitResponse) {
-    //   return rateLimitResponse
-    // }
+    const rateLimitResponse = await rateLimitMiddleware(request, user.id)
+    if (rateLimitResponse) {
+      return rateLimitResponse
+    }
 
     console.log("[Security] User authenticated:", user.id)
     await ensureUserExists(user.id, user.email!, user.user_metadata?.full_name, user.user_metadata?.avatar_url)
 
-    // Parse FormData to get image file and other params
-    const formData = await request.formData()
-    const imageFile = formData.get('image') as File | null
-    const prompt = formData.get('prompt') as string
-    const style = (formData.get('style') as string)?.toLowerCase() || 'lovely'
+    const body = await request.json()
     
-    // Generate idempotency key if not provided
-    const idempotency_key = formData.get('idempotency_key') as string || crypto.randomUUID()
-    
-    // Validate we have image and prompt
-    if (!imageFile || !prompt) {
-      return NextResponse.json({ error: "Image and prompt are required" }, { status: 400 })
-    }
-
-    // Upload image to Vercel Blob to get imageUrl
-    console.log("[Security] Uploading image to Blob:", imageFile.name, imageFile.size)
-    const imageBuffer = await imageFile.arrayBuffer()
-    const fileName = `temp/${user.id}/${Date.now()}-${imageFile.name}`
-    const blob = await put(fileName, imageBuffer, {
-      access: 'public',
-      contentType: imageFile.type,
+    const validation = videoGenerationSchema.safeParse({
+      ...body,
+      duration: body.style ? 
+        (body.style === 'lovely' || body.style === 'express' ? '3' : '5') : 
+        '3',
     })
-    const imageUrl = blob.url
-    console.log("[Security] Image uploaded to:", imageUrl)
-    
-    // Build body object for validation
-    const body = {
-      imageUrl,
-      prompt,
-      idempotency_key,
-      style,
-      duration: style === 'lovely' || style === 'express' ? '3' : '5',
-    }
-    
-    const validation = videoGenerationSchema.safeParse(body)
     
     if (!validation.success) {
       console.warn("[Security] Invalid request payload:", validation.error.format())
@@ -93,6 +62,13 @@ export async function POST(request: NextRequest) {
         },
         { status: 400 }
       )
+    }
+
+    const { imageUrl, prompt, idempotency_key } = validation.data
+    const style = body.style?.toLowerCase() || 'lovely'
+
+    if (!imageUrl || !prompt) {
+      return NextResponse.json({ error: "Image URL and prompt are required" }, { status: 400 })
     }
 
     console.log("[Security] Video request validated:", { style, prompt: prompt.substring(0, 50) + "..." })

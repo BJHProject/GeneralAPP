@@ -77,7 +77,7 @@ export async function chargeCredits(
     // Insert ledger entry
     const { error: ledgerError } = await supabase.from("credit_ledger").insert({
       user_id: userId,
-      amount: -cost,
+      delta: -cost,
       operation_type: operation,
       description: `${operation} generation`,
       balance_after: newBalance,
@@ -248,8 +248,8 @@ export async function addCredits(userId: string, amount: number, reason = "bonus
   // Insert ledger entry
   await supabase.from("credit_ledger").insert({
     user_id: userId,
-    amount: amount,
-    operation_type: reason,
+    delta: amount,
+    reason,
     balance_after: newBalance,
   })
 }
@@ -299,7 +299,7 @@ export async function ensureUserExists(userId: string, email: string, name?: str
 
   const { error: ledgerError } = await supabase.from("credit_ledger").insert({
     user_id: userId,
-    amount: 3000,
+    delta: 3000,
     operation_type: "signup",
     description: "Welcome bonus",
     balance_after: 3000,

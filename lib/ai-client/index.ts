@@ -2,14 +2,12 @@ import { GenerationRequest, GenerationResponse, AIClientConfig, ProviderAdapter 
 import { getModelConfig } from './model-registry'
 import { withRetry, isRetryableError } from './retry'
 import { HuggingFaceProvider } from './providers/huggingface'
-import { HuggingFaceI2VProvider } from './providers/huggingface-i2v'
 import { WavespeedProvider } from './providers/wavespeed'
 import { FalProvider } from './providers/fal'
 import { GradioProvider } from './providers/gradio'
 
 const providers: Record<string, ProviderAdapter> = {
   huggingface: new HuggingFaceProvider(),
-  'huggingface-i2v': new HuggingFaceI2VProvider(),
   wavespeed: new WavespeedProvider(),
   fal: new FalProvider(),
   gradio: new GradioProvider(),

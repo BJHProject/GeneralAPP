@@ -20,7 +20,7 @@ export function VideoGenerator() {
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const [duration, setDuration] = useState(3)
-  const [style, setStyle] = useState<"lovely" | "express" | "express_hd" | "elite" | "elitist" | "wan-ai">("lovely")
+  const [style, setStyle] = useState<"lovely" | "express" | "express_hd" | "elite" | "elitist">("lovely")
   const steps = 4
   const seed = Math.floor(Math.random() * 1000000)
   const guidanceScale = 1
@@ -269,7 +269,7 @@ export function VideoGenerator() {
             <Select
               value={style}
               onValueChange={(value) => {
-                const newStyle = value as "lovely" | "express" | "express_hd" | "elite" | "elitist" | "wan-ai"
+                const newStyle = value as "lovely" | "express" | "express_hd" | "elite" | "elitist"
                 setStyle(newStyle)
                 // Reset duration to valid value for the new style
                 if (newStyle === "express_hd") {
@@ -280,8 +280,6 @@ export function VideoGenerator() {
                   setDuration(3)
                 } else if (newStyle === "elitist") {
                   setDuration(3)
-                } else if (newStyle === "wan-ai") {
-                  setDuration(5)
                 } else {
                   setDuration(3)
                 }
@@ -296,7 +294,6 @@ export function VideoGenerator() {
                 <SelectItem value="express_hd">Express HD</SelectItem>
                 <SelectItem value="elite">Elite</SelectItem>
                 <SelectItem value="elitist">Elitist</SelectItem>
-                <SelectItem value="wan-ai">Wan AI 2.2</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -373,12 +370,6 @@ export function VideoGenerator() {
                 </Button>
               </div>
             ) : style === "express_hd" ? (
-              <div className="flex gap-3">
-                <Button type="button" variant="default" className="flex-1" disabled>
-                  5 seconds
-                </Button>
-              </div>
-            ) : style === "wan-ai" ? (
               <div className="flex gap-3">
                 <Button type="button" variant="default" className="flex-1" disabled>
                   5 seconds
