@@ -1,0 +1,100 @@
+25-10-14 04:06:36.58
+d5b7fc8e
+User
+[v0] Step 12: Returning existing user credits: 229000
+2025-10-14 04:06:36.65
+d5b7fc8e
+User
+[v0] Found images: 0 ( 0 saved, 0 recent)
+2025-10-14 04:06:38.88
+d5b7fc8e
+User
+[v0] Fetching videos for user: 16f09afb-b861-4e57-b7bb-b4adeba007f4
+2025-10-14 04:06:39.05
+d5b7fc8e
+User
+[v0] Found videos: 1
+2025-10-14 04:06:39.41
+d5b7fc8e
+User
+[v0] Fetching videos for user: 16f09afb-b861-4e57-b7bb-b4adeba007f4
+2025-10-14 04:06:39.58
+d5b7fc8e
+User
+[v0] Found videos: 1
+2025-10-14 04:06:46.52
+d5b7fc8e
+User
+[Security] ========== SECURE VIDEO GENERATION API ==========
+2025-10-14 04:06:46.67
+d5b7fc8e
+User
+[Security] Rate limit check failed: {
+2025-10-14 04:06:46.67
+d5b7fc8e
+User
+code: 'PGRST202',
+2025-10-14 04:06:46.67
+d5b7fc8e
+User
+details: 'Searched for the function public.check_rate_limit with parameters p_identifier, p_max_requests, p_type, p_window_seconds or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.',
+2025-10-14 04:06:46.67
+d5b7fc8e
+User
+hint: 'Perhaps you meant to call the function public.deduct_credits_atomic',
+2025-10-14 04:06:46.67
+d5b7fc8e
+User
+message: 'Could not find the function public.check_rate_limit(p_identifier, p_max_requests, p_type, p_window_seconds) in the schema cache'
+2025-10-14 04:06:46.67
+d5b7fc8e
+User
+}
+2025-10-14 04:06:46.75
+d5b7fc8e
+User
+[Security] Rate limit check failed: {
+2025-10-14 04:06:46.75
+d5b7fc8e
+User
+code: 'PGRST202',
+2025-10-14 04:06:46.75
+d5b7fc8e
+User
+details: 'Searched for the function public.check_rate_limit with parameters p_identifier, p_max_requests, p_type, p_window_seconds or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.',
+2025-10-14 04:06:46.75
+d5b7fc8e
+User
+hint: 'Perhaps you meant to call the function public.deduct_credits_atomic',
+2025-10-14 04:06:46.75
+d5b7fc8e
+User
+message: 'Could not find the function public.check_rate_limit(p_identifier, p_max_requests, p_type, p_window_seconds) in the schema cache'
+2025-10-14 04:06:46.75
+d5b7fc8e
+User
+}
+2025-10-14 04:06:46.75
+d5b7fc8e
+User
+[Security] User authenticated: 16f09afb-b861-4e57-b7bb-b4adeba007f4
+2025-10-14 04:06:46.75
+d5b7fc8e
+User
+[v0] ensureUserExists called for user: 16f09afb-b861-4e57-b7bb-b4adeba007f4 test@gmail.com
+2025-10-14 04:06:46.82
+d5b7fc8e
+User
+[v0] User exists with 229000 credits
+2025-10-14 04:06:46.86
+d5b7fc8e
+User
+[Security] Video generation error: SyntaxError: No number after minus sign in JSON at position 1
+2025-10-14 04:06:46.86
+d5b7fc8e
+User
+at JSON.parse ()
+2025-10-14 04:06:46.86
+d5b7fc8e
+User
+at async y (.next/server/app/api/generate-video/route.js:1:1712)
