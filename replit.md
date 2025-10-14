@@ -38,3 +38,12 @@ An admin control panel allows app-wide toggles and credit management for users. 
 
 ### Development & Deployment
 The project is hosted on Replit, using pnpm as the package manager. Development runs on `0.0.0.0:5000`, and production deployments leverage Replit's autoscale feature.
+
+## Recent Changes
+
+### Database Rate Limiting Migration Applied (October 14, 2025)
+- **Critical Fix**: Applied missing rate limiting database migration (`add-rate-limiting.sql`)
+- **Created**: `rate_limits` table for production-ready, database-backed rate limiting
+- **Added Functions**: `check_rate_limit()` for atomic rate limit checks and `cleanup_expired_rate_limits()` for maintenance
+- **Resolved**: "Could not find the function public.check_rate_limit" error that was blocking video generation
+- **Verified**: Function tested successfully with proper request counting and limit enforcement
