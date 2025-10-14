@@ -1,0 +1,68 @@
+API name: /img2img_infer Image-to-Image generation function
+copy
+from gradio_client import Client, handle_file
+
+client = Client("Heartsync/NSFW-Uncensored-image")
+result = client.predict(
+		init_image=handle_file('https://raw.githubusercontent.com/gradio-app/gradio/main/test/test_files/bus.png'),
+		prompt="Hello!!",
+		negative_prompt="low quality, watermark, signature",
+		strength=0.75,
+		seed=0,
+		randomize_seed=True,
+		width=1024,
+		height=1024,
+		guidance_scale=7.5,
+		num_inference_steps=30,
+		api_name="/img2img_infer"
+)
+print(result)
+Accepts 10 parameters:
+init_image dict(path: str | None (Path to a local file), url: str | None (Publicly available url or base64 encoded image), size: int | None (Size of image in bytes), orig_name: str | None (Original filename), mime_type: str | None (mime type of image), is_stream: bool (Can always be set to False), meta: dict(str, Any)) Required
+
+The input value that is provided in the "Input Image" Image component. For input, either path or url must be provided. For output, path is always provided.
+
+prompt str Required
+
+The input value that is provided in the "Prompt" Textbox component.
+
+negative_prompt str Default: "low quality, watermark, signature"
+
+The input value that is provided in the "Negative prompt" Textbox component.
+
+strength float Default: 0.75
+
+The input value that is provided in the "Transformation Strength" Slider component.
+
+seed float Default: 0
+
+The input value that is provided in the "Seed" Slider component.
+
+randomize_seed bool Default: True
+
+The input value that is provided in the "Randomize seed" Checkbox component.
+
+width float Default: 1024
+
+The input value that is provided in the "Width" Slider component.
+
+height float Default: 1024
+
+The input value that is provided in the "Height" Slider component.
+
+guidance_scale float Default: 7.5
+
+The input value that is provided in the "Guidance scale" Slider component.
+
+num_inference_steps float Default: 30
+
+The input value that is provided in the "Inference steps" Slider component.
+
+Returns tuple of 2 elements
+[0] dict(path: str | None (Path to a local file), url: str | None (Publicly available url or base64 encoded image), size: int | None (Size of image in bytes), orig_name: str | None (Original filename), mime_type: str | None (mime type of image), is_stream: bool (Can always be set to False), meta: dict(str, Any))
+
+The output value that appears in the "Transformed Image" Image component.
+
+[1] float
+
+The output value that appears in the "Seed" Slider component.
