@@ -20,8 +20,7 @@ CREATE INDEX IF NOT EXISTS idx_rate_limits_lookup
     ON rate_limits(identifier, type, window_end);
 
 CREATE INDEX IF NOT EXISTS idx_rate_limits_cleanup 
-    ON rate_limits(window_end) 
-    WHERE window_end < NOW();
+    ON rate_limits(window_end);
 
 -- 3. Create the check_rate_limit function
 CREATE OR REPLACE FUNCTION check_rate_limit(
