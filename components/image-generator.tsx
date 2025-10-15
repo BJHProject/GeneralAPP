@@ -39,29 +39,29 @@ export function ImageGenerator() {
   const [progress, setProgress] = useState(0)
 
   useEffect(() => {
-    if (searchParams) {
-      const clonePrompt = searchParams.get('prompt')
-      const cloneNegativePrompt = searchParams.get('negative_prompt')
-      const cloneModel = searchParams.get('model')
-      const cloneWidth = searchParams.get('width')
-      const cloneHeight = searchParams.get('height')
+    if (!searchParams) return
+    
+    const clonePrompt = searchParams.get('prompt')
+    const cloneNegativePrompt = searchParams.get('negative_prompt')
+    const cloneModel = searchParams.get('model')
+    const cloneWidth = searchParams.get('width')
+    const cloneHeight = searchParams.get('height')
 
-      if (clonePrompt) setPrompt(clonePrompt)
-      if (cloneNegativePrompt) setNegativePrompt(cloneNegativePrompt)
-      if (cloneModel) setModel(cloneModel)
+    if (clonePrompt) setPrompt(clonePrompt)
+    if (cloneNegativePrompt) setNegativePrompt(cloneNegativePrompt)
+    if (cloneModel) setModel(cloneModel)
+    
+    if (cloneWidth && cloneHeight) {
+      const width = parseInt(cloneWidth)
+      const height = parseInt(cloneHeight)
+      setImageWidth(width)
+      setImageHeight(height)
       
-      if (cloneWidth && cloneHeight) {
-        const width = parseInt(cloneWidth)
-        const height = parseInt(cloneHeight)
-        setImageWidth(width)
-        setImageHeight(height)
-        
-        const presetIndex = PRESET_RESOLUTIONS.findIndex(
-          preset => preset.width === width && preset.height === height
-        )
-        if (presetIndex !== -1) {
-          setSelectedResolution(presetIndex)
-        }
+      const presetIndex = PRESET_RESOLUTIONS.findIndex(
+        preset => preset.width === width && preset.height === height
+      )
+      if (presetIndex !== -1) {
+        setSelectedResolution(presetIndex)
       }
     }
   }, [searchParams])

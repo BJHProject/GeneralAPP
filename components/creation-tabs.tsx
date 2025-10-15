@@ -1,8 +1,7 @@
 "use client"
 
-import { Suspense } from "react"
-import { ImageGenerator } from "@/components/image-generator"
-import { VideoGenerator } from "@/components/video-generator"
+import { ImageGeneratorWrapper } from "@/components/image-generator-wrapper"
+import { VideoGeneratorWrapper } from "@/components/video-generator-wrapper"
 import { ImageEditor } from "@/components/image-editor"
 import { FeaturedRecentImage } from "@/components/featured-recent-image"
 import { FeaturedRecentVideo } from "@/components/featured-recent-video"
@@ -52,9 +51,7 @@ export function CreationTabs({ activeTab, setActiveTab }: CreationTabsProps) {
       {activeTab === "images" && (
         <div className="grid gap-8 lg:grid-cols-2">
           <div>
-            <Suspense fallback={<div className="h-96 animate-pulse bg-muted rounded-2xl" />}>
-              <ImageGenerator />
-            </Suspense>
+            <ImageGeneratorWrapper />
           </div>
           <div className="hidden lg:block">
             <FeaturedRecentImage />
@@ -65,9 +62,7 @@ export function CreationTabs({ activeTab, setActiveTab }: CreationTabsProps) {
       {activeTab === "videos" && (
         <div className="grid gap-8 lg:grid-cols-2">
           <div>
-            <Suspense fallback={<div className="h-96 animate-pulse bg-muted rounded-2xl" />}>
-              <VideoGenerator />
-            </Suspense>
+            <VideoGeneratorWrapper />
           </div>
           <div className="hidden lg:block">
             <FeaturedRecentVideo />
