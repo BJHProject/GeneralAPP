@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Download, Trash2, RefreshCw, Maximize2, X, Save } from "lucide-react"
 import Image from "next/image"
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 
 interface GeneratedImage {
   id: string
@@ -17,6 +18,7 @@ interface GeneratedImage {
 }
 
 export function RecentGenerations() {
+  const router = useRouter()
   const [images, setImages] = useState<GeneratedImage[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [deletingImages, setDeletingImages] = useState<Set<string>>(new Set())
@@ -213,74 +215,17 @@ export function RecentGenerations() {
             className="group overflow-hidden border-0 bg-card/50 shadow-xl shadow-primary/5 transition-all hover:shadow-2xl hover:shadow-primary/10 hover:scale-[1.02] rounded-2xl"
           >
             <div
-              className="relative overflow-hidden bg-muted/30 flex items-center justify-center"
+              className="relative overflow-hidden bg-muted/30 flex items-center justify-center cursor-pointer"
               style={{
                 aspectRatio: `${image.width} / ${image.height}`,
                 maxHeight: '70vh'
               }}
-              onClick={() => {
-                if (activeImageId === image.id) {
-                  setActiveImageId(null)
-                } else {
-                  setActiveImageId(image.id)
-                }
-              }}
+              onClick={() => router.push(`/image/${image.id}`)}
             >
               <Image src={image.url || "/placeholder.svg"} alt={image.prompt} fill className="object-contain" />
               <div
-                className={`absolute inset-0 bg-gradient-to-t from-background/90 via-background/40 to-transparent backdrop-blur-[2px] transition-opacity ${activeImageId === image.id ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
+                className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/40 to-transparent backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity"
               />
-              <Button
-                size="sm"
-                variant="secondary"
-                className={`absolute bottom-2 right-2 z-10 h-8 w-8 p-0 transition-opacity backdrop-blur-md bg-background/60 border-primary/20 ${activeImageId === image.id ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
-                onClick={(e) => {
-                  e.stopPropagation()
-                  console.log("[v0] Opening fullscreen for image:", image.url)
-                  setFullscreenImage(image.url)
-                }}
-              >
-                <Maximize2 className="h-4 w-4" />
-              </Button>
-              <div
-                className={`absolute bottom-0 left-0 right-0 flex items-center justify-center gap-2 p-4 transition-opacity ${activeImageId === image.id ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
-              >
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  className="gap-2 backdrop-blur-md bg-background/60 border-primary/20"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    handleSave(image.id, image.url)
-                  }}
-                  disabled={savingImages.has(image.id)}
-                >
-                  <Save className="h-4 w-4" />
-                </Button>
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  className="gap-2 backdrop-blur-md bg-background/60 border-primary/20"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    handleDownload(image.url, image.prompt)
-                  }}
-                >
-                  <Download className="h-4 w-4" />
-                </Button>
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  className="gap-2 backdrop-blur-md bg-background/60 border-primary/20 text-red-500 hover:text-red-600"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    handleDelete(image.id)
-                  }}
-                  disabled={deletingImages.has(image.id)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
             </div>
             <div className="p-4 bg-gradient-to-br from-muted/20 to-transparent">
               <p className="truncate text-xs text-muted-foreground" title={image.prompt}>
