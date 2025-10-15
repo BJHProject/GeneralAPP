@@ -1,5 +1,6 @@
 "use client"
 
+import { Suspense } from "react"
 import { ImageGenerator } from "@/components/image-generator"
 import { VideoGenerator } from "@/components/video-generator"
 import { ImageEditor } from "@/components/image-editor"
@@ -19,7 +20,6 @@ interface CreationTabsProps {
 export function CreationTabs({ activeTab, setActiveTab }: CreationTabsProps) {
   return (
     <div className="space-y-8">
-      {/* Tab Navigation */}
       <div className="flex justify-center">
         <div className="inline-flex items-center gap-2 rounded-lg bg-muted p-1">
           <Button
@@ -49,11 +49,12 @@ export function CreationTabs({ activeTab, setActiveTab }: CreationTabsProps) {
         </div>
       </div>
 
-      {/* Tab Content */}
       {activeTab === "images" && (
         <div className="grid gap-8 lg:grid-cols-2">
           <div>
-            <ImageGenerator />
+            <Suspense fallback={<div className="h-96 animate-pulse bg-muted rounded-2xl" />}>
+              <ImageGenerator />
+            </Suspense>
           </div>
           <div className="hidden lg:block">
             <FeaturedRecentImage />
@@ -64,7 +65,9 @@ export function CreationTabs({ activeTab, setActiveTab }: CreationTabsProps) {
       {activeTab === "videos" && (
         <div className="grid gap-8 lg:grid-cols-2">
           <div>
-            <VideoGenerator />
+            <Suspense fallback={<div className="h-96 animate-pulse bg-muted rounded-2xl" />}>
+              <VideoGenerator />
+            </Suspense>
           </div>
           <div className="hidden lg:block">
             <FeaturedRecentVideo />

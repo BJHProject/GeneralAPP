@@ -36,16 +36,30 @@ export function VideoGenerator() {
   const [eliteJobInfo, setEliteJobInfo] = useState<{ jobId: string; statusUrl: string; endpoint: string } | null>(null)
 
   useEffect(() => {
-    if (searchParams) {
-      const clonePrompt = searchParams.get('prompt')
-      const cloneImageUrl = searchParams.get('imageUrl')
+    const loadClonedData = async () => {
+      if (searchParams) {
+        const clonePrompt = searchParams.get('prompt')
+        const cloneImageUrl = searchParams.get('imageUrl')
 
-      if (clonePrompt) setPrompt(clonePrompt)
-      
-      if (cloneImageUrl) {
-        handleGalleryImageSelect(cloneImageUrl)
+        if (clonePrompt) setPrompt(clonePrompt)
+        
+        if (cloneImageUrl) {
+          setGalleryImageUrl(cloneImageUrl)
+          setImagePreview(cloneImageUrl)
+
+          try {
+            const response = await fetch(cloneImageUrl)
+            const blob = await response.blob()
+            const file = new File([blob], "cloned-image.png", { type: blob.type })
+            setInputImage(file)
+          } catch (error) {
+            console.error("[v0] Failed to load cloned image:", error)
+          }
+        }
       }
     }
+    
+    loadClonedData()
   }, [searchParams])
 
   useEffect(() => {

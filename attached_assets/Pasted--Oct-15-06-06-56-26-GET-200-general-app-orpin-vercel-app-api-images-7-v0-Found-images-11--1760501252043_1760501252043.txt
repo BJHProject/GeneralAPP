@@ -1,0 +1,542 @@
+
+Oct 15 06:06:56.26
+GET
+200
+general-app-orpin.vercel.app
+/api/images
+7
+[v0] Found images: 11 ( 1 saved, 10 recent)
+Oct 15 06:06:47.29
+GET
+200
+general-app-orpin.vercel.app
+/acceptable-use
+Oct 15 06:06:47.29
+GET
+200
+general-app-orpin.vercel.app
+/terms
+Oct 15 06:06:47.29
+GET
+200
+general-app-orpin.vercel.app
+/api/media/5d72df86-ee75-4be1-ad5e-9abf581da773
+Oct 15 06:06:46.76
+GET
+200
+general-app-orpin.vercel.app
+/image/5d72df86-ee75-4be1-ad5e-9abf581da773
+Oct 15 06:06:35.15
+GET
+200
+general-app-orpin.vercel.app
+/api/user/credits
+8
+[v0] Step 12: Returning existing user credits: 215500
+Oct 15 06:06:35.02
+POST
+200
+general-app-orpin.vercel.app
+/api/log-session
+Oct 15 06:06:34.89
+GET
+200
+general-app-orpin.vercel.app
+/api/images
+7
+[v0] Found images: 11 ( 1 saved, 10 recent)
+Oct 15 06:06:34.60
+POST
+200
+general-app-orpin.vercel.app
+/api/log-session
+Oct 15 06:06:34.40
+GET
+200
+general-app-orpin.vercel.app
+/landing
+Oct 15 06:06:34.39
+GET
+200
+general-app-orpin.vercel.app
+/api/images
+7
+[v0] Found images: 11 ( 1 saved, 10 recent)
+Oct 15 06:06:33.87
+GET
+200
+general-app-orpin.vercel.app
+/
+Oct 15 06:06:11.26
+GET
+200
+general-app-orpin.vercel.app
+/api/user/credits
+8
+[v0] Step 12: Returning existing user credits: 215500
+Oct 15 06:06:10.94
+GET
+200
+general-app-orpin.vercel.app
+/api/images
+7
+[v0] Found images: 11 ( 1 saved, 10 recent)
+Oct 15 06:06:10.69
+POST
+200
+general-app-orpin.vercel.app
+/api/log-session
+Oct 15 06:06:10.45
+GET
+200
+general-app-orpin.vercel.app
+/api/images
+7
+[v0] Found images: 11 ( 1 saved, 10 recent)
+Oct 15 06:06:08.66
+GET
+200
+general-app-orpin.vercel.app
+/api/media/4fb4e172-f1c5-4b4f-8b3e-e460d72fd6a1
+Oct 15 06:06:08.05
+GET
+200
+general-app-orpin.vercel.app
+/image/4fb4e172-f1c5-4b4f-8b3e-e460d72fd6a1
+Oct 15 06:05:49.50
+GET
+200
+general-app-orpin.vercel.app
+/api/images
+7
+[v0] Found images: 11 ( 1 saved, 10 recent)
+Oct 15 06:05:49.30
+GET
+200
+general-app-orpin.vercel.app
+/api/user/credits
+8
+[v0] Step 12: Returning existing user credits: 215500
+Oct 15 06:05:48.80
+POST
+200
+general-app-orpin.vercel.app
+/api/log-session
+Oct 15 06:05:48.66
+GET
+200
+general-app-orpin.vercel.app
+/
+Oct 15 06:05:48.65
+GET
+200
+general-app-orpin.vercel.app
+/landing
+Oct 15 06:05:48.58
+GET
+200
+general-app-orpin.vercel.app
+/api/images
+7
+[v0] Found images: 11 ( 1 saved, 10 recent)
+Oct 15 06:05:48.22
+GET
+200
+general-app-orpin.vercel.app
+/
+Oct 15 06:05:46.52
+POST
+200
+general-app-orpin.vercel.app
+/api/log-session
+Oct 15 06:05:46.38
+POST
+200
+general-app-orpin.vercel.app
+/api/log-session
+Oct 15 06:05:46.24
+GET
+200
+general-app-orpin.vercel.app
+/acceptable-use
+Oct 15 06:05:46.24
+GET
+200
+general-app-orpin.vercel.app
+/terms
+Oct 15 06:05:46.22
+GET
+200
+general-app-orpin.vercel.app
+/api/media/4fb4e172-f1c5-4b4f-8b3e-e460d72fd6a1
+Oct 15 06:05:45.68
+GET
+200
+general-app-orpin.vercel.app
+/image/4fb4e172-f1c5-4b4f-8b3e-e460d72fd6a1
+Oct 15 06:05:43.18
+GET
+200
+general-app-orpin.vercel.app
+/api/media/4fb4e172-f1c5-4b4f-8b3e-e460d72fd6a1
+Oct 15 06:05:42.51
+GET
+200
+general-app-orpin.vercel.app
+/image/4fb4e172-f1c5-4b4f-8b3e-e460d72fd6a1
+Oct 15 06:05:09.77
+GET
+200
+general-app-orpin.vercel.app
+/api/user/credits
+8
+[v0] Step 12: Returning existing user credits: 215500
+Oct 15 06:05:09.49
+GET
+200
+general-app-orpin.vercel.app
+/api/images
+7
+[v0] Found images: 11 ( 1 saved, 10 recent)
+Oct 15 06:05:09.29
+POST
+200
+general-app-orpin.vercel.app
+/api/log-session
+Oct 15 06:05:09.07
+GET
+200
+general-app-orpin.vercel.app
+/api/images
+7
+[v0] Found images: 11 ( 1 saved, 10 recent)
+Oct 15 06:05:07.84
+GET
+200
+general-app-orpin.vercel.app
+/api/media/ed415e0d-b761-4541-bacf-290d3b70c5cc
+Oct 15 06:05:07.46
+GET
+200
+general-app-orpin.vercel.app
+/image/ed415e0d-b761-4541-bacf-290d3b70c5cc
+Oct 15 06:05:05.65
+GET
+200
+general-app-orpin.vercel.app
+/api/user/credits
+8
+[v0] Step 12: Returning existing user credits: 215500
+Oct 15 06:05:05.51
+GET
+200
+general-app-orpin.vercel.app
+/api/images
+7
+[v0] Found images: 11 ( 1 saved, 10 recent)
+Oct 15 06:05:05.17
+POST
+200
+general-app-orpin.vercel.app
+/api/log-session
+Oct 15 06:05:05.01
+GET
+200
+general-app-orpin.vercel.app
+/api/images
+7
+[v0] Found images: 11 ( 1 saved, 10 recent)
+Oct 15 06:05:03.56
+GET
+200
+general-app-orpin.vercel.app
+/api/media/4fb4e172-f1c5-4b4f-8b3e-e460d72fd6a1
+Oct 15 06:05:03.20
+GET
+200
+general-app-orpin.vercel.app
+/image/4fb4e172-f1c5-4b4f-8b3e-e460d72fd6a1
+Oct 15 06:05:01.45
+GET
+200
+general-app-orpin.vercel.app
+/api/user/credits
+8
+[v0] Step 12: Returning existing user credits: 215500
+Oct 15 06:05:01.42
+GET
+200
+general-app-orpin.vercel.app
+/api/images
+7
+[v0] Found images: 11 ( 1 saved, 10 recent)
+Oct 15 06:05:00.98
+POST
+200
+general-app-orpin.vercel.app
+/api/log-session
+Oct 15 06:05:00.85
+GET
+200
+general-app-orpin.vercel.app
+/landing
+Oct 15 06:05:00.83
+GET
+200
+general-app-orpin.vercel.app
+/
+Oct 15 06:05:00.80
+GET
+200
+general-app-orpin.vercel.app
+/api/images
+7
+[v0] Found images: 11 ( 1 saved, 10 recent)
+Oct 15 06:05:00.18
+GET
+200
+general-app-orpin.vercel.app
+/
+Oct 15 06:04:58.71
+POST
+200
+general-app-orpin.vercel.app
+/api/log-session
+Oct 15 06:04:58.57
+POST
+200
+general-app-orpin.vercel.app
+/api/log-session
+Oct 15 06:04:58.42
+GET
+200
+general-app-orpin.vercel.app
+/acceptable-use
+Oct 15 06:04:58.42
+GET
+200
+general-app-orpin.vercel.app
+/terms
+Oct 15 06:04:58.41
+GET
+200
+general-app-orpin.vercel.app
+/api/media/4fb4e172-f1c5-4b4f-8b3e-e460d72fd6a1
+Oct 15 06:04:57.67
+GET
+200
+general-app-orpin.vercel.app
+/image/4fb4e172-f1c5-4b4f-8b3e-e460d72fd6a1
+Oct 15 06:04:53.90
+GET
+200
+general-app-orpin.vercel.app
+/api/media/4fb4e172-f1c5-4b4f-8b3e-e460d72fd6a1
+Oct 15 06:04:52.98
+GET
+200
+general-app-orpin.vercel.app
+/image/4fb4e172-f1c5-4b4f-8b3e-e460d72fd6a1
+Oct 15 06:04:51.19
+GET
+200
+general-app-orpin.vercel.app
+/api/user/credits
+8
+[v0] Step 12: Returning existing user credits: 215500
+Oct 15 06:04:51.13
+GET
+200
+general-app-orpin.vercel.app
+/api/images
+7
+[v0] Found images: 11 ( 1 saved, 10 recent)
+Oct 15 06:04:51.03
+POST
+200
+general-app-orpin.vercel.app
+/api/log-session
+Oct 15 06:04:50.79
+GET
+200
+general-app-orpin.vercel.app
+/acceptable-use
+Oct 15 06:04:50.79
+GET
+200
+general-app-orpin.vercel.app
+/terms
+Oct 15 06:04:50.47
+POST
+200
+general-app-orpin.vercel.app
+/api/log-session
+Oct 15 06:04:50.30
+GET
+200
+general-app-orpin.vercel.app
+/landing
+Oct 15 06:04:50.26
+GET
+200
+general-app-orpin.vercel.app
+/api/images
+7
+[v0] Found images: 11 ( 1 saved, 10 recent)
+Oct 15 06:04:49.66
+POST
+200
+general-app-orpin.vercel.app
+/api/log-session
+Oct 15 06:04:49.47
+GET
+200
+general-app-orpin.vercel.app
+/
+Oct 15 06:04:41.84
+GET
+200
+general-app-orpin.vercel.app
+/acceptable-use
+Oct 15 06:04:41.84
+GET
+200
+general-app-orpin.vercel.app
+/auth/sign-up
+Oct 15 06:04:41.84
+GET
+200
+general-app-orpin.vercel.app
+/terms
+Oct 15 06:04:41.38
+GET
+200
+general-app-orpin.vercel.app
+/auth/login
+Oct 15 06:04:35.20
+GET
+200
+general-app-orpin.vercel.app
+/acceptable-use
+Oct 15 06:04:35.20
+GET
+200
+general-app-orpin.vercel.app
+/auth/sign-up
+Oct 15 06:04:35.20
+GET
+200
+general-app-orpin.vercel.app
+/terms
+Oct 15 06:04:23.85
+GET
+200
+general-app-orpin.vercel.app
+/api/images
+4
+[v0] No user found, returning empty array
+Oct 15 06:04:23.62
+GET
+200
+general-app-orpin.vercel.app
+/auth/login
+Oct 15 06:04:23.52
+GET
+200
+general-app-orpin.vercel.app
+/landing
+Oct 15 06:04:23.47
+GET
+200
+general-app-orpin.vercel.app
+/api/images
+4
+[v0] No user found, returning empty array
+Oct 15 06:04:21.64
+GET
+200
+general-app-orpin.vercel.app
+/
+Oct 15 06:00:35.43
+POST
+200
+general-app-orpin.vercel.app
+/api/log-session
+Oct 15 06:00:35.29
+GET
+200
+general-app-orpin.vercel.app
+/api/user/credits
+8
+[v0] Step 12: Returning existing user credits: 215500
+Oct 15 05:59:16.24
+GET
+200
+general-r1dfde6it-riaflamestick8-2161s-projects.vercel.app
+/
+Oct 15 05:59:13.52
+GET
+200
+general-r1dfde6it-riaflamestick8-2161s-projects.vercel.app
+/
+Oct 15 05:59:08.35
+GET
+200
+general-r1dfde6it-riaflamestick8-2161s-projects.vercel.app
+/api/images
+4
+[v0] No user found, returning empty array
+Oct 15 05:59:08.23
+GET
+200
+general-r1dfde6it-riaflamestick8-2161s-projects.vercel.app
+/auth/login
+Oct 15 05:59:08.23
+GET
+200
+general-r1dfde6it-riaflamestick8-2161s-projects.vercel.app
+/landing
+Oct 15 05:59:08.23
+GET
+200
+general-r1dfde6it-riaflamestick8-2161s-projects.vercel.app
+/api/images
+4
+[v0] No user found, returning empty array
+Oct 15 05:59:07.68
+GET
+200
+general-r1dfde6it-riaflamestick8-2161s-projects.vercel.app
+/auth/login
+Oct 15 05:59:07.66
+GET
+200
+general-r1dfde6it-riaflamestick8-2161s-projects.vercel.app
+/landing
+Oct 15 05:59:07.64
+GET
+200
+general-r1dfde6it-riaflamestick8-2161s-projects.vercel.app
+/api/images
+4
+[v0] No user found, returning empty array
+Oct 15 05:59:07.15
+GET
+200
+general-r1dfde6it-riaflamestick8-2161s-projects.vercel.app
+/
+Oct 15 05:59:07.14
+GET
+200
+general-r1dfde6it-riaflamestick8-2161s-projects.vercel.app
+/
+Oct 15 05:59:06.73
+GET
+200
+general-r1dfde6it-riaflamestick8-2161s-projects.vercel.app
+/
+Oct 15 05:59:06.71
+GET
+200
+general-r1dfde6it-riaflamestick8-2161s-projects.vercel.app
+/
