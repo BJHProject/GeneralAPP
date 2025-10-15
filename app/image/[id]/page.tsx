@@ -175,38 +175,19 @@ export default function ImageDetailPage() {
           Back
         </Button>
 
-        <div className="grid lg:grid-cols-[1fr,400px] gap-8">
-          <Card className="border-0 bg-card/50 shadow-xl shadow-primary/5 overflow-hidden rounded-2xl p-6">
-            <div 
-              className="relative bg-muted/30 rounded-xl overflow-hidden mx-auto"
-              style={{ 
-                aspectRatio: aspectRatio.toString(),
-                maxHeight: '80vh',
-                maxWidth: '100%'
-              }}
-            >
-              <Image
-                src={image.url}
-                alt={image.prompt}
-                fill
-                className="object-contain"
-                priority
-              />
-            </div>
-          </Card>
-
-          <div className="space-y-4">
+        <div className="flex flex-col-reverse lg:flex-row gap-8">
+          <div className="lg:w-[420px] flex-shrink-0 space-y-4">
             <Card className="border-0 bg-gradient-to-br from-card/50 to-muted/30 shadow-xl shadow-primary/5 p-6 rounded-2xl">
               <h1 className="text-2xl font-bold mb-4 leading-tight">{image.prompt}</h1>
               
               <div className="space-y-3 mb-6 text-sm text-muted-foreground">
                 <div className="flex items-center justify-between">
-                  <span>Aspect Ratio:</span>
+                  <span>Dimensions:</span>
                   <span className="font-medium text-foreground">{image.width}×{image.height}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span>Style:</span>
-                  <span className="font-medium text-foreground">{image.model}</span>
+                  <span>Model:</span>
+                  <span className="font-medium text-foreground capitalize">{image.model.replace(/_/g, ' ')}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span>Created:</span>
@@ -221,7 +202,10 @@ export default function ImageDetailPage() {
                 {image.is_saved && (
                   <div className="flex items-center justify-between">
                     <span>Status:</span>
-                    <span className="font-medium text-green-500">Saved</span>
+                    <span className="font-medium text-green-500 flex items-center gap-1">
+                      <Save className="h-3 w-3" />
+                      Saved
+                    </span>
                   </div>
                 )}
               </div>
@@ -232,7 +216,7 @@ export default function ImageDetailPage() {
                   className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg shadow-primary/20"
                   size="lg"
                 >
-                  <Copy className="mr-2 h-4 w-4" />
+                  <Copy className="mr-2 h-5 w-5" />
                   Clone Prompt
                 </Button>
 
@@ -254,7 +238,7 @@ export default function ImageDetailPage() {
                     className={`backdrop-blur-sm bg-muted/50 border border-primary/10 hover:bg-muted/70 ${!image.is_saved ? '' : 'col-span-2'}`}
                   >
                     <Share2 className="mr-2 h-4 w-4" />
-                    Share
+                    Share Link
                   </Button>
                 </div>
 
@@ -320,6 +304,27 @@ export default function ImageDetailPage() {
                 <p>
                   All content is AI-generated for entertainment purposes. Creating or sharing content based on real individuals is prohibited.
                 </p>
+              </div>
+            </Card>
+          </div>
+
+          <div className="flex-1 min-w-0">
+            <Card className="border-0 bg-card/50 shadow-xl shadow-primary/5 overflow-hidden rounded-2xl p-6 h-full">
+              <div 
+                className="relative bg-muted/30 rounded-xl overflow-hidden mx-auto h-full flex items-center justify-center"
+                style={{ 
+                  aspectRatio: aspectRatio.toString(),
+                  maxHeight: '85vh',
+                  maxWidth: '100%'
+                }}
+              >
+                <Image
+                  src={image.url}
+                  alt={image.prompt}
+                  fill
+                  className="object-contain"
+                  priority
+                />
               </div>
             </Card>
           </div>
