@@ -16,7 +16,7 @@ import {
   ChevronUp,
   Loader2
 } from "lucide-react"
-import { DiamondIcon } from "@/components/ui/icons"
+import { DiamondIcon } from "@/components/ui/diamond-icon"
 
 interface ImageDetail {
   id: string
