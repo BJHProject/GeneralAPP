@@ -226,8 +226,44 @@ export function ImageDetailClient({ imageId }: ImageDetailClientProps) {
           </div>
 
           {/* Controls section - shows second on mobile, left on desktop */}
-          <div className="lg:w-[420px] flex-shrink-0 space-y-4 lg:order-1">
-            <Card className="border-0 bg-gradient-to-br from-card/50 to-muted/30 shadow-xl shadow-primary/5 p-6 rounded-2xl">
+          <div className="lg:w-[420px] flex-shrink-0 space-y-4 lg:order-1 flex flex-col">
+            {/* Prompt Details - appears first on desktop, third on mobile */}
+            <Card className="border-0 bg-gradient-to-br from-card/50 to-muted/30 shadow-xl shadow-primary/5 rounded-2xl overflow-hidden order-3 lg:order-1">
+              <button
+                onClick={() => setShowPrompt(!showPrompt)}
+                className="w-full px-6 py-4 flex items-center justify-between hover:bg-muted/20 transition-colors"
+              >
+                <span className="font-semibold">Prompt Details</span>
+                {showPrompt ? (
+                  <ChevronUp className="h-5 w-5" />
+                ) : (
+                  <ChevronDown className="h-5 w-5" />
+                )}
+              </button>
+              
+              {showPrompt && (
+                <div className="px-6 pb-6 space-y-4">
+                  <div>
+                    <h3 className="text-sm font-medium text-muted-foreground mb-2">Positive Prompt</h3>
+                    <p className="text-sm leading-relaxed bg-muted/30 p-3 rounded-lg">
+                      {image.prompt}
+                    </p>
+                  </div>
+                  
+                  {image.negative_prompt && (
+                    <div>
+                      <h3 className="text-sm font-medium text-muted-foreground mb-2">Negative Prompt</h3>
+                      <p className="text-sm leading-relaxed bg-muted/30 p-3 rounded-lg">
+                        {image.negative_prompt}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </Card>
+
+            {/* Info Card - appears second on desktop, first on mobile */}
+            <Card className="border-0 bg-gradient-to-br from-card/50 to-muted/30 shadow-xl shadow-primary/5 p-6 rounded-2xl order-1 lg:order-2">
               <div className="space-y-2 mb-6 text-sm text-muted-foreground">
                 <div className="flex items-center justify-between">
                   <span>Dimensions:</span>
@@ -320,41 +356,7 @@ export function ImageDetailClient({ imageId }: ImageDetailClientProps) {
               </div>
             </Card>
 
-            <Card className="border-0 bg-gradient-to-br from-card/50 to-muted/30 shadow-xl shadow-primary/5 rounded-2xl overflow-hidden">
-              <button
-                onClick={() => setShowPrompt(!showPrompt)}
-                className="w-full px-6 py-4 flex items-center justify-between hover:bg-muted/20 transition-colors"
-              >
-                <span className="font-semibold">Prompt Details</span>
-                {showPrompt ? (
-                  <ChevronUp className="h-5 w-5" />
-                ) : (
-                  <ChevronDown className="h-5 w-5" />
-                )}
-              </button>
-              
-              {showPrompt && (
-                <div className="px-6 pb-6 space-y-4">
-                  <div>
-                    <h3 className="text-sm font-medium text-muted-foreground mb-2">Positive Prompt</h3>
-                    <p className="text-sm leading-relaxed bg-muted/30 p-3 rounded-lg">
-                      {image.prompt}
-                    </p>
-                  </div>
-                  
-                  {image.negative_prompt && (
-                    <div>
-                      <h3 className="text-sm font-medium text-muted-foreground mb-2">Negative Prompt</h3>
-                      <p className="text-sm leading-relaxed bg-muted/30 p-3 rounded-lg">
-                        {image.negative_prompt}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              )}
-            </Card>
-
-            <Card className="border-0 bg-gradient-to-br from-card/50 to-muted/30 shadow-xl shadow-primary/5 p-4 rounded-2xl">
+            <Card className="border-0 bg-gradient-to-br from-card/50 to-muted/30 shadow-xl shadow-primary/5 p-4 rounded-2xl order-2 lg:order-3">
               <div className="flex items-start gap-2 text-xs text-muted-foreground">
                 <DiamondIcon className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                 <p>
