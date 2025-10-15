@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useSearchParams } from "next/navigation"
 import { CreationTabs } from "@/components/creation-tabs"
 import { RecentGenerations } from "@/components/recent-generations"
 import { RecentVideos } from "@/components/recent-videos"
@@ -8,7 +9,15 @@ import { RecentEdits } from "@/components/recent-edits"
 import { Header } from "@/components/header"
 
 export default function Home() {
+  const searchParams = useSearchParams()
   const [activeTab, setActiveTab] = useState<"images" | "videos" | "editor">("images")
+
+  useEffect(() => {
+    const tab = searchParams?.get('tab')
+    if (tab === 'images' || tab === 'videos' || tab === 'editor') {
+      setActiveTab(tab)
+    }
+  }, [searchParams])
 
   return (
     <div className="min-h-screen bg-background">

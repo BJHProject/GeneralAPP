@@ -14,7 +14,8 @@ import {
   Copy,
   ChevronDown,
   ChevronUp,
-  Loader2
+  Loader2,
+  VideoIcon
 } from "lucide-react"
 import { DiamondIcon } from "@/components/ui/diamond-icon"
 
@@ -136,7 +137,28 @@ export default function ImageDetailPage() {
 
   const handleClone = () => {
     if (!image) return
-    router.push(`/?prompt=${encodeURIComponent(image.prompt)}`)
+    const params = new URLSearchParams({
+      prompt: image.prompt,
+      model: image.model,
+      width: image.width.toString(),
+      height: image.height.toString(),
+    })
+    
+    if (image.negative_prompt) {
+      params.append('negative_prompt', image.negative_prompt)
+    }
+    
+    router.push(`/?tab=images&${params.toString()}`)
+  }
+
+  const handleAnimate = () => {
+    if (!image) return
+    const params = new URLSearchParams({
+      prompt: image.prompt,
+      imageUrl: image.url,
+    })
+    
+    router.push(`/?tab=videos&${params.toString()}`)
   }
 
   if (isLoading) {
@@ -211,14 +233,22 @@ export default function ImageDetailPage() {
               </div>
 
               <div className="space-y-3">
-                <Button
-                  onClick={handleClone}
-                  className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg shadow-primary/20"
-                  size="lg"
-                >
-                  <Copy className="mr-2 h-5 w-5" />
-                  Clone Prompt
-                </Button>
+                <div className="grid grid-cols-2 gap-3">
+                  <Button
+                    onClick={handleClone}
+                    className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg shadow-primary/20"
+                  >
+                    <Copy className="mr-2 h-4 w-4" />
+                    Clone
+                  </Button>
+                  <Button
+                    onClick={handleAnimate}
+                    className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 shadow-lg shadow-purple-600/20"
+                  >
+                    <VideoIcon className="mr-2 h-4 w-4" />
+                    Animate
+                  </Button>
+                </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   {!image.is_saved && (

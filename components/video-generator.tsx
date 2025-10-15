@@ -3,6 +3,7 @@
 import type React from "react"
 
 import { useState, useEffect } from "react"
+import { useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Card } from "@/components/ui/card"
@@ -15,6 +16,8 @@ import { createClient } from "@/lib/supabase/client"
 import Image from "next/image"
 
 export function VideoGenerator() {
+  const searchParams = useSearchParams()
+  
   const [prompt, setPrompt] = useState("")
   const [inputImage, setInputImage] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
@@ -29,8 +32,21 @@ export function VideoGenerator() {
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [showGallerySelector, setShowGallerySelector] = useState(false)
   const [galleryImageUrl, setGalleryImageUrl] = useState<string | null>(null)
-  const [generatedVideo, setGeneratedVideo] = useState<string | null>(null) // Declare setGeneratedVideo
+  const [generatedVideo, setGeneratedVideo] = useState<string | null>(null)
   const [eliteJobInfo, setEliteJobInfo] = useState<{ jobId: string; statusUrl: string; endpoint: string } | null>(null)
+
+  useEffect(() => {
+    if (searchParams) {
+      const clonePrompt = searchParams.get('prompt')
+      const cloneImageUrl = searchParams.get('imageUrl')
+
+      if (clonePrompt) setPrompt(clonePrompt)
+      
+      if (cloneImageUrl) {
+        handleGalleryImageSelect(cloneImageUrl)
+      }
+    }
+  }, [searchParams])
 
   useEffect(() => {
     const supabase = createClient()
