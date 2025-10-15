@@ -36,6 +36,32 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
     timeout: 45000,
     maxRetries: 2,
   },
+
+  'realistic_v2': {
+    id: 'realistic_v2',
+    name: 'Realistic V2',
+    provider: 'huggingface-inference',
+    endpoint: 'ENDPOINT_URL_PLACEHOLDER',
+    type: 'image',
+    defaults: {
+      width: 1024,
+      height: 1024,
+      steps: 30,
+      guidance: 6.5,
+    },
+    loras: [
+      { name: 'MoriiMee_Gothic', scale: 0.2 }
+    ],
+    mandatoryPrompts: {
+      positive: 'score_9, score_8_up, score_7_up, high-detail, 4k realism',
+      negative: 'score_6, score_5, score_4, (worst quality:1.2), (low quality:1.2), lowres, bad anatomy, bad hands',
+    },
+    pricing: {
+      credits: 500,
+    },
+    timeout: 90000,
+    maxRetries: 2,
+  },
   
   'anime': {
     id: 'anime',

@@ -1,0 +1,73 @@
+import requests
+import json
+import base64
+from PIL import Image
+from io import BytesIO
+
+# Your endpoint details
+ENDPOINT_URL = "https://your-endpoint-url.aws.endpoints.huggingface.cloud"
+HF_TOKEN = "hf_your_token_here"
+
+def call_your_endpoint(prompt, **kwargs):
+    headers = {
+        "Authorization": f"Bearer {HF_TOKEN}",
+        "Content-Type": "application/json"
+    }
+    
+    payload = {
+        "inputs": {
+            "prompt": prompt,
+            "negative_prompt": kwargs.get("negative_prompt"),
+            "width": kwargs.get("width", 1024),
+            "height": kwargs.get("height", 1024),
+            "num_inference_steps": kwargs.get("steps", 30),
+            "guidance_scale": kwargs.get("guidance", 6.5),
+            "num_images": kwargs.get("num_images", 1),
+            "seed": kwargs.get("seed"),
+            "scheduler": kwargs.get("scheduler"),
+            "loras": kwargs.get("loras", []),  # e.g., [{"name": "MoriiMee_Gothic", "scale": 0.7}]
+            "fuse_lora": kwargs.get("fuse_lora", False)
+        }
+    }
+    
+    response = requests.post(ENDPOINT_URL, headers=headers, json=payload)
+    
+    if response.status_code != 200:
+        raise Exception(f"API Error {response.status_code}: {response.text}")
+    
+    data = response.json()
+    
+    # Handle the response based on your handler's output format
+    if "images" in data:
+        # JSON response with base64 images
+        images = []
+        for img_data in data["images"]:
+            img_b64 = img_data["b64_json"]
+            img = Image.open(BytesIO(base64.b64decode(img_b64)))
+            images.append(img)
+        return images
+    elif "image" in data:
+        # Single base64 image response
+        img_b64 = data["image"]
+        img = Image.open(BytesIO(base64.b64decode(img_b64)))
+        return [img]
+    else:
+        raise Exception("Unexpected response format")
+
+# Example usage
+try:
+    images = call_your_endpoint(
+        "gothic anime portrait with dramatic lighting",
+        negative_prompt="blurry, watermark",
+        width=1024,
+        height=1024,
+        steps=30,
+        guidance=6.5,
+        loras=[{"name": "MoriiMee_Gothic", "scale": 0.7}]
+    )
+    
+    # Save or display the first image
+    images[0].save("generated_image.png")
+    
+except Exception as e:
+    print(f"Error: {e}")

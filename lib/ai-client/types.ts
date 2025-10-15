@@ -1,6 +1,6 @@
 export type MediaType = 'image' | 'video' | 'edited-image'
 
-export type ProviderType = 'huggingface' | 'wavespeed' | 'fal' | 'gradio'
+export type ProviderType = 'huggingface' | 'huggingface-inference' | 'wavespeed' | 'fal' | 'gradio'
 
 export interface LoRA {
   id: string
@@ -69,6 +69,12 @@ export interface ModelConfig {
   }
   
   allowedLoRAs?: string[]
+  loras?: Array<{ name: string; scale: number }>
+  
+  mandatoryPrompts?: {
+    positive?: string
+    negative?: string
+  }
   
   pricing: {
     credits: number
