@@ -6,6 +6,8 @@ import { createServerClient } from "@/lib/supabase/server"
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const { id } = params
+    const { searchParams } = new URL(request.url)
+    const metadata = searchParams.get('metadata') === 'true'
 
     // Verify session and ownership
     const supabase = await createServerClient()
@@ -17,7 +19,23 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    // Fetch media metadata
+    // If metadata requested, fetch from images table
+    if (metadata) {
+      const { data: image, error } = await supabase
+        .from("images")
+        .select("*")
+        .eq("id", id)
+        .eq("user_id", user.id)
+        .single()
+
+      if (error || !image) {
+        return NextResponse.json({ error: "Image not found" }, { status: 404 })
+      }
+
+      return NextResponse.json(image)
+    }
+
+    // Otherwise, fetch media metadata for blob streaming
     const { data: media, error } = await supabase.from("media").select("*").eq("id", id).eq("user_id", user.id).single()
 
     if (error || !media) {
