@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Card } from "@/components/ui/card"
@@ -19,6 +20,8 @@ const PRESET_RESOLUTIONS = [
 ]
 
 export function ImageGenerator() {
+  const searchParams = useSearchParams()
+  
   const [prompt, setPrompt] = useState("")
   const [model, setModel] = useState("realistic")
   const [negativePrompt, setNegativePrompt] = useState(
@@ -34,6 +37,34 @@ export function ImageGenerator() {
   const [user, setUser] = useState<any>(null)
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [progress, setProgress] = useState(0)
+
+  useEffect(() => {
+    if (searchParams) {
+      const clonePrompt = searchParams.get('prompt')
+      const cloneNegativePrompt = searchParams.get('negative_prompt')
+      const cloneModel = searchParams.get('model')
+      const cloneWidth = searchParams.get('width')
+      const cloneHeight = searchParams.get('height')
+
+      if (clonePrompt) setPrompt(clonePrompt)
+      if (cloneNegativePrompt) setNegativePrompt(cloneNegativePrompt)
+      if (cloneModel) setModel(cloneModel)
+      
+      if (cloneWidth && cloneHeight) {
+        const width = parseInt(cloneWidth)
+        const height = parseInt(cloneHeight)
+        setImageWidth(width)
+        setImageHeight(height)
+        
+        const presetIndex = PRESET_RESOLUTIONS.findIndex(
+          preset => preset.width === width && preset.height === height
+        )
+        if (presetIndex !== -1) {
+          setSelectedResolution(presetIndex)
+        }
+      }
+    }
+  }, [searchParams])
 
   useEffect(() => {
     const supabase = createClient()
@@ -146,7 +177,7 @@ export function ImageGenerator() {
   const pollForWavespeedResults = async (requestId: string) => {
     console.log("[v0] ========== STARTING WAVESPEED POLLING ==========")
     console.log("[v0] Request ID:", requestId)
-    const maxAttempts = 120 // 10 minutes with 5 second intervals
+    const maxAttempts = 120
     let attempts = 0
 
     while (attempts < maxAttempts) {
@@ -323,15 +354,29 @@ export function ImageGenerator() {
               })}
             </div>
             <p className="text-xs text-muted-foreground">
-              Current: {imageWidth}×{imageHeight}px
+              {imageWidth} × {imageHeight} pixels
             </p>
           </div>
+
+          {error && (
+            <div className="flex items-center gap-2 rounded-lg bg-destructive/10 p-4 text-sm text-destructive">
+              <AlertCircle className="h-5 w-5 flex-shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
+
+          {isGenerating && progress > 0 && (
+            <div className="space-y-2">
+              <Progress value={progress} className="h-2" />
+              <p className="text-xs text-center text-muted-foreground">Generating your masterpiece...</p>
+            </div>
+          )}
 
           <Button
             onClick={handleGenerate}
             disabled={isGenerating || !prompt.trim()}
-            className="w-full bg-gradient-to-r from-primary to-primary/80 text-primary-foreground hover:from-primary/90 hover:to-primary/70 shadow-lg shadow-primary/20 transition-all"
             size="lg"
+            className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg shadow-primary/20 transition-all"
           >
             {isGenerating ? (
               <>
@@ -341,27 +386,15 @@ export function ImageGenerator() {
             ) : (
               <>
                 <Wand2 className="mr-2 h-5 w-5" />
-                Generate Images (500
-                <DiamondIcon className="h-3.5 w-3.5 text-pink-300 inline" />)
+                Generate Image
               </>
             )}
           </Button>
 
-          {isGenerating && (
-            <div className="space-y-2">
-              <Progress value={progress} className="h-2" />
-              <p className="text-sm text-center text-muted-foreground">
-                Generating your image... {Math.round(progress)}%
-              </p>
-            </div>
-          )}
-
-          {error && (
-            <div className="flex items-start gap-3 rounded-lg border border-destructive/20 bg-destructive/5 p-4">
-              <AlertCircle className="h-5 w-5 text-destructive mt-0.5 flex-shrink-0" />
-              <div className="text-sm text-destructive">{error}</div>
-            </div>
-          )}
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <DiamondIcon className="h-4 w-4 text-primary" />
+            <span>500 credits per image</span>
+          </div>
         </div>
       </Card>
     </div>
