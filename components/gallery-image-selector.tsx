@@ -68,8 +68,7 @@ export function GalleryImageSelector({ isOpen, onClose, onSelect }: GalleryImage
   }
 
   const getImageObjectFit = (width: number, height: number) => {
-    const aspectRatio = width / height
-    return aspectRatio >= 0.9 ? "object-contain" : "object-cover"
+    return "object-contain"
   }
 
   return (

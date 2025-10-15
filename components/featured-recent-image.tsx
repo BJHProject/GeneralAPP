@@ -147,8 +147,7 @@ export function FeaturedRecentImage() {
   }
 
   const getImageObjectFit = (width: number, height: number) => {
-    const aspectRatio = width / height
-    return aspectRatio >= 0.9 ? "object-contain" : "object-cover"
+    return "object-contain"
   }
 
   if (isLoading) {
