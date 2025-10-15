@@ -1,0 +1,108 @@
+2025-10-15 06:29:57.30
+3ef183f6
+User
+[v0] User record ensured in database
+2025-10-15 06:29:57.42
+3ef183f6
+User
+[v0] Found images: 11 ( 1 saved, 10 recent)
+2025-10-15 06:29:57.66
+3ef183f6
+User
+[v0] Fetching images from database
+2025-10-15 06:29:57.67
+3ef183f6
+User
+[v0] ===== CREDITS API CALLED =====
+2025-10-15 06:29:57.67
+3ef183f6
+User
+[v0] Step 1: Creating Supabase client
+2025-10-15 06:29:57.67
+3ef183f6
+User
+[v0] Step 2: Supabase client created successfully
+2025-10-15 06:29:57.67
+3ef183f6
+User
+[v0] Step 3: Getting user from auth
+2025-10-15 06:29:57.73
+3ef183f6
+User
+[v0] Auth check: {
+2025-10-15 06:29:57.73
+3ef183f6
+User
+hasUser: true,
+2025-10-15 06:29:57.73
+3ef183f6
+User
+userId: '16f09afb-b861-4e57-b7bb-b4adeba007f4',
+2025-10-15 06:29:57.73
+3ef183f6
+User
+email: 'test@gmail.com',
+2025-10-15 06:29:57.73
+3ef183f6
+User
+error: undefined
+2025-10-15 06:29:57.73
+3ef183f6
+User
+}
+2025-10-15 06:29:57.73
+3ef183f6
+User
+[v0] User authenticated: 16f09afb-b861-4e57-b7bb-b4adeba007f4
+2025-10-15 06:29:57.73
+3ef183f6
+User
+[v0] ensureUserExists called for user: 16f09afb-b861-4e57-b7bb-b4adeba007f4 test@gmail.com
+2025-10-15 06:29:57.73
+3ef183f6
+User
+[v0] Step 4: Auth result - {
+2025-10-15 06:29:57.73
+3ef183f6
+User
+hasUser: true,
+2025-10-15 06:29:57.73
+3ef183f6
+User
+userId: '16f09afb-b861-4e57-b7bb-b4adeba007f4',
+2025-10-15 06:29:57.73
+3ef183f6
+User
+email: 'test@gmail.com',
+2025-10-15 06:29:57.73
+3ef183f6
+User
+authError: undefined
+2025-10-15 06:29:57.73
+3ef183f6
+User
+}
+2025-10-15 06:29:57.73
+3ef183f6
+User
+[v0] Step 6: Querying users table for user: 16f09afb-b861-4e57-b7bb-b4adeba007f4
+2025-10-15 06:29:57.79
+3ef183f6
+User
+[v0] User exists with 215500 credits
+2025-10-15 06:29:57.79
+3ef183f6
+User
+[v0] User record ensured in database
+2025-10-15 06:29:57.80
+3ef183f6
+User
+[v0] Step 7: Database query result - { hasData: true, credits: 215500, tier: 'free', dbError: undefined }
+2025-10-15 06:29:57.80
+3ef183f6
+User
+[v0] Step 12: Returning existing user credits: 215500
+2025-10-15 06:29:57.96
+3ef183f6
+User
+[v0] Found images: 11 ( 1 saved, 10 recent)
