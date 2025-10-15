@@ -26,7 +26,7 @@ interface ImageDetail {
   negative_prompt?: string
   width: number
   height: number
-  model: string
+  model?: string
   created_at: string
   is_saved: boolean
 }
@@ -141,10 +141,13 @@ export function ImageDetailClient({ imageId }: ImageDetailClientProps) {
     if (!image) return
     const params = new URLSearchParams({
       prompt: image.prompt,
-      model: image.model,
       width: image.width.toString(),
       height: image.height.toString(),
     })
+    
+    if (image.model) {
+      params.append('model', image.model)
+    }
     
     if (image.negative_prompt) {
       params.append('negative_prompt', image.negative_prompt)
@@ -211,7 +214,7 @@ export function ImageDetailClient({ imageId }: ImageDetailClientProps) {
                 </div>
                 <div className="flex items-center justify-between">
                   <span>Model:</span>
-                  <span className="font-medium text-foreground capitalize">{image.model.replace(/_/g, ' ')}</span>
+                  <span className="font-medium text-foreground capitalize">{image.model ? image.model.replace(/_/g, ' ') : 'Unknown'}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span>Created:</span>
