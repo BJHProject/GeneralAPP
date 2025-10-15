@@ -146,7 +146,7 @@ export function ImageGallery({ images, prompt, width, height, onImageSaved }: Im
                 src={image.url || "/placeholder.svg"}
                 alt={`Generated image ${index + 1}: ${prompt}`}
                 fill
-                className="object-cover transition-transform duration-300 group-hover:scale-105"
+                className="object-contain transition-transform duration-300 group-hover:scale-105"
               />
               <div
                 className={`absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent transition-opacity ${activeImageIndex === index ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}

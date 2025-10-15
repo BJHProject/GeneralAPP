@@ -222,7 +222,12 @@ export function RecentGenerations() {
               }}
               onClick={() => router.push(`/image/${image.id}`)}
             >
-              <Image src={image.url || "/placeholder.svg"} alt={image.prompt} fill className="object-contain" />
+              <Image
+                src={image.url || "/placeholder.svg"}
+                alt={image.prompt}
+                fill
+                className="object-contain transition-transform duration-300 group-hover:scale-105"
+              />
               <div
                 className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/40 to-transparent backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity"
               />
