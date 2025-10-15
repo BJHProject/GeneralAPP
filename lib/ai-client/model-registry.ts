@@ -41,7 +41,7 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
     id: 'realistic_v2',
     name: 'Realistic V2',
     provider: 'huggingface-inference',
-    endpoint: 'ENDPOINT_URL_PLACEHOLDER',
+    endpoint: 'https://tqgkx09yo5301t6u.us-east-1.aws.endpoints.huggingface.cloud',
     type: 'image',
     defaults: {
       width: 1024,
