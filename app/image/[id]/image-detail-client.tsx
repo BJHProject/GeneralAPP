@@ -202,8 +202,31 @@ export function ImageDetailClient({ imageId }: ImageDetailClientProps) {
           Back
         </Button>
 
-        <div className="flex flex-col-reverse lg:flex-row gap-8">
-          <div className="lg:w-[420px] flex-shrink-0 space-y-4">
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Image section - shows first on mobile, right on desktop */}
+          <div className="flex-1 min-w-0 lg:order-2">
+            <Card className="border-0 bg-card/50 shadow-xl shadow-primary/5 overflow-hidden rounded-2xl p-4 md:p-6">
+              <div 
+                className="relative bg-muted/30 rounded-xl overflow-hidden mx-auto flex items-center justify-center"
+                style={{ 
+                  aspectRatio: aspectRatio.toString(),
+                  maxHeight: '70vh',
+                  width: '100%'
+                }}
+              >
+                <Image
+                  src={image.url}
+                  alt={image.prompt}
+                  fill
+                  className="object-contain"
+                  priority
+                />
+              </div>
+            </Card>
+          </div>
+
+          {/* Controls section - shows second on mobile, left on desktop */}
+          <div className="lg:w-[420px] flex-shrink-0 space-y-4 lg:order-1">
             <Card className="border-0 bg-gradient-to-br from-card/50 to-muted/30 shadow-xl shadow-primary/5 p-6 rounded-2xl">
               <h1 className="text-2xl font-bold mb-4 leading-tight">{image.prompt}</h1>
               
@@ -339,27 +362,6 @@ export function ImageDetailClient({ imageId }: ImageDetailClientProps) {
                 <p>
                   All content is AI-generated for entertainment purposes. Creating or sharing content based on real individuals is prohibited.
                 </p>
-              </div>
-            </Card>
-          </div>
-
-          <div className="flex-1 min-w-0">
-            <Card className="border-0 bg-card/50 shadow-xl shadow-primary/5 overflow-hidden rounded-2xl p-6 h-full">
-              <div 
-                className="relative bg-muted/30 rounded-xl overflow-hidden mx-auto h-full flex items-center justify-center"
-                style={{ 
-                  aspectRatio: aspectRatio.toString(),
-                  maxHeight: '85vh',
-                  maxWidth: '100%'
-                }}
-              >
-                <Image
-                  src={image.url}
-                  alt={image.prompt}
-                  fill
-                  className="object-contain"
-                  priority
-                />
               </div>
             </Card>
           </div>
