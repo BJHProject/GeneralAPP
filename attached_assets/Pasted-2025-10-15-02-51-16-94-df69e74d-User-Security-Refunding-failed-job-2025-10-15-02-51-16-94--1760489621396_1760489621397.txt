@@ -1,0 +1,132 @@
+2025-10-15 02:51:16.94
+df69e74d
+User
+[Security] Refunding failed job: {
+2025-10-15 02:51:16.94
+df69e74d
+User
+jobId: '7e005a7a-a303-45f2-9657-ef76c04766a5',
+2025-10-15 02:51:16.94
+df69e74d
+User
+reason: `HuggingFace Inference API error: {"error":"Forbidden: You don't have the required permissions to complete this action, missing permissions: inference.endpoints.infer.write"}`
+2025-10-15 02:51:16.94
+df69e74d
+User
+}
+2025-10-15 02:51:17.20
+df69e74d
+User
+[Security] ✓ Credits refunded: 500
+2025-10-15 02:51:39.20
+df69e74d
+User
+[v0] ===== CREDITS API CALLED =====
+2025-10-15 02:51:39.20
+df69e74d
+User
+[v0] Step 1: Creating Supabase client
+2025-10-15 02:51:39.21
+df69e74d
+User
+[v0] Step 2: Supabase client created successfully
+2025-10-15 02:51:39.21
+df69e74d
+User
+[v0] Step 3: Getting user from auth
+2025-10-15 02:51:39.28
+df69e74d
+User
+[v0] Step 4: Auth result - {
+2025-10-15 02:51:39.28
+df69e74d
+User
+hasUser: true,
+2025-10-15 02:51:39.28
+df69e74d
+User
+userId: '16f09afb-b861-4e57-b7bb-b4adeba007f4',
+2025-10-15 02:51:39.28
+df69e74d
+User
+email: 'test@gmail.com',
+2025-10-15 02:51:39.28
+df69e74d
+User
+authError: undefined
+2025-10-15 02:51:39.28
+df69e74d
+User
+}
+2025-10-15 02:51:39.28
+df69e74d
+User
+[v0] Step 6: Querying users table for user: 16f09afb-b861-4e57-b7bb-b4adeba007f4
+2025-10-15 02:51:39.35
+df69e74d
+User
+[v0] Step 7: Database query result - { hasData: true, credits: 217500, tier: 'free', dbError: undefined }
+2025-10-15 02:51:39.35
+df69e74d
+User
+[v0] Step 12: Returning existing user credits: 217500
+2025-10-15 02:51:39.60
+df69e74d
+User
+[v0] ===== CREDITS API CALLED =====
+2025-10-15 02:51:39.60
+df69e74d
+User
+[v0] Step 1: Creating Supabase client
+2025-10-15 02:51:39.60
+df69e74d
+User
+[v0] Step 2: Supabase client created successfully
+2025-10-15 02:51:39.60
+df69e74d
+User
+[v0] Step 3: Getting user from auth
+2025-10-15 02:51:39.69
+df69e74d
+User
+[v0] Step 4: Auth result - {
+2025-10-15 02:51:39.69
+df69e74d
+User
+hasUser: true,
+2025-10-15 02:51:39.69
+df69e74d
+User
+userId: '16f09afb-b861-4e57-b7bb-b4adeba007f4',
+2025-10-15 02:51:39.69
+df69e74d
+User
+email: 'test@gmail.com',
+2025-10-15 02:51:39.69
+df69e74d
+User
+authError: undefined
+2025-10-15 02:51:39.69
+df69e74d
+User
+}
+2025-10-15 02:51:39.69
+df69e74d
+User
+[v0] Step 6: Querying users table for user: 16f09afb-b861-4e57-b7bb-b4adeba007f4
+2025-10-15 02:51:39.78
+df69e74d
+User
+[v0] Step 7: Database query result - { hasData: true, credits: 217500, tier: 'free', dbError: undefined }
+2025-10-15 02:51:39.78
+df69e74d
+User
+[v0] Step 12: Returning existing user credits: 217500
+2025-10-15 02:51:40.03
+df69e74d
+User
+[v0] ===== CREDITS API CALLED =====
+2025-10-15 02:51:40.03
+df69e74d
+User
+[v0] Step 1: Creating Supabase client
