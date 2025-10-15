@@ -213,7 +213,11 @@ export function RecentGenerations() {
             className="group overflow-hidden border-0 bg-card/50 shadow-xl shadow-primary/5 transition-all hover:shadow-2xl hover:shadow-primary/10 hover:scale-[1.02] rounded-2xl"
           >
             <div
-              className="relative aspect-[2/3] md:aspect-auto md:min-h-[400px] md:max-h-[70vh] overflow-hidden bg-muted/30 flex items-center justify-center"
+              className="relative overflow-hidden bg-muted/30 flex items-center justify-center"
+              style={{
+                aspectRatio: `${image.width} / ${image.height}`,
+                maxHeight: '70vh'
+              }}
               onClick={() => {
                 if (activeImageId === image.id) {
                   setActiveImageId(null)
