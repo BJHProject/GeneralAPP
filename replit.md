@@ -14,6 +14,8 @@ Preferred communication style: Simple, everyday language.
 
 The frontend is built with Next.js 14+ (App Router), utilizing Radix UI primitives and shadcn/ui for components, styled with Tailwind CSS. It features a tab-based interface for different generation modes, modal authentication, and real-time UI updates. Content is categorized into "recent" (temporary) and "saved" (permanent) galleries.
 
+**Image Detail View**: Clicking any generated image navigates to a dedicated detail page (`/image/[id]`) with glass-morphism styling. The detail view displays the full image at its proper aspect ratio, shows metadata (prompt, dimensions, model, creation date), and provides action buttons for Clone Prompt, Save, Share, Download, and Delete. A collapsible Prompt Details section reveals the full positive and negative prompts used for generation.
+
 ### Backend Architecture
 
 The backend uses Next.js API routes, with edge runtimes for lightweight tasks and Node.js runtimes for AI generation. A unified AI client (`lib/ai-client/`) abstracts various AI providers (HuggingFace, Wavespeed, fal.ai, Gradio) with a centralized model registry, automatic retries with exponential backoff, and standardized error handling. Key API services include image generation, image editing, video generation, media ingestion (proxying AI output to Vercel Blob), and a daily cron job for temporary media cleanup. Architectural decisions include server-side proxying of AI-generated media, idempotency protection for credit charges, easy provider swapping via configuration, and robust retry strategies.
