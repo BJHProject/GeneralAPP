@@ -228,9 +228,7 @@ export function ImageDetailClient({ imageId }: ImageDetailClientProps) {
           {/* Controls section - shows second on mobile, left on desktop */}
           <div className="lg:w-[420px] flex-shrink-0 space-y-4 lg:order-1">
             <Card className="border-0 bg-gradient-to-br from-card/50 to-muted/30 shadow-xl shadow-primary/5 p-6 rounded-2xl">
-              <h1 className="text-2xl font-bold mb-4 leading-tight">{image.prompt}</h1>
-              
-              <div className="space-y-3 mb-6 text-sm text-muted-foreground">
+              <div className="space-y-2 mb-6 text-sm text-muted-foreground">
                 <div className="flex items-center justify-between">
                   <span>Dimensions:</span>
                   <span className="font-medium text-foreground">{image.width}×{image.height}</span>
