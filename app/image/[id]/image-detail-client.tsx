@@ -107,7 +107,7 @@ export function ImageDetailClient({ imageId }: ImageDetailClientProps) {
       })
 
       if (!response.ok) throw new Error("Failed to save image")
-      
+
       setImage({ ...image, is_saved: true })
     } catch (error) {
       console.error("Save error:", error)
@@ -129,7 +129,7 @@ export function ImageDetailClient({ imageId }: ImageDetailClientProps) {
       })
 
       if (!response.ok) throw new Error("Failed to delete image")
-      
+
       router.push("/")
     } catch (error) {
       console.error("Delete error:", error)
@@ -144,15 +144,15 @@ export function ImageDetailClient({ imageId }: ImageDetailClientProps) {
       width: image.width.toString(),
       height: image.height.toString(),
     })
-    
+
     if (image.model) {
       params.append('model', image.model)
     }
-    
+
     if (image.negative_prompt) {
       params.append('negative_prompt', image.negative_prompt)
     }
-    
+
     router.push(`/?tab=images&${params.toString()}`)
   }
 
@@ -162,7 +162,7 @@ export function ImageDetailClient({ imageId }: ImageDetailClientProps) {
       prompt: image.prompt,
       imageUrl: image.url,
     })
-    
+
     router.push(`/?tab=videos&${params.toString()}`)
   }
 
@@ -240,7 +240,7 @@ export function ImageDetailClient({ imageId }: ImageDetailClientProps) {
                   <ChevronDown className="h-5 w-5" />
                 )}
               </button>
-              
+
               {showPrompt && (
                 <div className="px-6 pb-6 space-y-4">
                   <div>
@@ -249,7 +249,7 @@ export function ImageDetailClient({ imageId }: ImageDetailClientProps) {
                       {image.prompt}
                     </p>
                   </div>
-                  
+
                   {image.negative_prompt && (
                     <div>
                       <h3 className="text-sm font-medium text-muted-foreground mb-2">Negative Prompt</h3>
