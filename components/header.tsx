@@ -60,10 +60,7 @@ export function Header() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-6">
           <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-pink-500">
-              <Sparkles className="h-5 w-5 text-white" />
-            </div>
-            <span className="text-xl font-bold text-white">ImageAI</span>
+            <img src="/sexify-logo.png" alt="Sexify.app" className="h-10" />
           </Link>
           <Link href="/landing" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
             Home
