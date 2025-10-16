@@ -36,7 +36,7 @@ export class GradioProvider implements ProviderAdapter {
       }
 
       if (config.mandatoryPrompts?.negative) {
-        finalNegativePrompt = finalNegativePrompt 
+        finalNegativePrompt = finalNegativePrompt
           ? `${config.mandatoryPrompts.negative}, ${finalNegativePrompt}`
           : config.mandatoryPrompts.negative
       }
@@ -48,15 +48,15 @@ export class GradioProvider implements ProviderAdapter {
       const steps = request.steps || config.defaults?.steps || 28
       const guidance = request.guidance || config.defaults?.guidance || 7
       const randomizeSeed = request.seed === undefined || request.seed === -1
-      
+
       // Always generate a random seed when randomization is needed
-      const seed = randomizeSeed 
-        ? Math.floor(Math.random() * 1000000) 
+      const seed = randomizeSeed
+        ? Math.floor(Math.random() * 1000000)
         : request.seed!
 
       // Determine API endpoint and parameters based on model config
       const apiEndpoint = config.gradioApiName || '/infer'
-      
+
       let params: any[]
       if (apiEndpoint === '/txt2img') {
         // New Gradio API format (DB2169/test1234)
@@ -95,19 +95,19 @@ export class GradioProvider implements ProviderAdapter {
       console.log(`[Gradio ${requestId}] Raw result:`, JSON.stringify(result, null, 2))
 
       let imageUrl: string | undefined
-      
+
       // Try multiple response format patterns
       if (result?.data) {
         console.log(`[Gradio ${requestId}] Result.data type:`, typeof result.data, 'isArray:', Array.isArray(result.data))
-        
+
         if (Array.isArray(result.data) && result.data.length > 0) {
           const firstResult = result.data[0]
           console.log(`[Gradio ${requestId}] First result:`, JSON.stringify(firstResult, null, 2))
-          
+
           // Format 1: Direct string URL
           if (typeof firstResult === 'string') {
             imageUrl = firstResult
-          } 
+          }
           // Format 2: Object with url property
           else if (firstResult && typeof firstResult === 'object' && 'url' in firstResult) {
             imageUrl = firstResult.url as string
