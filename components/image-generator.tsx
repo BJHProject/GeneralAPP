@@ -31,7 +31,7 @@ export function ImageGenerator() {
   const [imageWidth, setImageWidth] = useState(832)
   const [imageHeight, setImageHeight] = useState(1216)
   const [selectedResolution, setSelectedResolution] = useState(0)
-  const guidanceScale = 7
+  const [guidanceScale, setGuidanceScale] = useState(7)
   const inferenceSteps = 28
   const [error, setError] = useState<string | null>(null)
   const [user, setUser] = useState<any>(null)
@@ -315,8 +315,38 @@ export function ImageGenerator() {
               onChange={(e) => setNegativePrompt(e.target.value)}
               className="min-h-[80px] resize-none bg-secondary/50 text-foreground border-primary/10 backdrop-blur-sm focus:border-primary/30 transition-colors"
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-base font-semibold">Guidance Scale</Label>
+            <div className="grid grid-cols-3 gap-4">
+              <Button
+                variant={guidanceScale === 4.5 ? "default" : "outline"}
+                onClick={() => setGuidanceScale(4.5)}
+                className={`flex flex-col items-center gap-1 h-auto py-3 rounded-xl transition-all ${guidanceScale === 4.5 ? "shadow-lg shadow-primary/30" : "border-primary/10 hover:border-primary/30"}`}
+              >
+                <span className="font-semibold text-sm">Creative</span>
+                <span className="text-xs opacity-80">4.5</span>
+              </Button>
+              <Button
+                variant={guidanceScale === 7 ? "default" : "outline"}
+                onClick={() => setGuidanceScale(7)}
+                className={`flex flex-col items-center gap-1 h-auto py-3 rounded-xl transition-all ${guidanceScale === 7 ? "shadow-lg shadow-primary/30" : "border-primary/10 hover:border-primary/30"}`}
+              >
+                <span className="font-semibold text-sm">Standard</span>
+                <span className="text-xs opacity-80">7</span>
+              </Button>
+              <Button
+                variant={guidanceScale === 10 ? "default" : "outline"}
+                onClick={() => setGuidanceScale(10)}
+                className={`flex flex-col items-center gap-1 h-auto py-3 rounded-xl transition-all ${guidanceScale === 10 ? "shadow-lg shadow-primary/30" : "border-primary/10 hover:border-primary/30"}`}
+              >
+                <span className="font-semibold text-sm">Strict</span>
+                <span className="text-xs opacity-80">10</span>
+              </Button>
+            </div>
             <p className="text-xs text-muted-foreground">
-              Specify elements you want to avoid in the generated image. Safety terms are automatically added.
+              Higher values follow your prompt more closely, lower values allow more creative freedom
             </p>
           </div>
 

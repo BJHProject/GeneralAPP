@@ -47,7 +47,7 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
       width: 1024,
       height: 1024,
       steps: 30,
-      guidance: 6.5,
+      guidance: 7,
     },
     loras: [
       { name: 'MoriiMee_Gothic', scale: 0.2 }
