@@ -2,6 +2,7 @@
 
 import { Sparkles, LogOut, User, Images } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import Image from "next/image"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -60,10 +61,13 @@ export function Header() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-6">
           <Link href="/" className="flex items-center gap-2">
-            <img 
+            <Image 
               src="/sexify-logo.png" 
               alt="Sexify.app" 
+              width={200}
+              height={32}
               className="h-8 w-auto object-contain"
+              priority
             />
           </Link>
           <Link href="/landing" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
