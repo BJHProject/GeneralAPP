@@ -170,7 +170,7 @@ export class GradioProvider implements ProviderAdapter {
       console.error(`[Gradio ${requestId}] Error:`, error)
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: 'Image generation encountered an error. Please try again.',
         code: 'PROVIDER_ERROR',
         provider: 'gradio',
         retryable: true,

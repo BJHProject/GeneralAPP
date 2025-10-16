@@ -71,9 +71,10 @@ export class HuggingFaceInferenceProvider implements ProviderAdapter {
         console.error(`[HF-Inference ${requestId}] Error ${response.status}:`, errorText)
 
         if (response.status === 503) {
+          console.error(`[HF-Inference ${requestId}] Model loading error (503)`)
           return {
             success: false,
-            error: 'Model is loading, please try again',
+            error: 'The model is currently loading. Please try again in a moment.',
             code: 'PROVIDER_ERROR',
             provider: 'huggingface-inference',
             retryable: true,
@@ -81,18 +82,20 @@ export class HuggingFaceInferenceProvider implements ProviderAdapter {
         }
 
         if (response.status === 429) {
+          console.error(`[HF-Inference ${requestId}] Rate limit exceeded (429)`)
           return {
             success: false,
-            error: 'Rate limit exceeded',
+            error: 'Service is temporarily busy. Please try again in a moment.',
             code: 'QUOTA_EXCEEDED',
             provider: 'huggingface-inference',
             retryable: true,
           }
         }
 
+        console.error(`[HF-Inference ${requestId}] API error: ${errorText}`)
         return {
           success: false,
-          error: `HuggingFace Inference API error: ${errorText}`,
+          error: 'Image generation failed. Please try again.',
           code: 'PROVIDER_ERROR',
           provider: 'huggingface-inference',
           retryable: false,
@@ -141,7 +144,7 @@ export class HuggingFaceInferenceProvider implements ProviderAdapter {
       console.error(`[HF-Inference ${requestId}] Error:`, error)
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: 'Image generation encountered an error. Please try again.',
         code: 'PROVIDER_ERROR',
         provider: 'huggingface-inference',
         retryable: true,

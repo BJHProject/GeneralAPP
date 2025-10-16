@@ -68,18 +68,20 @@ export class WavespeedProvider implements ProviderAdapter {
         console.error(`[Wavespeed ${requestId}] Error ${response.status}:`, errorText)
 
         if (response.status === 429) {
+          console.error(`[Wavespeed ${requestId}] Rate limit exceeded (429)`)
           return {
             success: false,
-            error: 'Rate limit exceeded',
+            error: 'Service is temporarily busy. Please try again in a moment.',
             code: 'QUOTA_EXCEEDED',
             provider: 'wavespeed',
             retryable: true,
           }
         }
 
+        console.error(`[Wavespeed ${requestId}] API error: ${errorText}`)
         return {
           success: false,
-          error: `Wavespeed API error: ${errorText}`,
+          error: 'Generation failed. Please try again.',
           code: 'PROVIDER_ERROR',
           provider: 'wavespeed',
           retryable: false,
@@ -123,7 +125,7 @@ export class WavespeedProvider implements ProviderAdapter {
       console.error(`[Wavespeed ${requestId}] Error:`, error)
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: 'Generation encountered an error. Please try again.',
         code: 'PROVIDER_ERROR',
         provider: 'wavespeed',
         retryable: true,

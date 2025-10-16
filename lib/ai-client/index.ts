@@ -45,9 +45,10 @@ export class AIClient {
     const provider = providers[modelConfig.provider]
 
     if (!provider) {
+      console.error(`[AIClient ${requestId}] Unknown provider: ${modelConfig.provider}`)
       return {
         success: false,
-        error: `Unknown provider: ${modelConfig.provider}`,
+        error: 'Invalid model configuration. Please contact support.',
         code: 'INVALID_INPUT',
         retryable: false,
       }
@@ -89,7 +90,7 @@ export class AIClient {
 
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: 'Generation failed. Please try again.',
         code: 'UNKNOWN',
         retryable: false,
       }

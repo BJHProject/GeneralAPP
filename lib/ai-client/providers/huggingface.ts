@@ -56,9 +56,10 @@ export class HuggingFaceProvider implements ProviderAdapter {
         console.error(`[HF ${requestId}] Error ${response.status}:`, errorText)
 
         if (response.status === 503) {
+          console.error(`[HF ${requestId}] Model loading error (503)`)
           return {
             success: false,
-            error: 'Model is loading, please try again',
+            error: 'The model is currently loading. Please try again in a moment.',
             code: 'PROVIDER_ERROR',
             provider: 'huggingface',
             retryable: true,
@@ -66,18 +67,20 @@ export class HuggingFaceProvider implements ProviderAdapter {
         }
 
         if (response.status === 429) {
+          console.error(`[HF ${requestId}] Rate limit exceeded (429)`)
           return {
             success: false,
-            error: 'Rate limit exceeded',
+            error: 'Service is temporarily busy. Please try again in a moment.',
             code: 'QUOTA_EXCEEDED',
             provider: 'huggingface',
             retryable: true,
           }
         }
 
+        console.error(`[HF ${requestId}] API error: ${errorText}`)
         return {
           success: false,
-          error: `HuggingFace API error: ${errorText}`,
+          error: 'Image generation failed. Please try again.',
           code: 'PROVIDER_ERROR',
           provider: 'huggingface',
           retryable: false,
@@ -109,7 +112,7 @@ export class HuggingFaceProvider implements ProviderAdapter {
       console.error(`[HF ${requestId}] Error:`, error)
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: 'Image generation encountered an error. Please try again.',
         code: 'PROVIDER_ERROR',
         provider: 'huggingface',
         retryable: true,

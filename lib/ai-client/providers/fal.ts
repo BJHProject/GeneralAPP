@@ -46,18 +46,20 @@ export class FalProvider implements ProviderAdapter {
         console.error(`[fal.ai ${requestId}] Error ${response.status}:`, errorText)
 
         if (response.status === 429) {
+          console.error(`[fal.ai ${requestId}] Rate limit exceeded (429)`)
           return {
             success: false,
-            error: 'Rate limit exceeded',
+            error: 'Service is temporarily busy. Please try again in a moment.',
             code: 'QUOTA_EXCEEDED',
             provider: 'fal',
             retryable: true,
           }
         }
 
+        console.error(`[fal.ai ${requestId}] API error: ${errorText}`)
         return {
           success: false,
-          error: `fal.ai API error: ${errorText}`,
+          error: 'Video generation failed. Please try again.',
           code: 'PROVIDER_ERROR',
           provider: 'fal',
           retryable: false,
@@ -101,7 +103,7 @@ export class FalProvider implements ProviderAdapter {
       console.error(`[fal.ai ${requestId}] Error:`, error)
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: 'Video generation encountered an error. Please try again.',
         code: 'PROVIDER_ERROR',
         provider: 'fal',
         retryable: true,
