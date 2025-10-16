@@ -49,11 +49,10 @@ export class GradioProvider implements ProviderAdapter {
       const guidance = request.guidance || config.defaults?.guidance || 7
       
       // Generate a new random seed for each request when seed is not explicitly provided
-      const seed = (request.seed === undefined || request.seed === -1)
+      const shouldRandomize = request.seed === undefined || request.seed === -1
+      const seed = shouldRandomize
         ? Math.floor(Math.random() * 2147483647)  // Use max int32 for better randomization
         : request.seed!
-      
-      const randomizeSeed = request.seed === undefined || request.seed === -1
 
       // Determine API endpoint and parameters based on model config
       const apiEndpoint = config.gradioApiName || '/infer'
@@ -76,12 +75,12 @@ export class GradioProvider implements ProviderAdapter {
           false,                             // 12. fuse_lora
         ]
       } else {
-        // Original Gradio API format
+        // Original Gradio API format - always use false for randomizeSeed since we provide the seed
         params = [
           finalPrompt,                       // 1. prompt
           finalNegativePrompt,               // 2. negative_prompt
           seed,                              // 3. seed (already randomized if needed)
-          randomizeSeed,                     // 4. randomize_seed
+          false,                             // 4. randomize_seed (false because we provide the seed)
           width,                             // 5. width
           height,                            // 6. height
           guidance,                          // 7. guidance_scale
