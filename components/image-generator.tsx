@@ -317,7 +317,7 @@ export function ImageGenerator() {
             />
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2 mb-6">
             <Label className="text-base font-semibold">Adherence to prompt</Label>
             <div className="grid grid-cols-3 gap-3">
               <Button
