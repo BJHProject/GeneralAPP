@@ -144,25 +144,6 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
     maxRetries: 1,
   },
 
-  'neon': {
-    id: 'neon',
-    name: 'Neon',
-    provider: 'huggingface',
-    endpoint: 'black-forest-labs/FLUX.1-dev',
-    type: 'image',
-    defaults: {
-      width: 1024,
-      height: 1024,
-      steps: 30,
-      guidance: 7.5,
-    },
-    pricing: {
-      credits: 500,
-    },
-    timeout: 60000,
-    maxRetries: 2,
-  },
-  
   'wavespeed-edit': {
     id: 'wavespeed-edit',
     name: 'Wavespeed Edit',
