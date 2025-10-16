@@ -88,20 +88,50 @@ export class GradioProvider implements ProviderAdapter {
       console.log(`[Gradio ${requestId}] Predict params:`, params)
 
       const result = await client.predict(apiEndpoint, params)
-      console.log(`[Gradio ${requestId}] Result:`, JSON.stringify(result, null, 2))
+      console.log(`[Gradio ${requestId}] Raw result:`, JSON.stringify(result, null, 2))
 
       let imageUrl: string | undefined
-      if (result?.data && Array.isArray(result.data) && result.data.length > 0) {
-        const firstResult = result.data[0]
-        if (typeof firstResult === 'string') {
-          imageUrl = firstResult
-        } else if (firstResult && typeof firstResult === 'object' && 'url' in firstResult) {
-          imageUrl = firstResult.url as string
+      
+      // Try multiple response format patterns
+      if (result?.data) {
+        console.log(`[Gradio ${requestId}] Result.data type:`, typeof result.data, 'isArray:', Array.isArray(result.data))
+        
+        if (Array.isArray(result.data) && result.data.length > 0) {
+          const firstResult = result.data[0]
+          console.log(`[Gradio ${requestId}] First result:`, JSON.stringify(firstResult, null, 2))
+          
+          // Format 1: Direct string URL
+          if (typeof firstResult === 'string') {
+            imageUrl = firstResult
+          } 
+          // Format 2: Object with url property
+          else if (firstResult && typeof firstResult === 'object' && 'url' in firstResult) {
+            imageUrl = firstResult.url as string
+          }
+          // Format 3: Array of objects (some Gradio APIs return [[{url: ...}]])
+          else if (Array.isArray(firstResult) && firstResult.length > 0) {
+            const nestedResult = firstResult[0]
+            if (typeof nestedResult === 'string') {
+              imageUrl = nestedResult
+            } else if (nestedResult && typeof nestedResult === 'object' && 'url' in nestedResult) {
+              imageUrl = nestedResult.url as string
+            } else if (nestedResult && typeof nestedResult === 'object' && 'path' in nestedResult) {
+              // Format 4: Object with path property (needs to be converted to full URL)
+              const path = nestedResult.path as string
+              imageUrl = path.startsWith('http') ? path : `${config.endpoint}/file=${path}`
+            }
+          }
+          // Format 5: Object with path property
+          else if (firstResult && typeof firstResult === 'object' && 'path' in firstResult) {
+            const path = firstResult.path as string
+            imageUrl = path.startsWith('http') ? path : `${config.endpoint}/file=${path}`
+          }
         }
       }
 
       if (!imageUrl) {
-        throw new Error('No image URL in Gradio response')
+        console.error(`[Gradio ${requestId}] Failed to extract image URL from result:`, JSON.stringify(result, null, 2))
+        throw new Error(`No image URL in Gradio response. Result structure: ${JSON.stringify(result)}`)
       }
 
       console.log(`[Gradio ${requestId}] Image URL:`, imageUrl)
