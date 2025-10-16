@@ -76,6 +76,8 @@ export interface ModelConfig {
     negative?: string
   }
   
+  gradioApiName?: string  // Optional: specify custom Gradio API endpoint (default: '/infer')
+  
   pricing: {
     credits: number
   }

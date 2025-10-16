@@ -27,6 +27,20 @@ export class GradioProvider implements ProviderAdapter {
         hf_token: token,
       })
 
+      // Add mandatory prompts if configured (like HuggingFace Inference provider)
+      let finalPrompt = request.prompt
+      let finalNegativePrompt = request.negativePrompt || ''
+
+      if (config.mandatoryPrompts?.positive) {
+        finalPrompt = `${config.mandatoryPrompts.positive}, ${request.prompt}`
+      }
+
+      if (config.mandatoryPrompts?.negative) {
+        finalNegativePrompt = finalNegativePrompt 
+          ? `${config.mandatoryPrompts.negative}, ${finalNegativePrompt}`
+          : config.mandatoryPrompts.negative
+      }
+
       // Gradio models expect specific parameter order based on API docs:
       // [prompt, negative_prompt, seed, randomize_seed, width, height, guidance_scale, num_inference_steps]
       const width = request.width || config.defaults?.width || 1024
@@ -36,20 +50,44 @@ export class GradioProvider implements ProviderAdapter {
       const seed = request.seed !== undefined ? request.seed : 0
       const randomizeSeed = request.seed === undefined || request.seed === -1
 
-      const params = [
-        request.prompt,                    // 1. prompt
-        request.negativePrompt || "",      // 2. negative_prompt
-        seed,                              // 3. seed
-        randomizeSeed,                     // 4. randomize_seed
-        width,                             // 5. width
-        height,                            // 6. height
-        guidance,                          // 7. guidance_scale
-        steps,                             // 8. num_inference_steps
-      ]
+      // Determine API endpoint and parameters based on model config
+      const apiEndpoint = config.gradioApiName || '/infer'
+      
+      let params: any[]
+      if (apiEndpoint === '/txt2img') {
+        // New Gradio API format (DB2169/test1234)
+        params = [
+          finalPrompt,                       // 1. prompt
+          finalNegativePrompt,               // 2. negative
+          width,                             // 3. width
+          height,                            // 4. height
+          steps,                             // 5. steps
+          guidance,                          // 6. guidance
+          1,                                 // 7. images (always 1)
+          randomizeSeed ? Math.floor(Math.random() * 1000000) : seed, // 8. seed
+          "dpmpp_2m",                        // 9. scheduler
+          [],                                // 10. loras
+          0.7,                               // 11. lora_scale
+          false,                             // 12. fuse_lora
+        ]
+      } else {
+        // Original Gradio API format
+        params = [
+          finalPrompt,                       // 1. prompt
+          finalNegativePrompt,               // 2. negative_prompt
+          seed,                              // 3. seed
+          randomizeSeed,                     // 4. randomize_seed
+          width,                             // 5. width
+          height,                            // 6. height
+          guidance,                          // 7. guidance_scale
+          steps,                             // 8. num_inference_steps
+        ]
+      }
 
+      console.log(`[Gradio ${requestId}] API endpoint: ${apiEndpoint}`)
       console.log(`[Gradio ${requestId}] Predict params:`, params)
 
-      const result = await client.predict('/infer', params)
+      const result = await client.predict(apiEndpoint, params)
       console.log(`[Gradio ${requestId}] Result:`, JSON.stringify(result, null, 2))
 
       let imageUrl: string | undefined

@@ -146,6 +146,8 @@ export async function POST(request: NextRequest) {
       user_id: user.id,
       url: result.mediaUrl,
       prompt,
+      negative_prompt: negative_prompt,
+      model: modelId,
       width: width || 1024,
       height: height || 1024,
       is_saved: false,

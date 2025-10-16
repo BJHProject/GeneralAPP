@@ -137,20 +137,53 @@ export function ImageDetailClient({ imageId }: ImageDetailClientProps) {
   const handleClone = () => {
     if (!image) return
     
-    // Remove hardcoded safety prompts from negative prompt
-    const MANDATORY_NEGATIVE_PROMPTS = "child, childish, toddler, underage, fused bodies, crossed eyes"
+    // Define all safety and model-specific mandatory prompts to exclude
+    const GLOBAL_SAFETY_PROMPTS = "child, childish, toddler, underage, fused bodies, crossed eyes"
+    
+    // Model-specific mandatory prompts (from model-registry.ts)
+    const MODEL_MANDATORY_PROMPTS: Record<string, { positive: string, negative: string }> = {
+      'realistic_v2': {
+        positive: 'score_9, score_8_up, score_7_up, high-detail, 4k realism',
+        negative: 'score_6, score_5, score_4, (worst quality:1.2), (low quality:1.2), lowres, bad anatomy, bad hands',
+      },
+      'realistic_s': {
+        positive: 'score_9, score_8_up, score_7_up',
+        negative: 'score_6, score_5, score_4',
+      },
+    }
+    
+    // Clean the prompt by removing model-specific mandatory positive prompts
+    let userPrompt = image.prompt
+    const modelMandatory = image.model ? MODEL_MANDATORY_PROMPTS[image.model] : null
+    
+    if (modelMandatory?.positive) {
+      const mandatoryPrefix = `${modelMandatory.positive}, `
+      if (userPrompt.startsWith(mandatoryPrefix)) {
+        userPrompt = userPrompt.substring(mandatoryPrefix.length)
+      }
+    }
+    
+    // Clean negative prompt by removing both safety and model-specific prompts
     let userNegativePrompt = image.negative_prompt || ""
     
-    if (userNegativePrompt.startsWith(MANDATORY_NEGATIVE_PROMPTS)) {
-      // Remove the safety prompts and the comma+space that follows
-      userNegativePrompt = userNegativePrompt.substring(MANDATORY_NEGATIVE_PROMPTS.length)
+    // Remove global safety prompts first
+    if (userNegativePrompt.startsWith(GLOBAL_SAFETY_PROMPTS)) {
+      userNegativePrompt = userNegativePrompt.substring(GLOBAL_SAFETY_PROMPTS.length)
       if (userNegativePrompt.startsWith(", ")) {
         userNegativePrompt = userNegativePrompt.substring(2)
       }
     }
     
+    // Then remove model-specific negative prompts
+    if (modelMandatory?.negative) {
+      const mandatoryPrefix = `${modelMandatory.negative}, `
+      if (userNegativePrompt.startsWith(mandatoryPrefix)) {
+        userNegativePrompt = userNegativePrompt.substring(mandatoryPrefix.length)
+      }
+    }
+    
     const params = new URLSearchParams({
-      prompt: image.prompt,
+      prompt: userPrompt,
       width: image.width.toString(),
       height: image.height.toString(),
     })

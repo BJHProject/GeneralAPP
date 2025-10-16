@@ -62,6 +62,30 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
     timeout: 90000,
     maxRetries: 2,
   },
+
+  'realistic_s': {
+    id: 'realistic_s',
+    name: 'Realistic S',
+    provider: 'gradio',
+    endpoint: 'DB2169/test1234',
+    type: 'image',
+    defaults: {
+      width: 1024,
+      height: 1024,
+      steps: 30,
+      guidance: 6.5,
+    },
+    mandatoryPrompts: {
+      positive: 'score_9, score_8_up, score_7_up',
+      negative: 'score_6, score_5, score_4',
+    },
+    gradioApiName: '/txt2img',
+    pricing: {
+      credits: 500,
+    },
+    timeout: 90000,
+    maxRetries: 2,
+  },
   
   'anime': {
     id: 'anime',

@@ -1,0 +1,104 @@
+API name: /_startup Total requests: 1 (100% successful)  |  p50/p90/p99: 9.88 s / 9.88 s / 9.88 s
+copy
+from gradio_client import Client
+
+client = Client("DB2169/test1234")
+result = client.predict(
+	api_name="/_startup"
+)
+print(result)
+Accepts 0 parameters:
+Returns tuple of 2 elements
+[0] str
+
+The output value that appears in the "value_1" Markdown component.
+
+[1] list[Literal[]]
+
+The output value that appears in the "LoRAs (from loras.json; select any)" Checkboxgroup component.
+
+API name: /lambda Total requests: 1 (100% successful)  |  p50/p90/p99: 2.32 s / 2.32 s / 2.32 s
+copy
+from gradio_client import Client
+
+client = Client("DB2169/test1234")
+result = client.predict(
+	api_name="/lambda"
+)
+print(result)
+Accepts 0 parameters:
+Returns 1 element
+API name: /txt2img Total requests: 8 (100% successful)  |  p50/p90/p99: 13.79 s / 17.47 s / 20.89 s
+copy
+from gradio_client import Client
+
+client = Client("DB2169/test1234")
+result = client.predict(
+	prompt="Hello!!",
+	negative="Hello!!",
+	width=1024,
+	height=1024,
+	steps=30,
+	guidance=6.5,
+	images=1,
+	seed=3,
+	scheduler="dpmpp_2m",
+	loras=[],
+	lora_scale=0.7,
+	fuse_lora=False,
+	api_name="/txt2img"
+)
+print(result)
+Accepts 12 parameters:
+prompt str Required
+
+The input value that is provided in the "Prompt" Textbox component.
+
+negative str Required
+
+The input value that is provided in the "Negative Prompt" Textbox component.
+
+width float Default: 1024
+
+The input value that is provided in the "Width" Slider component.
+
+height float Default: 1024
+
+The input value that is provided in the "Height" Slider component.
+
+steps float Default: 30
+
+The input value that is provided in the "Steps" Slider component.
+
+guidance float Default: 6.5
+
+The input value that is provided in the "Guidance" Slider component.
+
+images float Default: 1
+
+The input value that is provided in the "Images" Slider component.
+
+seed int Required
+
+The input value that is provided in the "Seed (blank=random)" Number component.
+
+scheduler Literal['default', 'euler_a', 'euler', 'ddim', 'lms', 'pndm', 'dpmpp_2m'] Default: "dpmpp_2m"
+
+The input value that is provided in the "Scheduler" Dropdown component.
+
+loras list[Literal[]] Default: []
+
+The input value that is provided in the "LoRAs (from loras.json; select any)" Checkboxgroup component.
+
+lora_scale float Default: 0.7
+
+The input value that is provided in the "LoRA scale" Slider component.
+
+fuse_lora bool Default: False
+
+The input value that is provided in the "Fuse LoRA (faster after load)" Checkbox component.
+
+Returns 1 element
+list[dict(image: dict(path: str | None (Path to a local file), url: str | None (Publicly available url or base64 encoded image), size: int | None (Size of image in bytes), orig_name: str | None (Original filename), mime_type: str | None (mime type of image), is_stream: bool (Can always be set to False), meta: dict(str, Any)), caption: str | None) | dict(video: filepath, caption: str | None)]
+
+The output value that appears in the "value_23" Gallery component.
