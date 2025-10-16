@@ -1,10 +1,10 @@
 import { RetryConfig } from './types'
 
 const DEFAULT_RETRY_CONFIG: RetryConfig = {
-  maxRetries: 2,
-  initialDelay: 1000,
-  maxDelay: 10000,
-  backoffMultiplier: 2,
+  maxRetries: 5,
+  initialDelay: 5000,
+  maxDelay: 5000,
+  backoffMultiplier: 1,
 }
 
 export async function withRetry<T>(
@@ -67,6 +67,12 @@ export function isRetryableError(error: any): boolean {
     /rate limit/i,
     /quota/i,
     /too many requests/i,
+    /loading/i,
+    /warming/i,
+    /initializing/i,
+    /starting/i,
+    /model.*loading/i,
+    /lora.*loading/i,
   ]
 
   return retryablePatterns.some(pattern => pattern.test(message))

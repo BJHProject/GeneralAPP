@@ -17,7 +17,7 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
       credits: 500,
     },
     timeout: 90000,
-    maxRetries: 1,
+    maxRetries: 5,
   },
 
   'realistic_w': {
@@ -34,7 +34,7 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
       credits: 500,
     },
     timeout: 45000,
-    maxRetries: 2,
+    maxRetries: 5,
   },
 
   'realistic_v2': {
@@ -60,7 +60,7 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
       credits: 500,
     },
     timeout: 90000,
-    maxRetries: 2,
+    maxRetries: 5,
   },
 
   'realistic_s': {
@@ -84,7 +84,7 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
       credits: 500,
     },
     timeout: 90000,
-    maxRetries: 2,
+    maxRetries: 5,
   },
   
   'anime': {
@@ -103,7 +103,7 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
       credits: 500,
     },
     timeout: 90000,
-    maxRetries: 1,
+    maxRetries: 5,
   },
   
   'anime_v2': {
@@ -122,7 +122,7 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
       credits: 500,
     },
     timeout: 90000,
-    maxRetries: 1,
+    maxRetries: 5,
   },
 
   'anime_v3': {
@@ -141,7 +141,7 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
       credits: 500,
     },
     timeout: 90000,
-    maxRetries: 1,
+    maxRetries: 5,
   },
 
   'wavespeed-edit': {
@@ -154,7 +154,7 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
       credits: 1000,
     },
     timeout: 60000,
-    maxRetries: 2,
+    maxRetries: 5,
   },
   
   'video-lovely': {
@@ -170,7 +170,7 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
       credits: 2000,
     },
     timeout: 120000,
-    maxRetries: 1,
+    maxRetries: 5,
   },
   
   'video-express': {
@@ -186,7 +186,7 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
       credits: 2000,
     },
     timeout: 90000,
-    maxRetries: 2,
+    maxRetries: 5,
   },
   
   'video-express-hd': {
@@ -202,7 +202,7 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
       credits: 3000,
     },
     timeout: 120000,
-    maxRetries: 2,
+    maxRetries: 5,
   },
 }
 
