@@ -288,8 +288,6 @@ export function ImageGenerator() {
                 <SelectItem value="anime_v2">Anime V2</SelectItem>
                 <SelectItem value="anime_v3">Anime V3</SelectItem>
                 <SelectItem value="neon">Neon</SelectItem>
-                <SelectItem value="preview">Preview</SelectItem>
-                <SelectItem value="preview_anime">Preview Anime</SelectItem>
               </SelectContent>
             </Select>
           </div>

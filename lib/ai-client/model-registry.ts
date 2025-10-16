@@ -162,41 +162,6 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
     timeout: 60000,
     maxRetries: 2,
   },
-
-  'preview': {
-    id: 'preview',
-    name: 'Preview',
-    provider: 'huggingface',
-    endpoint: 'black-forest-labs/FLUX.1-schnell',
-    type: 'image',
-    defaults: {
-      width: 1024,
-      height: 1024,
-      steps: 4,
-    },
-    pricing: {
-      credits: 500,
-    },
-    timeout: 30000,
-    maxRetries: 2,
-  },
-
-  'preview_anime': {
-    id: 'preview_anime',
-    name: 'Preview Anime',
-    provider: 'wavespeed',
-    endpoint: '/api/v3/wavespeed-ai/flux-1.1-pro',
-    type: 'image',
-    defaults: {
-      width: 1024,
-      height: 1024,
-    },
-    pricing: {
-      credits: 500,
-    },
-    timeout: 45000,
-    maxRetries: 2,
-  },
   
   'wavespeed-edit': {
     id: 'wavespeed-edit',
