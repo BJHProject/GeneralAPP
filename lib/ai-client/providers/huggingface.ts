@@ -29,15 +29,12 @@ export class HuggingFaceProvider implements ProviderAdapter {
           guidance_scale: request.guidance || config.defaults?.guidance,
           width: request.width || config.defaults?.width,
           height: request.height || config.defaults?.height,
+          seed: request.seed !== undefined ? request.seed : Math.floor(Math.random() * 1000000000),
         },
       }
 
       if (request.negativePrompt) {
         payload.parameters.negative_prompt = request.negativePrompt
-      }
-
-      if (request.seed !== undefined) {
-        payload.parameters.seed = request.seed
       }
 
       console.log(`[HF ${requestId}] Request payload:`, JSON.stringify(payload, null, 2))

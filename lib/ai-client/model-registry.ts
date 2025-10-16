@@ -53,8 +53,8 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
       { name: 'MoriiMee_Gothic', scale: 0.2 }
     ],
     mandatoryPrompts: {
-      positive: 'score_9, score_8_up, score_7_up, high-detail, 4k realism',
-      negative: 'score_6, score_5, score_4, (worst quality:1.2), (low quality:1.2), lowres, bad anatomy, bad hands',
+      positive: 'score_9, score_8_up, score_7_up',
+      negative: 'score_6, score_5, score_4',
     },
     pricing: {
       credits: 500,
@@ -72,8 +72,8 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
     defaults: {
       width: 1024,
       height: 1024,
-      steps: 30,
-      guidance: 6.5,
+      steps: 40,
+      guidance: 7,
     },
     mandatoryPrompts: {
       positive: 'score_9, score_8_up, score_7_up',
@@ -115,7 +115,7 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
     defaults: {
       width: 832,
       height: 1216,
-      steps: 28,
+      steps: 45,
       guidance: 7,
     },
     pricing: {

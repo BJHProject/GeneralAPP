@@ -47,8 +47,12 @@ export class GradioProvider implements ProviderAdapter {
       const height = request.height || config.defaults?.height || 1024
       const steps = request.steps || config.defaults?.steps || 28
       const guidance = request.guidance || config.defaults?.guidance || 7
-      const seed = request.seed !== undefined ? request.seed : 0
       const randomizeSeed = request.seed === undefined || request.seed === -1
+      
+      // Always generate a random seed when randomization is needed
+      const seed = randomizeSeed 
+        ? Math.floor(Math.random() * 1000000) 
+        : request.seed!
 
       // Determine API endpoint and parameters based on model config
       const apiEndpoint = config.gradioApiName || '/infer'
@@ -64,7 +68,7 @@ export class GradioProvider implements ProviderAdapter {
           steps,                             // 5. steps
           guidance,                          // 6. guidance
           1,                                 // 7. images (always 1)
-          randomizeSeed ? Math.floor(Math.random() * 1000000) : seed, // 8. seed
+          seed,                              // 8. seed (already randomized if needed)
           "dpmpp_2m",                        // 9. scheduler
           [],                                // 10. loras
           0.7,                               // 11. lora_scale
@@ -75,7 +79,7 @@ export class GradioProvider implements ProviderAdapter {
         params = [
           finalPrompt,                       // 1. prompt
           finalNegativePrompt,               // 2. negative_prompt
-          seed,                              // 3. seed
+          seed,                              // 3. seed (already randomized if needed)
           randomizeSeed,                     // 4. randomize_seed
           width,                             // 5. width
           height,                            // 6. height

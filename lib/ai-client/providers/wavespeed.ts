@@ -45,7 +45,7 @@ export class WavespeedProvider implements ProviderAdapter {
         if (request.height) payload.height = request.height
         if (request.steps) payload.num_inference_steps = request.steps
         if (request.guidance) payload.guidance_scale = request.guidance
-        if (request.seed !== undefined) payload.seed = request.seed
+        payload.seed = request.seed !== undefined ? request.seed : Math.floor(Math.random() * 1000000000)
 
         if (request.type === 'video' && request.inputImageUrl) {
           payload.image_url = request.inputImageUrl
