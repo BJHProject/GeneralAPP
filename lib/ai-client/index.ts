@@ -26,6 +26,26 @@ export class AIClient {
     }
   }
 
+  private sanitizeErrorMessage(error: any): string {
+    const message = error?.message || String(error)
+    
+    // Technical patterns that should be hidden from users
+    const technicalPatterns = [
+      /loading/i,
+      /lora.*loading/i,
+      /model.*loading/i,
+      /warming/i,
+      /initializing/i,
+    ]
+    
+    // If error contains technical loading messages, return a user-friendly message
+    if (technicalPatterns.some(pattern => pattern.test(message))) {
+      return 'Generation in progress. Please wait...'
+    }
+    
+    return message
+  }
+
   async generate(request: Omit<GenerationRequest, 'requestId'>): Promise<GenerationResponse> {
     const requestId = this.generateRequestId()
     const fullRequest: GenerationRequest = {
@@ -72,7 +92,8 @@ export class AIClient {
         (error) => {
           const shouldRetry = isRetryableError(error)
           if (this.config.enableLogging) {
-            console.log(`[AIClient ${requestId}] Error occurred, retryable:`, shouldRetry)
+            const errorMessage = error?.message || String(error)
+            console.log(`[AIClient ${requestId}] Error occurred (${errorMessage}), retryable:`, shouldRetry)
           }
           return shouldRetry
         },
@@ -82,15 +103,23 @@ export class AIClient {
         console.log(`[AIClient ${requestId}] Generation ${result.success ? 'succeeded' : 'failed'}`)
       }
 
+      // Sanitize error message if generation failed
+      if (!result.success && result.error) {
+        result.error = this.sanitizeErrorMessage({ message: result.error })
+      }
+
       return result
     } catch (error) {
       if (this.config.enableLogging) {
         console.error(`[AIClient ${requestId}] Fatal error:`, error)
       }
 
+      // Sanitize the error message for user display
+      const userFriendlyError = this.sanitizeErrorMessage(error)
+
       return {
         success: false,
-        error: 'Generation failed. Please try again.',
+        error: userFriendlyError,
         code: 'UNKNOWN',
         retryable: false,
       }
