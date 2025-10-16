@@ -115,8 +115,17 @@ export class GradioProvider implements ProviderAdapter {
               imageUrl = nestedResult
             } else if (nestedResult && typeof nestedResult === 'object' && 'url' in nestedResult) {
               imageUrl = nestedResult.url as string
+            } else if (nestedResult && typeof nestedResult === 'object' && 'image' in nestedResult) {
+              // Format 4: Object with image.url property (DB2169/test1234 format)
+              const imageObj = nestedResult.image as any
+              if (imageObj && typeof imageObj === 'object' && 'url' in imageObj) {
+                imageUrl = imageObj.url as string
+              } else if (imageObj && typeof imageObj === 'object' && 'path' in imageObj) {
+                const path = imageObj.path as string
+                imageUrl = path.startsWith('http') ? path : `${config.endpoint}/file=${path}`
+              }
             } else if (nestedResult && typeof nestedResult === 'object' && 'path' in nestedResult) {
-              // Format 4: Object with path property (needs to be converted to full URL)
+              // Format 5: Object with path property (needs to be converted to full URL)
               const path = nestedResult.path as string
               imageUrl = path.startsWith('http') ? path : `${config.endpoint}/file=${path}`
             }
