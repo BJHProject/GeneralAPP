@@ -318,31 +318,28 @@ export function ImageGenerator() {
           </div>
 
           <div className="space-y-2">
-            <Label className="text-base font-semibold">Guidance Scale</Label>
-            <div className="grid grid-cols-3 gap-4">
+            <Label className="text-base font-semibold">Adherence to prompt</Label>
+            <div className="grid grid-cols-3 gap-3">
               <Button
                 variant={guidanceScale === 4.5 ? "default" : "outline"}
                 onClick={() => setGuidanceScale(4.5)}
-                className={`flex flex-col items-center gap-1 h-auto py-3 rounded-xl transition-all ${guidanceScale === 4.5 ? "shadow-lg shadow-primary/30" : "border-primary/10 hover:border-primary/30"}`}
+                className={`h-auto py-2 rounded-lg transition-all text-sm ${guidanceScale === 4.5 ? "shadow-lg shadow-primary/30" : "border-primary/10 hover:border-primary/30"}`}
               >
-                <span className="font-semibold text-sm">Creative</span>
-                <span className="text-xs opacity-80">4.5</span>
+                Creative
               </Button>
               <Button
                 variant={guidanceScale === 7 ? "default" : "outline"}
                 onClick={() => setGuidanceScale(7)}
-                className={`flex flex-col items-center gap-1 h-auto py-3 rounded-xl transition-all ${guidanceScale === 7 ? "shadow-lg shadow-primary/30" : "border-primary/10 hover:border-primary/30"}`}
+                className={`h-auto py-2 rounded-lg transition-all text-sm ${guidanceScale === 7 ? "shadow-lg shadow-primary/30" : "border-primary/10 hover:border-primary/30"}`}
               >
-                <span className="font-semibold text-sm">Standard</span>
-                <span className="text-xs opacity-80">7</span>
+                Standard
               </Button>
               <Button
                 variant={guidanceScale === 10 ? "default" : "outline"}
                 onClick={() => setGuidanceScale(10)}
-                className={`flex flex-col items-center gap-1 h-auto py-3 rounded-xl transition-all ${guidanceScale === 10 ? "shadow-lg shadow-primary/30" : "border-primary/10 hover:border-primary/30"}`}
+                className={`h-auto py-2 rounded-lg transition-all text-sm ${guidanceScale === 10 ? "shadow-lg shadow-primary/30" : "border-primary/10 hover:border-primary/30"}`}
               >
-                <span className="font-semibold text-sm">Strict</span>
-                <span className="text-xs opacity-80">10</span>
+                Strict
               </Button>
             </div>
             <p className="text-xs text-muted-foreground">
