@@ -47,12 +47,13 @@ export class GradioProvider implements ProviderAdapter {
       const height = request.height || config.defaults?.height || 1024
       const steps = request.steps || config.defaults?.steps || 28
       const guidance = request.guidance || config.defaults?.guidance || 7
-      const randomizeSeed = request.seed === undefined || request.seed === -1
-
-      // Always generate a random seed when randomization is needed
-      const seed = randomizeSeed
-        ? Math.floor(Math.random() * 1000000)
+      
+      // Generate a new random seed for each request when seed is not explicitly provided
+      const seed = (request.seed === undefined || request.seed === -1)
+        ? Math.floor(Math.random() * 2147483647)  // Use max int32 for better randomization
         : request.seed!
+      
+      const randomizeSeed = request.seed === undefined || request.seed === -1
 
       // Determine API endpoint and parameters based on model config
       const apiEndpoint = config.gradioApiName || '/infer'

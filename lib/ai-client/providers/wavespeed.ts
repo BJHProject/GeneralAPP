@@ -44,7 +44,12 @@ export class WavespeedProvider implements ProviderAdapter {
         if (request.width) payload.width = request.width
         if (request.height) payload.height = request.height
         if (request.steps) payload.num_inference_steps = request.steps
-        if (request.guidance) payload.guidance_scale = request.guidance
+        
+        // Skip guidance scale for female-human endpoint (Realistic W model)
+        if (request.guidance && !config.endpoint.includes('female-human')) {
+          payload.guidance_scale = request.guidance
+        }
+        
         payload.seed = request.seed !== undefined ? request.seed : Math.floor(Math.random() * 1000000000)
 
         if (request.type === 'video' && request.inputImageUrl) {
