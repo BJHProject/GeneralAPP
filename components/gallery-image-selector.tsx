@@ -116,11 +116,6 @@ export function GalleryImageSelector({ isOpen, onClose, onSelect }: GalleryImage
                       </div>
                     )}
                   </div>
-                  <div className="p-2">
-                    <p className="truncate text-xs text-muted-foreground" title={image.prompt}>
-                      {image.prompt}
-                    </p>
-                  </div>
                 </Card>
               ))}
             </div>

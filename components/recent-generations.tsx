@@ -232,14 +232,6 @@ export function RecentGenerations() {
                 className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/40 to-transparent backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity"
               />
             </div>
-            <div className="p-4 bg-gradient-to-br from-muted/20 to-transparent">
-              <p className="truncate text-xs text-muted-foreground" title={image.prompt}>
-                {image.prompt}
-              </p>
-              <p className="truncate text-xs text-muted-foreground/80">
-                {new Date(image.created_at).toLocaleDateString()}
-              </p>
-            </div>
           </Card>
         ))}
       </div>

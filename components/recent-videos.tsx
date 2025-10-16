@@ -273,14 +273,6 @@ export function RecentVideos() {
                 </Button>
               </div>
             </div>
-            <div className="p-3">
-              <p className="truncate text-xs text-muted-foreground" title={video.prompt}>
-                {video.prompt}
-              </p>
-              <p className="truncate text-xs text-muted-foreground">
-                {video.duration_seconds}s • {new Date(video.created_at).toLocaleDateString()}
-              </p>
-            </div>
           </Card>
         ))}
       </div>

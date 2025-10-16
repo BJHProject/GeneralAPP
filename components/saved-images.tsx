@@ -235,14 +235,6 @@ export function SavedImages() {
                 </Button>
               </div>
             </div>
-            <div className="p-3">
-              <p className="truncate text-xs text-muted-foreground" title={image.prompt}>
-                {image.prompt}
-              </p>
-              <p className="truncate text-xs text-muted-foreground">
-                {new Date(image.created_at).toLocaleDateString()}
-              </p>
-            </div>
           </Card>
         ))}
       </div>

@@ -131,8 +131,7 @@ export function RecentEdits() {
               }`}
             />
           </div>
-          <div className="p-4 space-y-3">
-            <p className="text-sm text-muted-foreground line-clamp-2">{image.prompt}</p>
+          <div className="p-4">
             <div className="flex gap-2">
               <Button
                 variant="outline"

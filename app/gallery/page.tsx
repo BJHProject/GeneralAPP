@@ -373,14 +373,6 @@ export default function GalleryPage() {
                       </div>
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
                     </div>
-                    <div className="p-3">
-                      <p className="truncate text-xs text-muted-foreground" title={image.prompt}>
-                        {image.prompt}
-                      </p>
-                      <p className="truncate text-xs text-muted-foreground">
-                        {new Date(image.created_at).toLocaleDateString()}
-                      </p>
-                    </div>
                   </Card>
                 ))}
               </div>
@@ -436,14 +428,6 @@ export default function GalleryPage() {
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
-                    </div>
-                    <div className="p-3">
-                      <p className="truncate text-xs text-muted-foreground" title={video.prompt}>
-                        {video.prompt}
-                      </p>
-                      <p className="truncate text-xs text-muted-foreground">
-                        {video.duration_seconds}s • {new Date(video.created_at).toLocaleDateString()}
-                      </p>
                     </div>
                   </Card>
                 ))}
