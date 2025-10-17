@@ -382,11 +382,21 @@ export function ImageDetailClient({ imageId }: ImageDetailClientProps) {
                 width: '100%'
               }}
             >
+              {/* Blurred background image */}
+              <Image
+                src={image.url}
+                alt=""
+                fill
+                className="object-cover blur-3xl opacity-60 scale-110"
+                priority
+              />
+              
+              {/* Main image on top */}
               <Image
                 src={image.url}
                 alt={image.prompt}
                 fill
-                className="object-contain"
+                className="object-contain relative z-[1]"
                 priority
               />
               
