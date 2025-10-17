@@ -223,18 +223,29 @@ export function RecentGenerations() {
             className="group overflow-hidden border-0 bg-card/50 shadow-xl shadow-primary/5 transition-all hover:shadow-2xl hover:shadow-primary/10 hover:scale-[1.02] rounded-2xl"
           >
             <div
-              className="relative overflow-hidden bg-muted/30 flex items-center justify-center cursor-pointer"
+              className="relative overflow-hidden bg-black flex items-center justify-center cursor-pointer"
               style={{
                 aspectRatio: `${image.width} / ${image.height}`,
                 maxHeight: '70vh'
               }}
               onClick={() => router.push(`/image/${image.id}`)}
             >
+              {/* Blurred background image - desktop only */}
+              <Image
+                src={image.url || "/placeholder.svg"}
+                alt=""
+                fill
+                className="hidden lg:block object-cover blur-3xl opacity-60 scale-110"
+                style={{ zIndex: 0 }}
+              />
+              
+              {/* Main image on top - centered */}
               <Image
                 src={image.url || "/placeholder.svg"}
                 alt={image.prompt}
                 fill
                 className="object-contain"
+                style={{ zIndex: 1 }}
               />
               
               {/* Action icons - bottom right corner - always visible */}

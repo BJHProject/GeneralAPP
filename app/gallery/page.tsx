@@ -361,17 +361,33 @@ export default function GalleryPage() {
                     className="group overflow-hidden border-border bg-card transition-all hover:border-primary/50 cursor-pointer"
                     onClick={() => router.push(`/image/${image.id}`)}
                   >
-                    <div className="relative aspect-[2/3] overflow-hidden bg-black">
+                    <div 
+                      className="relative overflow-hidden bg-black"
+                      style={{
+                        aspectRatio: `${image.width} / ${image.height}`
+                      }}
+                    >
+                      {/* Blurred background image - desktop only */}
+                      <Image
+                        src={image.url || "/placeholder.svg"}
+                        alt=""
+                        fill
+                        className="hidden lg:block object-cover blur-3xl opacity-60 scale-110"
+                        style={{ zIndex: 0 }}
+                      />
+                      
+                      {/* Main image on top - centered */}
                       <Image
                         src={image.url || "/placeholder.svg"}
                         alt={image.prompt}
                         fill
-                        className={`${getImageObjectFit(image.width, image.height)} transition-transform duration-300 group-hover:scale-105`}
+                        className="object-contain transition-transform duration-300 group-hover:scale-105"
+                        style={{ zIndex: 1 }}
                       />
-                      <div className="absolute top-2 right-2 bg-primary/80 text-primary-foreground text-xs px-2 py-1 rounded">
+                      <div className="absolute top-2 right-2 bg-primary/80 text-primary-foreground text-xs px-2 py-1 rounded" style={{ zIndex: 2 }}>
                         Saved
                       </div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" style={{ zIndex: 2 }} />
                     </div>
                   </Card>
                 ))}
