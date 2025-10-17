@@ -54,7 +54,7 @@ export default function GalleryPage() {
     setIsLoading(true)
     setError(null)
     try {
-      const response = await fetch("/api/images")
+      const response = await fetch("/api/saved-images")
 
       const contentType = response.headers.get("content-type")
       if (!contentType || !contentType.includes("application/json")) {
@@ -310,7 +310,7 @@ export default function GalleryPage() {
     )
   }
 
-  const savedImages = images.filter((img) => img.is_saved)
+  const savedImages = images
   const savedVideos = videos.filter((vid) => vid.is_saved)
 
   return (
