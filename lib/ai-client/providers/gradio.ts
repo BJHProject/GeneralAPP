@@ -42,7 +42,8 @@ export class GradioProvider implements ProviderAdapter {
       }
 
       // Gradio models expect specific parameter order based on API docs:
-      // [prompt, negative_prompt, seed, randomize_seed, width, height, guidance_scale, num_inference_steps]
+      // Anime V2 /infer: [prompt, negative_prompt, use_negative_prompt, seed, width, height, guidance_scale, num_inference_steps, randomize_seed]
+      // DB2169 /txt2img: [prompt, negative, width, height, steps, guidance, images, seed, scheduler, loras, lora_scale, fuse_lora]
       const width = request.width || config.defaults?.width || 1024
       const height = request.height || config.defaults?.height || 1024
       const steps = request.steps || config.defaults?.steps || 28
@@ -75,16 +76,18 @@ export class GradioProvider implements ProviderAdapter {
           false,                             // 12. fuse_lora
         ]
       } else {
-        // Original Gradio API format - set randomize_seed to true if we want randomization
+        // Anime V2 API format (Menyu/wainsfw /infer endpoint)
+        // API expects: prompt, negative_prompt, use_negative_prompt, seed, width, height, guidance_scale, num_inference_steps, randomize_seed
         params = [
           finalPrompt,                       // 1. prompt
           finalNegativePrompt,               // 2. negative_prompt
-          seed,                              // 3. seed
-          shouldRandomize,                   // 4. randomize_seed (true if we want random, false if using explicit seed)
+          true,                              // 3. use_negative_prompt (always use negative prompts)
+          seed,                              // 4. seed
           width,                             // 5. width
           height,                            // 6. height
           guidance,                          // 7. guidance_scale
           steps,                             // 8. num_inference_steps
+          shouldRandomize,                   // 9. randomize_seed (true for random, false for explicit seed)
         ]
       }
 
