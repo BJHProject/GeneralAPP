@@ -64,9 +64,9 @@ export function Header() {
             <Image
               src="/sexify-logo.png"
               alt="Sexify.app"
-              width={180}
-              height={29}
-              className="h-7 w-auto object-contain"
+              width={200}
+              height={40}
+              className="h-8 w-auto object-contain"
               priority
             />
           </Link>
