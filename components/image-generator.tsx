@@ -264,17 +264,17 @@ export function ImageGenerator() {
   }
 
   return (
-    <div className="space-y-8 border-2 border-white p-6 rounded-xl">
+    <div className="space-y-8">
       <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
 
-      <Card className="border-2 border-white bg-gradient-to-br from-card/50 to-muted/30 shadow-2xl shadow-primary/5 backdrop-blur-xl p-8">
+      <Card className="border-0 bg-gradient-to-br from-card/50 to-muted/30 shadow-2xl shadow-primary/5 backdrop-blur-xl p-8">
         <div className="space-y-8">
           <div className="space-y-2">
             <Label htmlFor="model" className="text-base font-semibold">
               Model Style
             </Label>
             <Select value={model} onValueChange={setModel}>
-              <SelectTrigger id="model" className="bg-secondary/50 border border-white backdrop-blur-sm">
+              <SelectTrigger id="model" className="bg-secondary/50 border-primary/10 backdrop-blur-sm">
                 <SelectValue placeholder="Select a model" />
               </SelectTrigger>
               <SelectContent>
@@ -298,7 +298,7 @@ export function ImageGenerator() {
               placeholder="A serene landscape with mountains at sunset, vibrant colors, highly detailed..."
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
-              className="min-h-[120px] resize-none bg-secondary/50 text-foreground border border-white backdrop-blur-sm focus:border-white transition-colors"
+              className="min-h-[120px] resize-none bg-secondary/50 text-foreground border-primary/10 backdrop-blur-sm focus:border-primary/30 transition-colors"
             />
           </div>
 
@@ -311,7 +311,7 @@ export function ImageGenerator() {
               placeholder="What you DON'T want to see in the image..."
               value={negativePrompt}
               onChange={(e) => setNegativePrompt(e.target.value)}
-              className="min-h-[80px] resize-none bg-secondary/50 text-foreground border border-white backdrop-blur-sm focus:border-white transition-colors"
+              className="min-h-[80px] resize-none bg-secondary/50 text-foreground border-primary/10 backdrop-blur-sm focus:border-primary/30 transition-colors"
             />
           </div>
 
@@ -321,21 +321,21 @@ export function ImageGenerator() {
               <Button
                 variant={guidanceScale === 4.5 ? "default" : "outline"}
                 onClick={() => setGuidanceScale(4.5)}
-                className={`h-auto py-2 rounded-lg transition-all text-sm ${guidanceScale === 4.5 ? "shadow-lg shadow-primary/30 border border-white" : "border border-white hover:border-white"}`}
+                className={`h-auto py-2 rounded-lg transition-all text-sm ${guidanceScale === 4.5 ? "shadow-lg shadow-primary/30" : "border-primary/10 hover:border-primary/30"}`}
               >
                 Creative
               </Button>
               <Button
                 variant={guidanceScale === 7 ? "default" : "outline"}
                 onClick={() => setGuidanceScale(7)}
-                className={`h-auto py-2 rounded-lg transition-all text-sm ${guidanceScale === 7 ? "shadow-lg shadow-primary/30 border border-white" : "border border-white hover:border-white"}`}
+                className={`h-auto py-2 rounded-lg transition-all text-sm ${guidanceScale === 7 ? "shadow-lg shadow-primary/30" : "border-primary/10 hover:border-primary/30"}`}
               >
                 Standard
               </Button>
               <Button
                 variant={guidanceScale === 10 ? "default" : "outline"}
                 onClick={() => setGuidanceScale(10)}
-                className={`h-auto py-2 rounded-lg transition-all text-sm ${guidanceScale === 10 ? "shadow-lg shadow-primary/30 border border-white" : "border border-white hover:border-white"}`}
+                className={`h-auto py-2 rounded-lg transition-all text-sm ${guidanceScale === 10 ? "shadow-lg shadow-primary/30" : "border-primary/10 hover:border-primary/30"}`}
               >
                 Strict
               </Button>
@@ -359,7 +359,7 @@ export function ImageGenerator() {
                     key={index}
                     variant={selectedResolution === index ? "default" : "outline"}
                     onClick={() => handleResolutionChange(index)}
-                    className={`flex flex-col items-center gap-2 h-auto py-3 rounded-xl transition-all ${selectedResolution === index ? "shadow-lg shadow-primary/30 border border-white" : "border border-white hover:border-white"}`}
+                    className={`flex flex-col items-center gap-2 h-auto py-3 rounded-xl transition-all ${selectedResolution === index ? "shadow-lg shadow-primary/30" : "border-primary/10 hover:border-primary/30"}`}
                   >
                     <div
                       className="border-2 border-current"
