@@ -75,12 +75,12 @@ export class GradioProvider implements ProviderAdapter {
           false,                             // 12. fuse_lora
         ]
       } else {
-        // Original Gradio API format - always use false for randomizeSeed since we provide the seed
+        // Original Gradio API format - set randomize_seed to true if we want randomization
         params = [
           finalPrompt,                       // 1. prompt
           finalNegativePrompt,               // 2. negative_prompt
-          seed,                              // 3. seed (already randomized if needed)
-          false,                             // 4. randomize_seed (false because we provide the seed)
+          seed,                              // 3. seed
+          shouldRandomize,                   // 4. randomize_seed (true if we want random, false if using explicit seed)
           width,                             // 5. width
           height,                            // 6. height
           guidance,                          // 7. guidance_scale
