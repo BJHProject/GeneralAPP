@@ -61,7 +61,7 @@ export function FeaturedRecentImage() {
   }
 
   useEffect(() => {
-    loadLatestImage()
+    setIsLoading(false)
 
     const handleImageGenerated = () => {
       loadLatestImage()
@@ -163,7 +163,7 @@ export function FeaturedRecentImage() {
       <Card className="border-border bg-card h-full min-h-[600px] flex items-center justify-center p-12">
         <div className="text-center">
           <p className="text-muted-foreground">
-            {error || "No recent images. Generate your first image to see it here!"}
+            {error || "Generate image to appear here"}
           </p>
         </div>
       </Card>
