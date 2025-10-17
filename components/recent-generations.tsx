@@ -237,11 +237,11 @@ export function RecentGenerations() {
                 className="object-contain"
               />
               
-              {/* Action icons - bottom right corner */}
-              <div className="absolute bottom-0 right-0 flex flex-col gap-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
-                {/* Heart (save) icon - white when unsaved, pink when saved */}
+              {/* Action icons - bottom right corner - always visible */}
+              <div className="absolute bottom-0 right-0 flex flex-col gap-0 z-10">
+                {/* Heart (save) icon - white when unsaved, pink when saved, turns pink on hover */}
                 <button
-                  className="w-10 h-10 p-0 border-0 bg-transparent cursor-pointer"
+                  className="w-7 h-7 p-0 border-0 bg-transparent cursor-pointer group/heart-btn"
                   onClick={(e) => {
                     e.stopPropagation()
                     if (!image.is_saved) {
@@ -253,13 +253,23 @@ export function RecentGenerations() {
                   <img
                     src={image.is_saved ? "/icons/heart-saved.png" : "/icons/heart-unsaved.png"}
                     alt={image.is_saved ? "Saved" : "Save"}
-                    className="w-10 h-10 object-contain"
+                    className={`w-7 h-7 object-contain transition-opacity duration-200 ${
+                      image.is_saved ? '' : 'group-hover/heart-btn:opacity-0'
+                    }`}
                   />
+                  {/* Pink heart on hover for unsaved images */}
+                  {!image.is_saved && (
+                    <img
+                      src="/icons/heart-saved.png"
+                      alt="Save"
+                      className="w-7 h-7 object-contain absolute top-0 left-0 opacity-0 group-hover/heart-btn:opacity-100 transition-opacity duration-200"
+                    />
+                  )}
                 </button>
                 
                 {/* Resize/Fullscreen icon - hugging bottom right corner */}
                 <button
-                  className="w-10 h-10 p-0 border-0 bg-transparent cursor-pointer"
+                  className="w-7 h-7 p-0 border-0 bg-transparent cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation()
                     setFullscreenImage(image.url)
@@ -268,7 +278,7 @@ export function RecentGenerations() {
                   <img
                     src="/icons/resize.png"
                     alt="Fullscreen"
-                    className="w-10 h-10 object-contain"
+                    className="w-7 h-7 object-contain"
                   />
                 </button>
               </div>
