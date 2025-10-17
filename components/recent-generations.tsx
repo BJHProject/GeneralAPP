@@ -242,21 +242,29 @@ export function RecentGenerations() {
               
               {/* Action buttons - bottom right corner */}
               <div className="absolute bottom-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
-                {/* Heart (save) button - only show if not already saved */}
-                {!image.is_saved && (
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    className="h-10 w-10 rounded-lg bg-white/90 hover:bg-pink-500 transition-all duration-200 group/heart"
-                    onClick={(e) => {
-                      e.stopPropagation()
+                {/* Heart (save) button - white when unsaved, pink/filled when saved */}
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className={`h-10 w-10 rounded-lg transition-all duration-200 ${
+                    image.is_saved 
+                      ? 'bg-pink-500 hover:bg-pink-600' 
+                      : 'bg-white/90 hover:bg-pink-500 group/heart'
+                  }`}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    if (!image.is_saved) {
                       handleSave(image.id, image.url)
-                    }}
-                    disabled={savingImages.has(image.id)}
-                  >
-                    <Heart className="h-5 w-5 text-black group-hover/heart:text-white group-hover/heart:fill-white transition-all duration-200" />
-                  </Button>
-                )}
+                    }
+                  }}
+                  disabled={savingImages.has(image.id)}
+                >
+                  <Heart className={`h-5 w-5 transition-all duration-200 ${
+                    image.is_saved 
+                      ? 'text-white fill-white' 
+                      : 'text-black group-hover/heart:text-white group-hover/heart:fill-white'
+                  }`} />
+                </Button>
                 
                 {/* Fullscreen button */}
                 <Button
