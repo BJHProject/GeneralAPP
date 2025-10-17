@@ -361,13 +361,7 @@ export default function GalleryPage() {
                     className="group overflow-hidden border-border bg-card transition-all hover:border-primary/50 cursor-pointer"
                     onClick={() => router.push(`/image/${image.id}`)}
                   >
-                    <div 
-                      className="relative overflow-hidden"
-                      style={{
-                        aspectRatio: `${image.width} / ${image.height}`,
-                        background: 'black'
-                      }}
-                    >
+                    <div className="relative overflow-hidden aspect-[2/3]">
                       {/* Blurred background layer */}
                       <div 
                         className="absolute inset-0"

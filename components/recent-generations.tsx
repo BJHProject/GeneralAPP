@@ -223,12 +223,7 @@ export function RecentGenerations() {
             className="group overflow-hidden border-0 bg-card/50 shadow-xl shadow-primary/5 transition-all hover:shadow-2xl hover:shadow-primary/10 hover:scale-[1.02] rounded-2xl"
           >
             <div
-              className="relative overflow-hidden flex items-center justify-center cursor-pointer"
-              style={{
-                aspectRatio: `${image.width} / ${image.height}`,
-                maxHeight: '70vh',
-                background: 'black'
-              }}
+              className="relative overflow-hidden flex items-center justify-center cursor-pointer aspect-[2/3]"
               onClick={() => router.push(`/image/${image.id}`)}
             >
               {/* Blurred background layer */}
@@ -255,7 +250,7 @@ export function RecentGenerations() {
               </div>
               
               {/* Action icons - bottom right corner - always visible */}
-              <div className="absolute bottom-0 right-0 flex flex-col gap-0 z-10">
+              <div className="absolute bottom-0 right-0 flex flex-col gap-0 z-20">
                 {/* Heart (save) icon - white when unsaved, pink when saved, turns pink on hover */}
                 <button
                   className="w-7 h-7 p-0 border-0 bg-transparent cursor-pointer group/heart-btn"
