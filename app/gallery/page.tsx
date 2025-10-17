@@ -7,7 +7,6 @@ import Image from "next/image"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
-import { Header } from "@/components/header"
 
 interface GalleryImage {
   id: string
@@ -279,7 +278,6 @@ export default function GalleryPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
-        <Header />
         <div className="container mx-auto px-4 py-8">
           <div className="space-y-4">
             <h1 className="text-3xl font-bold text-foreground">My Gallery</h1>
@@ -295,7 +293,6 @@ export default function GalleryPage() {
   if (error) {
     return (
       <div className="min-h-screen bg-background">
-        <Header />
         <div className="container mx-auto px-4 py-8">
           <div className="space-y-4">
             <h1 className="text-3xl font-bold text-foreground">My Gallery</h1>
@@ -318,7 +315,6 @@ export default function GalleryPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
       <div className="container mx-auto px-4 py-8">
         <div className="space-y-8">
           <div className="flex items-center justify-between">
