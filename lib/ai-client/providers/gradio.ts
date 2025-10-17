@@ -174,7 +174,9 @@ export class GradioProvider implements ProviderAdapter {
         },
       }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error)
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : (typeof error === 'object' && error !== null ? JSON.stringify(error) : String(error))
       const errorStack = error instanceof Error ? error.stack : undefined
       console.error(`[Gradio ${requestId}] CRITICAL ERROR:`, {
         message: errorMessage,
@@ -183,7 +185,7 @@ export class GradioProvider implements ProviderAdapter {
       })
       return {
         success: false,
-        error: `Image generation encountered an error. Please try again. [Debug: ${errorMessage}]`,
+        error: `Image generation encountered an error. Please try again. [Debug: ${errorMessage.substring(0, 200)}]`,
         code: 'PROVIDER_ERROR',
         provider: 'gradio',
         retryable: true,

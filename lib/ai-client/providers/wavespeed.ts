@@ -127,7 +127,9 @@ export class WavespeedProvider implements ProviderAdapter {
         },
       }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error)
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : (typeof error === 'object' && error !== null ? JSON.stringify(error) : String(error))
       const errorStack = error instanceof Error ? error.stack : undefined
       console.error(`[Wavespeed ${requestId}] CRITICAL ERROR:`, {
         message: errorMessage,
@@ -136,7 +138,7 @@ export class WavespeedProvider implements ProviderAdapter {
       })
       return {
         success: false,
-        error: `Generation encountered an error. Please try again. [Debug: ${errorMessage}]`,
+        error: `Generation encountered an error. Please try again. [Debug: ${errorMessage.substring(0, 200)}]`,
         code: 'PROVIDER_ERROR',
         provider: 'wavespeed',
         retryable: true,
