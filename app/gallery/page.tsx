@@ -368,26 +368,30 @@ export default function GalleryPage() {
                       }}
                     >
                       {/* Blurred background image - desktop only */}
-                      <Image
-                        src={image.url || "/placeholder.svg"}
-                        alt=""
-                        fill
-                        className="hidden lg:block object-cover blur-3xl opacity-60 scale-110"
-                        style={{ zIndex: 0 }}
-                      />
+                      <div className="absolute inset-0 hidden lg:block">
+                        <Image
+                          src={image.url || "/placeholder.svg"}
+                          alt=""
+                          fill
+                          className="object-cover blur-3xl opacity-60"
+                          style={{ transform: 'scale(1.1)' }}
+                        />
+                      </div>
                       
                       {/* Main image on top - centered */}
-                      <Image
-                        src={image.url || "/placeholder.svg"}
-                        alt={image.prompt}
-                        fill
-                        className="object-contain transition-transform duration-300 group-hover:scale-105"
-                        style={{ zIndex: 1 }}
-                      />
-                      <div className="absolute top-2 right-2 bg-primary/80 text-primary-foreground text-xs px-2 py-1 rounded" style={{ zIndex: 2 }}>
+                      <div className="absolute inset-0 z-10">
+                        <Image
+                          src={image.url || "/placeholder.svg"}
+                          alt={image.prompt}
+                          fill
+                          className="object-contain transition-transform duration-300 group-hover:scale-105"
+                        />
+                      </div>
+                      
+                      <div className="absolute top-2 right-2 bg-primary/80 text-primary-foreground text-xs px-2 py-1 rounded z-20">
                         Saved
                       </div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" style={{ zIndex: 2 }} />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100 z-20" />
                     </div>
                   </Card>
                 ))}

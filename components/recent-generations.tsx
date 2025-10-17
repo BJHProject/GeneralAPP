@@ -231,22 +231,25 @@ export function RecentGenerations() {
               onClick={() => router.push(`/image/${image.id}`)}
             >
               {/* Blurred background image - desktop only */}
-              <Image
-                src={image.url || "/placeholder.svg"}
-                alt=""
-                fill
-                className="hidden lg:block object-cover blur-3xl opacity-60 scale-110"
-                style={{ zIndex: 0 }}
-              />
+              <div className="absolute inset-0 hidden lg:block">
+                <Image
+                  src={image.url || "/placeholder.svg"}
+                  alt=""
+                  fill
+                  className="object-cover blur-3xl opacity-60"
+                  style={{ transform: 'scale(1.1)' }}
+                />
+              </div>
               
               {/* Main image on top - centered */}
-              <Image
-                src={image.url || "/placeholder.svg"}
-                alt={image.prompt}
-                fill
-                className="object-contain"
-                style={{ zIndex: 1 }}
-              />
+              <div className="absolute inset-0 z-10">
+                <Image
+                  src={image.url || "/placeholder.svg"}
+                  alt={image.prompt}
+                  fill
+                  className="object-contain"
+                />
+              </div>
               
               {/* Action icons - bottom right corner - always visible */}
               <div className="absolute bottom-0 right-0 flex flex-col gap-0 z-10">
