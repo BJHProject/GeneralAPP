@@ -42,6 +42,7 @@ export function ImageDetailClient({ imageId }: ImageDetailClientProps) {
   const [isSaving, setIsSaving] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [fullscreenImage, setFullscreenImage] = useState<string | null>(null)
 
   useEffect(() => {
     const loadImage = async () => {
@@ -233,7 +234,6 @@ export function ImageDetailClient({ imageId }: ImageDetailClientProps) {
   }
 
   const aspectRatio = image.width / image.height
-  const [fullscreenImage, setFullscreenImage] = useState<string | null>(null)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
