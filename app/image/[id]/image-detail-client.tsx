@@ -235,7 +235,7 @@ export function ImageDetailClient({ imageId }: ImageDetailClientProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <div className="container mx-auto px-4 py-8 max-w-[95vw] lg:max-w-[1800px]">
         <Button
           variant="ghost"
           onClick={() => router.back()}
@@ -245,15 +245,15 @@ export function ImageDetailClient({ imageId }: ImageDetailClientProps) {
           Back
         </Button>
 
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-12">
           {/* Image section - shows first on mobile, right on desktop */}
           <div className="flex-1 min-w-0 lg:order-2">
-            <Card className="border-0 bg-card/50 shadow-xl shadow-primary/5 overflow-hidden rounded-2xl p-4 md:p-6">
+            <Card className="border-0 bg-card/50 shadow-xl shadow-primary/5 overflow-hidden rounded-2xl p-4 md:p-8 lg:p-12">
               <div 
                 className="relative bg-muted/30 rounded-xl overflow-hidden mx-auto flex items-center justify-center"
                 style={{ 
                   aspectRatio: aspectRatio.toString(),
-                  maxHeight: '70vh',
+                  maxHeight: '85vh',
                   width: '100%'
                 }}
               >
@@ -269,7 +269,7 @@ export function ImageDetailClient({ imageId }: ImageDetailClientProps) {
           </div>
 
           {/* Controls section - shows second on mobile, left on desktop */}
-          <div className="lg:w-[420px] flex-shrink-0 space-y-4 lg:order-1">
+          <div className="lg:w-[480px] lg:min-w-[480px] flex-shrink-0 space-y-4 lg:order-1">
             {/* Info Card */}
             <Card className="border-0 bg-gradient-to-br from-card/50 to-muted/30 shadow-xl shadow-primary/5 p-6 rounded-2xl">
               <div className="space-y-3 mb-6 text-sm">

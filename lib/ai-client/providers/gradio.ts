@@ -9,23 +9,37 @@ export class GradioProvider implements ProviderAdapter {
     const requestId = request.requestId
     console.log(`[Gradio ${requestId}] Generating with space: ${config.endpoint}`)
 
-    try {
-      const tokens = [
-        process.env.HUGGINGFACE_API_TOKEN,
-        process.env.HUGGINGFACE_API_TOKEN_2,
-        process.env.HUGGINGFACE_API_TOKEN_3,
-      ].filter(Boolean)
+    const tokens = [
+      process.env.HUGGINGFACE_API_TOKEN,
+      process.env.HUGGINGFACE_API_TOKEN_2,
+      process.env.HUGGINGFACE_API_TOKEN_3,
+    ].filter(Boolean)
 
-      if (tokens.length === 0) {
-        throw new Error('No HuggingFace API tokens configured')
+    if (tokens.length === 0) {
+      return {
+        success: false,
+        error: 'No HuggingFace API tokens configured',
+        code: 'PROVIDER_ERROR',
+        provider: 'gradio',
+        retryable: false,
       }
+    }
 
-      const token = tokens[Math.floor(Math.random() * tokens.length)]! as `hf_${string}`
+    // Shuffle tokens for random starting point
+    const shuffledTokens = [...tokens].sort(() => Math.random() - 0.5)
+    const errors: string[] = []
 
-      console.log(`[Gradio ${requestId}] Connecting to space: ${config.endpoint}`)
-      const client = await Client.connect(config.endpoint, {
-        hf_token: token,
-      })
+    // Try each API key sequentially until one works
+    for (let i = 0; i < shuffledTokens.length; i++) {
+      const token = shuffledTokens[i]! as `hf_${string}`
+      const tokenNum = i + 1
+      
+      try {
+        console.log(`[Gradio ${requestId}] Trying API key ${tokenNum}/${shuffledTokens.length}`)
+        console.log(`[Gradio ${requestId}] Connecting to space: ${config.endpoint}`)
+        const client = await Client.connect(config.endpoint, {
+          hf_token: token,
+        })
 
       // Add mandatory prompts if configured (like HuggingFace Inference provider)
       let finalPrompt = request.prompt
@@ -161,7 +175,7 @@ export class GradioProvider implements ProviderAdapter {
         contentType: 'image/png',
       })
 
-      console.log(`[Gradio ${requestId}] ✓ Uploaded to Blob:`, blob.url)
+      console.log(`[Gradio ${requestId}] ✓ API key ${tokenNum} succeeded. Uploaded to Blob:`, blob.url)
 
       return {
         success: true,
@@ -173,23 +187,22 @@ export class GradioProvider implements ProviderAdapter {
           timestamp: Date.now(),
         },
       }
-    } catch (error) {
-      const errorMessage = error instanceof Error 
-        ? error.message 
-        : (typeof error === 'object' && error !== null ? JSON.stringify(error) : String(error))
-      const errorStack = error instanceof Error ? error.stack : undefined
-      console.error(`[Gradio ${requestId}] CRITICAL ERROR:`, {
-        message: errorMessage,
-        stack: errorStack,
-        error: error,
-      })
-      return {
-        success: false,
-        error: `Image generation encountered an error. Please try again. [Debug: ${errorMessage.substring(0, 200)}]`,
-        code: 'PROVIDER_ERROR',
-        provider: 'gradio',
-        retryable: true,
+      } catch (error) {
+        const errorMsg = error instanceof Error ? error.message : String(error)
+        console.log(`[Gradio ${requestId}] API key ${tokenNum} error: ${errorMsg}`)
+        errors.push(`Key ${tokenNum}: ${errorMsg.substring(0, 50)}`)
+        continue // Try next key
       }
+    }
+
+    // All keys failed - return error
+    console.error(`[Gradio ${requestId}] All ${shuffledTokens.length} API keys failed:`, errors)
+    return {
+      success: false,
+      error: `Image generation failed after trying all API keys. Please try again. [Debug: ${errors[errors.length - 1]}]`,
+      code: 'PROVIDER_ERROR',
+      provider: 'gradio',
+      retryable: true,
     }
   }
 }
