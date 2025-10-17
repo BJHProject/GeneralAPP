@@ -28,11 +28,12 @@ export async function GET() {
 
     const supabase = await createClient()
 
-    // Fetch last 20 images chronologically, regardless of saved status
+    // Fetch last 20 UNSAVED images only for Recent Generations
     const { data: recentImages, error: recentError } = await supabase
       .from("images")
       .select("*")
       .eq("user_id", user.id)
+      .eq("is_saved", false)
       .order("created_at", { ascending: false })
       .limit(20)
 
@@ -41,7 +42,7 @@ export async function GET() {
       return NextResponse.json({ images: [] })
     }
 
-    console.log("[v0] Found recent images:", recentImages?.length || 0)
+    console.log("[v0] Found recent unsaved images:", recentImages?.length || 0)
     return NextResponse.json({ images: recentImages || [] })
   } catch (error) {
     console.error("[v0] Failed to fetch images:", error)
