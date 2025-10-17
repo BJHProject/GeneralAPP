@@ -162,7 +162,7 @@ export function FeaturedRecentImage() {
     return (
       <Card className="border-border bg-card h-full min-h-[600px] flex items-center justify-center p-12">
         <div className="text-center">
-          <p className="text-muted-foreground">
+          <p className="text-card-foreground/60 text-lg">
             {error || "Generate image to appear here"}
           </p>
         </div>
