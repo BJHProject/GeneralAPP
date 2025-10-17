@@ -237,7 +237,7 @@ export function ImageDetailClient({ imageId }: ImageDetailClientProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
-      <div className="container mx-auto px-4 py-3 max-w-[95vw] lg:max-w-7xl">
+      <div className="container mx-auto px-4 py-1 max-w-[95vw] lg:max-w-7xl">
         <Button
           variant="ghost"
           onClick={() => router.back()}
