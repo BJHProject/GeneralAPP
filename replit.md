@@ -14,6 +14,8 @@ Preferred communication style: Simple, everyday language.
 
 The frontend is built with Next.js 14+ (App Router), utilizing Radix UI primitives and shadcn/ui for components, styled with Tailwind CSS. It features a tab-based interface for different generation modes, modal authentication, and real-time UI updates. Content is categorized into "recent" (temporary) and "saved" (permanent) galleries.
 
+**Past Generations Gallery**: Displays up to 20 recent images with custom action icons overlaying each image on hover. The heart icon (white outline for unsaved, pink filled for saved) allows quick saving to the permanent gallery. The resize icon enables fullscreen viewing. Icons are positioned at the bottom right corner with transparent backgrounds, and saved images remain visible in the feed with a persistent pink heart indicator.
+
 **Image Detail View**: Clicking any generated image navigates to a dedicated detail page (`/image/[id]`) with glass-morphism styling. The detail view displays the full image at its proper aspect ratio, shows metadata (prompt, dimensions, model, creation date), and provides action buttons for Clone Prompt, Save, Share, Download, and Delete. A collapsible Prompt Details section reveals the full positive and negative prompts used for generation.
 
 ### Backend Architecture
