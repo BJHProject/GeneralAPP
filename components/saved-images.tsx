@@ -186,11 +186,20 @@ export function SavedImages() {
                 }
               }}
             >
+              {/* Blurred background image */}
+              <Image
+                src={image.url || "/placeholder.svg"}
+                alt=""
+                fill
+                className="object-cover blur-3xl opacity-60 scale-110"
+              />
+              
+              {/* Main image on top */}
               <Image
                 src={image.url || "/placeholder.svg"}
                 alt={image.prompt}
                 fill
-                className="object-contain transition-transform duration-300 group-hover:scale-105"
+                className="object-contain transition-transform duration-300 group-hover:scale-105 relative z-[1]"
               />
               <div
                 className={`absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent transition-opacity ${activeImageId === image.id ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}

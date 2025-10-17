@@ -230,11 +230,20 @@ export function RecentGenerations() {
               }}
               onClick={() => router.push(`/image/${image.id}`)}
             >
+              {/* Blurred background image */}
+              <Image
+                src={image.url || "/placeholder.svg"}
+                alt=""
+                fill
+                className="object-cover blur-3xl opacity-60 scale-110"
+              />
+              
+              {/* Main image on top */}
               <Image
                 src={image.url || "/placeholder.svg"}
                 alt={image.prompt}
                 fill
-                className="object-contain"
+                className="object-contain relative z-[1]"
               />
               
               {/* Action icons - bottom right corner - always visible */}
