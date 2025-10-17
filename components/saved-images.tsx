@@ -28,7 +28,7 @@ export function SavedImages() {
     setIsLoading(true)
     setError(null)
     try {
-      const response = await fetch("/api/images")
+      const response = await fetch("/api/saved-images")
 
       const contentType = response.headers.get("content-type")
       if (!contentType || !contentType.includes("application/json")) {
@@ -43,8 +43,7 @@ export function SavedImages() {
       }
 
       const data = await response.json()
-      const savedOnly = (data.images || []).filter((img: SavedImage & { is_saved: boolean }) => img.is_saved)
-      setImages(savedOnly)
+      setImages(data.images || [])
     } catch (error) {
       console.error("[v0] Failed to load images:", error)
       setError("Unable to load images. This may not work in preview mode.")

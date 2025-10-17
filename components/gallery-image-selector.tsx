@@ -39,12 +39,9 @@ export function GalleryImageSelector({ isOpen, onClose, onSelect }: GalleryImage
         throw new Error("Failed to load images")
       }
       const data = await response.json()
-      const allImages = data.images || []
-      console.log("[v0] Received images:", allImages.length)
-      // Filter to only unsaved images (recent generations) for video input
-      const unsavedImages = allImages.filter((img: GalleryImage) => !img.is_saved)
-      console.log("[v0] Filtered to unsaved images:", unsavedImages.length)
-      setImages(unsavedImages)
+      const images = data.images || []
+      console.log("[v0] Received unsaved images:", images.length)
+      setImages(images)
     } catch (error) {
       console.error("[v0] Failed to load gallery images:", error)
       setImages([])

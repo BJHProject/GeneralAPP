@@ -43,11 +43,11 @@ export function FeaturedRecentImage() {
       }
 
       const data = await response.json()
-      const unsavedImages = (data.images || []).filter((img: GeneratedImage) => !img.is_saved)
+      const images = data.images || []
 
       // Get the most recent image (first in the array)
-      if (unsavedImages.length > 0) {
-        setImage(unsavedImages[0])
+      if (images.length > 0) {
+        setImage(images[0])
       } else {
         setImage(null)
       }
