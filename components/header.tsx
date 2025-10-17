@@ -66,7 +66,7 @@ export function Header() {
               alt="Sexify.app"
               width={135}
               height={36}
-              className="h-8 w-auto object-contain"
+              className="h-6 lg:h-8 w-auto object-contain"
               priority
             />
           </Link>
