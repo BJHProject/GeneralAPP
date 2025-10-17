@@ -14,7 +14,13 @@ Preferred communication style: Simple, everyday language.
 
 The frontend is built with Next.js 14+ (App Router), utilizing Radix UI primitives and shadcn/ui for components, styled with Tailwind CSS. It features a tab-based interface for different generation modes, modal authentication, and real-time UI updates. Content is categorized into "recent" (temporary) and "saved" (permanent) galleries.
 
-**Past Generations Gallery**: Displays up to 20 recent images chronologically with custom action icons always visible at the bottom right of each image. The heart icon (white outline for unsaved, pink filled for saved, turns pink on hover) allows quick saving to the permanent gallery. The resize icon (28px × 28px) enables fullscreen viewing. Icons use transparent backgrounds and are 30% smaller than original size for cleaner appearance.
+**Global Header**: A persistent navigation header renders on every page via the root layout, displaying the Sexify.app logo, Home link, user authentication status, credit balance, and user menu with gallery access and sign-out options.
+
+**Generation Buttons**: All generation action buttons (Image, Video, Editor) display credit costs inline with the action label using consistent formatting: "Generate [Type] (X,XXX credits ◇)" with a white diamond icon. This provides immediate cost transparency without requiring separate cost displays.
+
+**Past Generations Gallery**: Displays up to 20 recent images chronologically in fixed 2:3 aspect ratio frames with custom action icons always visible at the bottom right of each image. All images use object-contain positioning with blurry colorful backgrounds (using the image's own colors with 60px blur at 60% opacity) to elegantly fill empty space for non-portrait images. The heart icon (white outline for unsaved, pink filled for saved, turns pink on hover) allows quick saving to the permanent gallery. The resize icon (28px × 28px) enables fullscreen viewing. Icons use transparent backgrounds and are 30% smaller than original size for cleaner appearance.
+
+**Saved Images Gallery**: Uses the same 2:3 aspect ratio frames with blurry backgrounds as Past Generations, ensuring consistent presentation across all galleries.
 
 **Image Detail View**: Clicking any generated image navigates to a dedicated detail page (`/image/[id]`) with a sidebar layout optimized for 1080p desktop displays. Desktop layout features a 420px left sidebar with prompts, metadata, and action buttons, with the image displayed on the right side. The image includes a resize button (28px × 28px) at the bottom right corner for fullscreen viewing on both desktop and mobile. Mobile layout stacks vertically with sidebar shown below the image.
 
