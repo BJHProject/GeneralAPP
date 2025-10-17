@@ -18,7 +18,7 @@ interface GeneratedImage {
 
 export function FeaturedRecentImage() {
   const [image, setImage] = useState<GeneratedImage | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -61,8 +61,6 @@ export function FeaturedRecentImage() {
   }
 
   useEffect(() => {
-    setIsLoading(false)
-
     const handleImageGenerated = () => {
       loadLatestImage()
     }
