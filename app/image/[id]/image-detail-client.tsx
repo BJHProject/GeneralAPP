@@ -5,12 +5,12 @@ import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { 
-  ArrowLeft, 
-  Download, 
-  Share2, 
-  Trash2, 
-  Save, 
+import {
+  ArrowLeft,
+  Download,
+  Share2,
+  Trash2,
+  Save,
   Copy,
   Loader2,
   VideoIcon,
@@ -138,10 +138,10 @@ export function ImageDetailClient({ imageId }: ImageDetailClientProps) {
 
   const handleClone = () => {
     if (!image) return
-    
+
     // Define all safety and model-specific mandatory prompts to exclude
     const GLOBAL_SAFETY_PROMPTS = "child, childish, toddler, underage, fused bodies, crossed eyes"
-    
+
     // Model-specific mandatory prompts (from model-registry.ts)
     const MODEL_MANDATORY_PROMPTS: Record<string, { positive: string, negative: string }> = {
       'realistic_v2': {
@@ -153,21 +153,21 @@ export function ImageDetailClient({ imageId }: ImageDetailClientProps) {
         negative: 'score_6, score_5, score_4',
       },
     }
-    
+
     // Clean the prompt by removing model-specific mandatory positive prompts
     let userPrompt = image.prompt
     const modelMandatory = image.model ? MODEL_MANDATORY_PROMPTS[image.model] : null
-    
+
     if (modelMandatory?.positive) {
       const mandatoryPrefix = `${modelMandatory.positive}, `
       if (userPrompt.startsWith(mandatoryPrefix)) {
         userPrompt = userPrompt.substring(mandatoryPrefix.length)
       }
     }
-    
+
     // Clean negative prompt by removing both safety and model-specific prompts
     let userNegativePrompt = image.negative_prompt || ""
-    
+
     // Remove global safety prompts first
     if (userNegativePrompt.startsWith(GLOBAL_SAFETY_PROMPTS)) {
       userNegativePrompt = userNegativePrompt.substring(GLOBAL_SAFETY_PROMPTS.length)
@@ -175,7 +175,7 @@ export function ImageDetailClient({ imageId }: ImageDetailClientProps) {
         userNegativePrompt = userNegativePrompt.substring(2)
       }
     }
-    
+
     // Then remove model-specific negative prompts
     if (modelMandatory?.negative) {
       const mandatoryPrefix = `${modelMandatory.negative}, `
@@ -183,7 +183,7 @@ export function ImageDetailClient({ imageId }: ImageDetailClientProps) {
         userNegativePrompt = userNegativePrompt.substring(mandatoryPrefix.length)
       }
     }
-    
+
     const params = new URLSearchParams({
       prompt: userPrompt,
       width: image.width.toString(),
@@ -249,7 +249,7 @@ export function ImageDetailClient({ imageId }: ImageDetailClientProps) {
 
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Controls section - shows second on mobile, left on desktop */}
-          <div className="lg:w-[420px] lg:min-w-[420px] flex-shrink-0 space-y-4 order-2 lg:order-1">
+          <div className="lg:w-[483px] lg:min-w-[483px] flex-shrink-0 space-y-7 order-2 lg:order-1">
             {/* Info Card */}
             <Card className="border-0 bg-gradient-to-br from-card/50 to-muted/30 shadow-xl shadow-primary/5 p-6 rounded-2xl">
               <div className="space-y-3 mb-6 text-sm">
@@ -259,7 +259,7 @@ export function ImageDetailClient({ imageId }: ImageDetailClientProps) {
                     {image.prompt}
                   </p>
                 </div>
-                
+
                 {image.negative_prompt && (
                   <div>
                     <p className="text-xs text-muted-foreground mb-1.5">Negative Prompt</p>
@@ -300,83 +300,76 @@ export function ImageDetailClient({ imageId }: ImageDetailClientProps) {
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <div className="grid grid-cols-2 gap-3">
-                  <Button
-                    onClick={handleClone}
-                    className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg shadow-primary/20"
-                  >
-                    <Copy className="mr-2 h-4 w-4" />
-                    Clone
-                  </Button>
-                  <Button
-                    onClick={handleAnimate}
-                    className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 shadow-lg shadow-purple-600/20"
-                  >
-                    <VideoIcon className="mr-2 h-4 w-4" />
-                    Animate
-                  </Button>
-                </div>
+              {/* Action Buttons */}
+              <div className="grid grid-cols-2 gap-3 pt-4">
+                <Button
+                  variant="secondary"
+                  size="lg"
+                  className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white lg:h-12 lg:text-base"
+                  onClick={handleClone}
+                >
+                  <Copy className="mr-2 lg:h-5 lg:w-5 h-4 w-4" />
+                  Clone
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="lg"
+                  className="w-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white lg:h-12 lg:text-base"
+                  onClick={handleAnimate}
+                >
+                  <VideoIcon className="mr-2 lg:h-5 lg:w-5 h-4 w-4" />
+                  Animate
+                </Button>
+              </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                  {!image.is_saved && (
-                    <Button
-                      onClick={handleSave}
-                      disabled={isSaving}
-                      variant="secondary"
-                      className="backdrop-blur-sm bg-muted/50 border border-primary/10 hover:bg-muted/70"
-                    >
-                      <Save className="mr-2 h-4 w-4" />
-                      {isSaving ? "Saving..." : "Save"}
-                    </Button>
+              <div className="grid grid-cols-2 gap-3">
+                <Button variant="outline" size="lg" className="w-full lg:h-12 lg:text-base" onClick={handleSave}>
+                  <Save className="mr-2 lg:h-5 lg:w-5 h-4 w-4" />
+                  {image.is_saved ? "Saved" : "Save"}
+                </Button>
+                <Button variant="outline" size="lg" className="w-full lg:h-12 lg:text-base" onClick={handleShare}>
+                  <Share2 className="mr-2 lg:h-5 lg:w-5 h-4 w-4" />
+                  Share Link
+                </Button>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <Button variant="outline" size="lg" className="w-full lg:h-12 lg:text-base" onClick={handleDownload}>
+                  <Download className="mr-2 lg:h-5 lg:w-5 h-4 w-4" />
+                  Download
+                </Button>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="w-full text-destructive hover:bg-destructive hover:text-destructive-foreground lg:h-12 lg:text-base"
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                >
+                  {isDeleting ? (
+                    <Loader2 className="mr-2 lg:h-5 lg:w-5 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Trash2 className="mr-2 lg:h-5 lg:w-5 h-4 w-4" />
                   )}
-                  <Button
-                    onClick={handleShare}
-                    variant="secondary"
-                    className={`backdrop-blur-sm bg-muted/50 border border-primary/10 hover:bg-muted/70 ${!image.is_saved ? '' : 'col-span-2'}`}
-                  >
-                    <Share2 className="mr-2 h-4 w-4" />
-                    Share Link
-                  </Button>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <Button
-                    onClick={handleDownload}
-                    variant="outline"
-                    className="border-primary/20 hover:bg-muted/50"
-                  >
-                    <Download className="mr-2 h-4 w-4" />
-                    Download
-                  </Button>
-                  <Button
-                    onClick={handleDelete}
-                    disabled={isDeleting}
-                    variant="outline"
-                    className="border-destructive/20 text-destructive hover:bg-destructive/10"
-                  >
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    {isDeleting ? "Deleting..." : "Delete"}
-                  </Button>
-                </div>
+                  Delete
+                </Button>
               </div>
             </Card>
 
-            <Card className="border-0 bg-gradient-to-br from-card/50 to-muted/30 shadow-xl shadow-primary/5 p-4 rounded-2xl">
-              <div className="flex items-start gap-2 text-xs text-muted-foreground">
-                <DiamondIcon className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                <p>
-                  All content is AI-generated for entertainment purposes. Creating or sharing content based on real individuals is prohibited.
-                </p>
-              </div>
-            </Card>
+            {/* Disclaimer */}
+            <div className="flex items-start gap-2 p-4 bg-primary/5 rounded-lg border border-primary/10">
+              <DiamondIcon className="lg:h-6 lg:w-6 h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+              <p className="lg:text-sm text-xs text-muted-foreground leading-relaxed">
+                All content is AI-generated for entertainment purposes. Creating or sharing content based on real
+                individuals is prohibited.
+              </p>
+            </div>
           </div>
 
           {/* Image section - shows first on mobile, right on desktop */}
           <div className="flex-1 min-w-0 order-1 lg:order-2">
-            <div 
+            <div
               className="relative bg-muted/30 rounded-xl overflow-hidden mx-auto flex items-center justify-center group"
-              style={{ 
+              style={{
                 aspectRatio: aspectRatio.toString(),
                 maxHeight: '85vh',
                 width: '100%'
@@ -389,7 +382,7 @@ export function ImageDetailClient({ imageId }: ImageDetailClientProps) {
                 className="object-contain"
                 priority
               />
-              
+
               {/* Resize button - bottom right corner - always visible */}
               <button
                 className="absolute bottom-0 right-0 w-7 h-7 p-0 border-0 bg-transparent cursor-pointer z-10"
