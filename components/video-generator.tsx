@@ -9,7 +9,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Card } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Loader2, VideoIcon, AlertCircle, Upload, X, ImageIcon, DiamondIcon } from "lucide-react"
+import { Loader2, VideoIcon, AlertCircle, Upload, X, ImageIcon } from "lucide-react"
+import { DiamondIcon } from "@/components/ui/diamond-icon"
 import { AuthModal } from "@/components/auth-modal"
 import { GalleryImageSelector } from "@/components/gallery-image-selector"
 import { createClient } from "@/lib/supabase/client"
@@ -468,9 +469,7 @@ export function VideoGenerator() {
             ) : (
               <>
                 <VideoIcon className="mr-2 h-5 w-5" />
-                Generate Video (
-                {duration === 1 ? "1,000" : duration === 3 ? "2,000" : duration === 5 ? "3,000" : "4,000"}{" "}
-                <DiamondIcon className="h-3.5 w-3.5 text-pink-300 inline" />)
+                Generate Video ({duration === 1 ? "1,000" : duration === 3 ? "2,000" : duration === 5 ? "3,000" : "4,000"} credits <DiamondIcon className="h-4 w-4 text-white inline ml-1" />)
               </>
             )}
           </Button>

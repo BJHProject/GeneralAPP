@@ -201,8 +201,7 @@ export function ImageEditor() {
             ) : (
               <>
                 <Wand2 className="mr-2 h-5 w-5" />
-                Edit Image (1,000
-                <DiamondIcon className="h-3.5 w-3.5 text-pink-300 inline" />)
+                Edit Image (1,000 credits <DiamondIcon className="h-4 w-4 text-white inline ml-1" />)
               </>
             )}
           </Button>

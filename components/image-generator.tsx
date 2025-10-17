@@ -409,15 +409,10 @@ export function ImageGenerator() {
             ) : (
               <>
                 <Wand2 className="mr-2 h-5 w-5" />
-                Generate Image
+                Generate Image (500 credits <DiamondIcon className="h-4 w-4 text-white inline ml-1" />)
               </>
             )}
           </Button>
-
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <DiamondIcon className="h-4 w-4 text-primary" />
-            <span>500 credits per image</span>
-          </div>
         </div>
       </Card>
     </div>

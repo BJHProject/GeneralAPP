@@ -6,7 +6,6 @@ import { CreationTabs } from "@/components/creation-tabs"
 import { RecentGenerations } from "@/components/recent-generations"
 import { RecentVideos } from "@/components/recent-videos"
 import { RecentEdits } from "@/components/recent-edits"
-import { Header } from "@/components/header"
 
 export default function Home() {
   const searchParams = useSearchParams()
@@ -21,7 +20,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
       <main className="container mx-auto px-4 py-8 md:py-12">
         <div className="mx-auto max-w-7xl space-y-12">
           <div className="space-y-4 text-center">

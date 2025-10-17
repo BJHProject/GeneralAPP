@@ -6,6 +6,7 @@ import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 import { SessionLogger } from "@/components/session-logger"
 import { Footer } from "@/components/footer"
+import { Header } from "@/components/header"
 import { Suspense } from "react"
 
 export const metadata: Metadata = {
@@ -24,6 +25,7 @@ export default function RootLayout({
       <body className="flex flex-col min-h-screen">
         <Suspense fallback={<div>Loading...</div>}>
           <SessionLogger />
+          <Header />
           <div className="flex-1">{children}</div>
           <Footer />
           <Analytics />
