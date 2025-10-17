@@ -86,7 +86,21 @@ export class AIClient {
 
           const generationPromise = provider.generate(fullRequest, modelConfig)
 
-          return Promise.race([generationPromise, timeoutPromise])
+          const response = await Promise.race([generationPromise, timeoutPromise])
+          
+          // If the response indicates a retryable failure, throw an error to trigger retry
+          if (!response.success && response.retryable) {
+            const error = new Error(response.error || 'Generation failed')
+            // Preserve error properties for retry detection
+            Object.assign(error, { 
+              code: response.code,
+              provider: response.provider,
+              originalResponse: response 
+            })
+            throw error
+          }
+          
+          return response
         },
         { maxRetries },
         (error) => {
