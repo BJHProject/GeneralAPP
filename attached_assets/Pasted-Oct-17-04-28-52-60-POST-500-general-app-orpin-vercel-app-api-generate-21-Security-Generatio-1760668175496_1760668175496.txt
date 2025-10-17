@@ -1,0 +1,191 @@
+Oct 17 04:28:52.60
+POST
+500
+general-app-orpin.vercel.app
+/api/generate
+21
+[Security] Generation failed, refunding credits: Image generation encountered an error. Please try again.
+Oct 17 04:28:51.18
+POST
+500
+general-app-orpin.vercel.app
+/api/generate
+21
+[Security] Generation failed, refunding credits: Image generation encountered an error. Please try again.
+Oct 17 04:28:49.62
+POST
+500
+general-app-orpin.vercel.app
+/api/generate
+21
+[Security] Generation failed, refunding credits: Image generation encountered an error. Please try again.
+Oct 17 04:28:45.61
+POST
+200
+general-app-orpin.vercel.app
+/api/log-session
+Oct 17 04:28:45.45
+GET
+200
+general-app-orpin.vercel.app
+/api/user/credits
+8
+[v0] Step 12: Returning existing user credits: 89000
+Oct 17 04:28:01.90
+GET
+200
+general-4qqy6x6wt-riaflamestick8-2161s-projects.vercel.app
+/
+Oct 17 04:27:55.67
+POST
+200
+general-app-orpin.vercel.app
+/api/log-session
+Oct 17 04:27:55.52
+GET
+200
+general-app-orpin.vercel.app
+/api/user/credits
+8
+[v0] Step 12: Returning existing user credits: 89000
+Oct 17 04:27:49.48
+POST
+500
+general-app-orpin.vercel.app
+/api/generate
+21
+[Security] Generation failed, refunding credits: Image generation encountered an error. Please try again.
+Oct 17 04:27:47.81
+POST
+500
+general-app-orpin.vercel.app
+/api/generate
+21
+[Security] Generation failed, refunding credits: Image generation encountered an error. Please try again.
+Oct 17 04:27:44.43
+POST
+200
+general-app-orpin.vercel.app
+/api/log-session
+Oct 17 04:27:44.24
+GET
+200
+general-app-orpin.vercel.app
+/api/user/credits
+8
+[v0] Step 12: Returning existing user credits: 89000
+Oct 17 04:26:51.84
+POST
+500
+general-app-orpin.vercel.app
+/api/generate
+20
+[Security] Generation failed, refunding credits: Image generation failed. Please try again.
+Oct 17 04:26:50.52
+POST
+500
+general-app-orpin.vercel.app
+/api/generate
+20
+[Security] Generation failed, refunding credits: Image generation failed. Please try again.
+Oct 17 04:26:48.95
+POST
+500
+general-app-orpin.vercel.app
+/api/generate
+20
+[Security] Generation failed, refunding credits: Image generation failed. Please try again.
+Oct 17 04:26:47.53
+POST
+500
+general-app-orpin.vercel.app
+/api/generate
+20
+[Security] Generation failed, refunding credits: Image generation failed. Please try again.
+Oct 17 04:26:46.21
+POST
+500
+general-app-orpin.vercel.app
+/api/generate
+20
+[Security] Generation failed, refunding credits: Image generation failed. Please try again.
+Oct 17 04:26:44.08
+POST
+500
+general-app-orpin.vercel.app
+/api/generate
+20
+[Security] Generation failed, refunding credits: Image generation failed. Please try again.
+Oct 17 04:26:43.42
+POST
+200
+general-app-orpin.vercel.app
+/api/log-session
+Oct 17 04:26:43.26
+GET
+200
+general-app-orpin.vercel.app
+/api/user/credits
+8
+[v0] Step 12: Returning existing user credits: 89000
+Oct 17 04:26:23.20
+POST
+500
+general-app-orpin.vercel.app
+/api/generate
+20
+[Security] Generation failed, refunding credits: Image generation failed. Please try again.
+Oct 17 04:26:21.89
+POST
+500
+general-app-orpin.vercel.app
+/api/generate
+20
+[Security] Generation failed, refunding credits: Image generation failed. Please try again.
+Oct 17 04:26:19.62
+POST
+500
+general-app-orpin.vercel.app
+/api/generate
+20
+[Security] Generation failed, refunding credits: Image generation failed. Please try again.
+Oct 17 04:26:17.67
+POST
+500
+general-app-orpin.vercel.app
+/api/generate
+20
+[Security] Generation failed, refunding credits: Image generation failed. Please try again.
+Oct 17 04:26:15.90
+POST
+500
+general-app-orpin.vercel.app
+/api/generate
+20
+[Security] Generation failed, refunding credits: Image generation failed. Please try again.
+Oct 17 04:26:14.30
+POST
+500
+general-app-orpin.vercel.app
+/api/generate
+20
+[Security] Generation failed, refunding credits: Image generation failed. Please try again.
+Oct 17 04:26:02.29
+GET
+200
+general-app-orpin.vercel.app
+/api/user/credits
+8
+[v0] Step 12: Returning existing user credits: 89000
+Oct 17 04:26:02.15
+POST
+200
+general-app-orpin.vercel.app
+/api/log-session
+Oct 17 04:26:02.03
+GET
+200
+general-app-orpin.vercel.app
+/api/images
+7
+[v0] Found images: 15 ( 5 saved, 10 recent)

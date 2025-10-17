@@ -95,7 +95,7 @@ export class HuggingFaceInferenceProvider implements ProviderAdapter {
         console.error(`[HF-Inference ${requestId}] API error: ${errorText}`)
         return {
           success: false,
-          error: 'Image generation failed. Please try again.',
+          error: `Image generation failed. Please try again. [Debug: ${errorText.substring(0, 100)}]`,
           code: 'PROVIDER_ERROR',
           provider: 'huggingface-inference',
           retryable: false,
@@ -141,10 +141,16 @@ export class HuggingFaceInferenceProvider implements ProviderAdapter {
         },
       }
     } catch (error) {
-      console.error(`[HF-Inference ${requestId}] Error:`, error)
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      const errorStack = error instanceof Error ? error.stack : undefined
+      console.error(`[HF-Inference ${requestId}] CRITICAL ERROR:`, {
+        message: errorMessage,
+        stack: errorStack,
+        error: error,
+      })
       return {
         success: false,
-        error: 'Image generation encountered an error. Please try again.',
+        error: `Image generation encountered an error. Please try again. [Debug: ${errorMessage}]`,
         code: 'PROVIDER_ERROR',
         provider: 'huggingface-inference',
         retryable: true,

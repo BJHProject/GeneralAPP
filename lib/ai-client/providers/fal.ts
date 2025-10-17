@@ -59,7 +59,7 @@ export class FalProvider implements ProviderAdapter {
         console.error(`[fal.ai ${requestId}] API error: ${errorText}`)
         return {
           success: false,
-          error: 'Video generation failed. Please try again.',
+          error: `Video generation failed. Please try again. [Debug: ${errorText.substring(0, 100)}]`,
           code: 'PROVIDER_ERROR',
           provider: 'fal',
           retryable: false,
@@ -100,10 +100,16 @@ export class FalProvider implements ProviderAdapter {
         },
       }
     } catch (error) {
-      console.error(`[fal.ai ${requestId}] Error:`, error)
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      const errorStack = error instanceof Error ? error.stack : undefined
+      console.error(`[fal.ai ${requestId}] CRITICAL ERROR:`, {
+        message: errorMessage,
+        stack: errorStack,
+        error: error,
+      })
       return {
         success: false,
-        error: 'Video generation encountered an error. Please try again.',
+        error: `Video generation encountered an error. Please try again. [Debug: ${errorMessage}]`,
         code: 'PROVIDER_ERROR',
         provider: 'fal',
         retryable: true,

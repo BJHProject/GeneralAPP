@@ -86,7 +86,7 @@ export class WavespeedProvider implements ProviderAdapter {
         console.error(`[Wavespeed ${requestId}] API error: ${errorText}`)
         return {
           success: false,
-          error: 'Generation failed. Please try again.',
+          error: `Generation failed. Please try again. [Debug: ${errorText.substring(0, 100)}]`,
           code: 'PROVIDER_ERROR',
           provider: 'wavespeed',
           retryable: false,
@@ -127,10 +127,16 @@ export class WavespeedProvider implements ProviderAdapter {
         },
       }
     } catch (error) {
-      console.error(`[Wavespeed ${requestId}] Error:`, error)
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      const errorStack = error instanceof Error ? error.stack : undefined
+      console.error(`[Wavespeed ${requestId}] CRITICAL ERROR:`, {
+        message: errorMessage,
+        stack: errorStack,
+        error: error,
+      })
       return {
         success: false,
-        error: 'Generation encountered an error. Please try again.',
+        error: `Generation encountered an error. Please try again. [Debug: ${errorMessage}]`,
         code: 'PROVIDER_ERROR',
         provider: 'wavespeed',
         retryable: true,
