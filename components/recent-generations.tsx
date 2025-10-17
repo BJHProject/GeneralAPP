@@ -2,10 +2,11 @@
 
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Download, Trash2, RefreshCw, Maximize2, X, Save } from "lucide-react"
+import { Download, Trash2, RefreshCw, Maximize2, X, Save, Heart } from "lucide-react"
 import Image from "next/image"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 
 interface GeneratedImage {
   id: string
@@ -51,9 +52,10 @@ export function RecentGenerations() {
 
       const data = await response.json()
       console.log("[v0] Received images:", data.images ? data.images.length : 0)
-      const unsavedImages = (data.images || []).filter((img: GeneratedImage) => !img.is_saved)
-      console.log("[v0] Filtered to unsaved images:", unsavedImages.length)
-      setImages(unsavedImages)
+      // Show all images in past generations (both saved and unsaved)
+      const allImages = data.images || []
+      console.log("[v0] Showing all images in past generations:", allImages.length)
+      setImages(allImages)
     } catch (error) {
       console.error("[v0] Failed to load images:", error)
       setError("Unable to load images. This may not work in preview mode.")
@@ -146,9 +148,15 @@ export function RecentGenerations() {
       }
 
       console.log("[v0] Image saved successfully")
-      setImages((prev) => prev.filter((img) => img.id !== imageId))
+      // Update the image in the list to mark as saved (keep it in past generations)
+      setImages((prev) => prev.map((img) => 
+        img.id === imageId ? { ...img, is_saved: true } : img
+      ))
+      // Show toast notification
+      toast.success("Image saved to gallery")
     } catch (error) {
       console.error("[v0] Save error:", error)
+      toast.error("Failed to save image")
     } finally {
       setSavingImages((prev) => {
         const newSet = new Set(prev)
@@ -162,7 +170,7 @@ export function RecentGenerations() {
     return (
       <div className="space-y-4">
         <div className="flex items-center justify-center">
-          <h2 className="text-2xl font-bold text-foreground">Recent Generations</h2>
+          <h2 className="text-2xl font-bold text-foreground">Past Generations</h2>
         </div>
         <div className="flex items-center justify-center py-12">
           <RefreshCw className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -175,7 +183,7 @@ export function RecentGenerations() {
     return (
       <div className="space-y-4">
         <div className="flex items-center justify-center">
-          <h2 className="text-2xl font-bold text-foreground">Recent Generations</h2>
+          <h2 className="text-2xl font-bold text-foreground">Past Generations</h2>
         </div>
         <Card className="border-0 bg-gradient-to-br from-card/50 to-muted/30 shadow-xl shadow-primary/5 p-12 rounded-2xl">
           <div className="text-center">
@@ -191,7 +199,7 @@ export function RecentGenerations() {
     return (
       <div className="space-y-4">
         <div className="flex items-center justify-center">
-          <h2 className="text-2xl font-bold text-foreground">Recent Generations</h2>
+          <h2 className="text-2xl font-bold text-foreground">Past Generations</h2>
         </div>
         <Card className="border-0 bg-gradient-to-br from-card/50 to-muted/30 shadow-xl shadow-primary/5 p-12 rounded-2xl">
           <div className="text-center">
@@ -231,6 +239,38 @@ export function RecentGenerations() {
               <div
                 className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/40 to-transparent backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity"
               />
+              
+              {/* Action buttons - bottom right corner */}
+              <div className="absolute bottom-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
+                {/* Heart (save) button - only show if not already saved */}
+                {!image.is_saved && (
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="h-10 w-10 rounded-lg bg-white/90 hover:bg-pink-500 transition-all duration-200 group/heart"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleSave(image.id, image.url)
+                    }}
+                    disabled={savingImages.has(image.id)}
+                  >
+                    <Heart className="h-5 w-5 text-black group-hover/heart:text-white group-hover/heart:fill-white transition-all duration-200" />
+                  </Button>
+                )}
+                
+                {/* Fullscreen button */}
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="h-10 w-10 rounded-lg bg-white/90 hover:bg-white transition-all duration-200"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setFullscreenImage(image.url)
+                  }}
+                >
+                  <Maximize2 className="h-5 w-5 text-black" />
+                </Button>
+              </div>
             </div>
           </Card>
         ))}

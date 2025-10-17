@@ -46,7 +46,7 @@ export async function GET() {
       .eq("user_id", user.id)
       .eq("is_saved", false)
       .order("created_at", { ascending: false })
-      .limit(10)
+      .limit(20)
 
     if (recentError) {
       console.error("[v0] Database error fetching recent images:", recentError)
