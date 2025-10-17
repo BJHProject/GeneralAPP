@@ -32,7 +32,6 @@ export function ImageGenerator() {
   const [imageHeight, setImageHeight] = useState(1216)
   const [selectedResolution, setSelectedResolution] = useState(0)
   const [guidanceScale, setGuidanceScale] = useState(7)
-  const inferenceSteps = 28
   const [error, setError] = useState<string | null>(null)
   const [user, setUser] = useState<any>(null)
   const [showAuthModal, setShowAuthModal] = useState(false)
@@ -135,7 +134,6 @@ export function ImageGenerator() {
         width: imageWidth,
         height: imageHeight,
         guidance_scale: guidanceScale,
-        num_inference_steps: inferenceSteps,
       }
 
       console.log("[v0] Sending request to /api/generate:", requestBody)
