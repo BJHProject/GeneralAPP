@@ -2,7 +2,7 @@
 
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Download, Trash2, RefreshCw, Maximize2, X, Save, Heart } from "lucide-react"
+import { Download, Trash2, RefreshCw, X, Save } from "lucide-react"
 import Image from "next/image"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
@@ -234,23 +234,14 @@ export function RecentGenerations() {
                 src={image.url || "/placeholder.svg"}
                 alt={image.prompt}
                 fill
-                className="object-contain transition-transform duration-300 group-hover:scale-105"
-              />
-              <div
-                className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/40 to-transparent backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity"
+                className="object-contain"
               />
               
-              {/* Action buttons - bottom right corner */}
-              <div className="absolute bottom-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
-                {/* Heart (save) button - white when unsaved, pink/filled when saved */}
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className={`h-10 w-10 rounded-lg transition-all duration-200 ${
-                    image.is_saved 
-                      ? 'bg-pink-500 hover:bg-pink-600' 
-                      : 'bg-white/90 hover:bg-pink-500 group/heart'
-                  }`}
+              {/* Action icons - bottom right corner */}
+              <div className="absolute bottom-0 right-0 flex flex-col gap-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
+                {/* Heart (save) icon - white when unsaved, pink when saved */}
+                <button
+                  className="w-10 h-10 p-0 border-0 bg-transparent cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation()
                     if (!image.is_saved) {
@@ -259,25 +250,27 @@ export function RecentGenerations() {
                   }}
                   disabled={savingImages.has(image.id)}
                 >
-                  <Heart className={`h-5 w-5 transition-all duration-200 ${
-                    image.is_saved 
-                      ? 'text-white fill-white' 
-                      : 'text-black group-hover/heart:text-white group-hover/heart:fill-white'
-                  }`} />
-                </Button>
+                  <img
+                    src={image.is_saved ? "/icons/heart-saved.png" : "/icons/heart-unsaved.png"}
+                    alt={image.is_saved ? "Saved" : "Save"}
+                    className="w-10 h-10 object-contain"
+                  />
+                </button>
                 
-                {/* Fullscreen button */}
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="h-10 w-10 rounded-lg bg-white/90 hover:bg-white transition-all duration-200"
+                {/* Resize/Fullscreen icon - hugging bottom right corner */}
+                <button
+                  className="w-10 h-10 p-0 border-0 bg-transparent cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation()
                     setFullscreenImage(image.url)
                   }}
                 >
-                  <Maximize2 className="h-5 w-5 text-black" />
-                </Button>
+                  <img
+                    src="/icons/resize.png"
+                    alt="Fullscreen"
+                    className="w-10 h-10 object-contain"
+                  />
+                </button>
               </div>
             </div>
           </Card>
