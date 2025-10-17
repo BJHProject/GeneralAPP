@@ -13,7 +13,8 @@ import {
   Save, 
   Copy,
   Loader2,
-  VideoIcon
+  VideoIcon,
+  X
 } from "lucide-react"
 import { DiamondIcon } from "@/components/ui/diamond-icon"
 
@@ -232,44 +233,23 @@ export function ImageDetailClient({ imageId }: ImageDetailClientProps) {
   }
 
   const aspectRatio = image.width / image.height
+  const [fullscreenImage, setFullscreenImage] = useState<string | null>(null)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
-      <div className="container mx-auto px-4 py-8 max-w-[95vw] lg:max-w-[1800px]">
+      <div className="container mx-auto px-4 py-6 max-w-[95vw] lg:max-w-7xl">
         <Button
           variant="ghost"
           onClick={() => router.back()}
-          className="mb-6 gap-2 hover:bg-muted/50"
+          className="mb-4 gap-2 hover:bg-muted/50"
         >
           <ArrowLeft className="h-4 w-4" />
           Back
         </Button>
 
-        <div className="flex flex-col lg:flex-row gap-6 lg:gap-12">
-          {/* Image section - shows first on mobile, right on desktop */}
-          <div className="flex-1 min-w-0 lg:order-2">
-            <Card className="border-0 bg-card/50 shadow-xl shadow-primary/5 overflow-hidden rounded-2xl p-4 md:p-8 lg:p-12">
-              <div 
-                className="relative bg-muted/30 rounded-xl overflow-hidden mx-auto flex items-center justify-center"
-                style={{ 
-                  aspectRatio: aspectRatio.toString(),
-                  maxHeight: '85vh',
-                  width: '100%'
-                }}
-              >
-                <Image
-                  src={image.url}
-                  alt={image.prompt}
-                  fill
-                  className="object-contain"
-                  priority
-                />
-              </div>
-            </Card>
-          </div>
-
+        <div className="flex flex-col lg:flex-row gap-6">
           {/* Controls section - shows second on mobile, left on desktop */}
-          <div className="lg:w-[480px] lg:min-w-[480px] flex-shrink-0 space-y-4 lg:order-1">
+          <div className="lg:w-[420px] lg:min-w-[420px] flex-shrink-0 space-y-4 lg:order-1">
             {/* Info Card */}
             <Card className="border-0 bg-gradient-to-br from-card/50 to-muted/30 shadow-xl shadow-primary/5 p-6 rounded-2xl">
               <div className="space-y-3 mb-6 text-sm">
@@ -391,8 +371,68 @@ export function ImageDetailClient({ imageId }: ImageDetailClientProps) {
               </div>
             </Card>
           </div>
+
+          {/* Image section - shows first on mobile, right on desktop */}
+          <div className="flex-1 min-w-0 lg:order-2">
+            <div 
+              className="relative bg-muted/30 rounded-xl overflow-hidden mx-auto flex items-center justify-center group"
+              style={{ 
+                aspectRatio: aspectRatio.toString(),
+                maxHeight: '85vh',
+                width: '100%'
+              }}
+            >
+              <Image
+                src={image.url}
+                alt={image.prompt}
+                fill
+                className="object-contain"
+                priority
+              />
+              
+              {/* Resize button - bottom right corner - always visible */}
+              <button
+                className="absolute bottom-0 right-0 w-7 h-7 p-0 border-0 bg-transparent cursor-pointer z-10"
+                onClick={() => setFullscreenImage(image.url)}
+              >
+                <img
+                  src="/icons/resize.png"
+                  alt="Fullscreen"
+                  className="w-7 h-7 object-contain"
+                />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* Fullscreen modal */}
+      {fullscreenImage && (
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-background/95 p-4 backdrop-blur-2xl"
+          onClick={() => setFullscreenImage(null)}
+        >
+          <Button
+            size="icon"
+            variant="ghost"
+            className="absolute right-4 top-4 z-[10000] text-white hover:bg-white/20"
+            onClick={(e) => {
+              e.stopPropagation()
+              setFullscreenImage(null)
+            }}
+          >
+            <X className="h-6 w-6" />
+          </Button>
+          <div className="relative max-h-[90vh] max-w-[90vw]">
+            <img
+              src={fullscreenImage}
+              alt="Fullscreen view"
+              className="max-h-[90vh] max-w-[90vw] object-contain"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+        </div>
+      )}
     </div>
   )
 }
