@@ -230,12 +230,12 @@ export function RecentGenerations() {
               }}
               onClick={() => router.push(`/image/${image.id}`)}
             >
-              {/* Blurred background image */}
+              {/* Blurred background image - desktop only */}
               <Image
                 src={image.url || "/placeholder.svg"}
                 alt=""
                 fill
-                className="object-cover blur-3xl opacity-60 scale-110 absolute inset-0 z-0"
+                className="hidden lg:block object-cover blur-3xl opacity-60 scale-110 absolute inset-0 z-0"
               />
               
               {/* Main image on top */}

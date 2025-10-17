@@ -266,10 +266,8 @@ export default function GalleryPage() {
   }
 
   const getImageObjectFit = (width: number, height: number) => {
-    const aspectRatio = width / height
-    // Portrait images (taller than wide) use object-cover to fill the frame
-    // Square and landscape images use object-contain to show full image with black bars
-    return aspectRatio >= 0.9 ? "object-contain" : "object-cover"
+    // Use object-contain for all images to show full image with blurry backdrop
+    return "object-contain"
   }
 
   if (!user) {
@@ -361,17 +359,26 @@ export default function GalleryPage() {
                     className="group overflow-hidden border-border bg-card transition-all hover:border-primary/50 cursor-pointer"
                     onClick={() => router.push(`/image/${image.id}`)}
                   >
-                    <div className="relative aspect-[2/3] overflow-hidden bg-black">
+                    <div className="relative aspect-[2/3] overflow-hidden bg-black flex items-center justify-center">
+                      {/* Blurred background image - desktop only */}
+                      <Image
+                        src={image.url || "/placeholder.svg"}
+                        alt=""
+                        fill
+                        className="hidden lg:block object-cover blur-3xl opacity-60 scale-110 absolute inset-0 z-0"
+                      />
+                      
+                      {/* Main image on top */}
                       <Image
                         src={image.url || "/placeholder.svg"}
                         alt={image.prompt}
                         fill
-                        className={`${getImageObjectFit(image.width, image.height)} transition-transform duration-300 group-hover:scale-105`}
+                        className={`${getImageObjectFit(image.width, image.height)} transition-transform duration-300 group-hover:scale-105 absolute inset-0 z-10`}
                       />
-                      <div className="absolute top-2 right-2 bg-primary/80 text-primary-foreground text-xs px-2 py-1 rounded">
+                      <div className="absolute top-2 right-2 bg-primary/80 text-primary-foreground text-xs px-2 py-1 rounded z-20">
                         Saved
                       </div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100 z-20" />
                     </div>
                   </Card>
                 ))}
