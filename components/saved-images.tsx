@@ -191,7 +191,7 @@ export function SavedImages() {
                 src={image.url || "/placeholder.svg"}
                 alt=""
                 fill
-                className="object-cover blur-3xl opacity-60 scale-110"
+                className="object-cover blur-3xl opacity-60 scale-110 absolute inset-0 z-0"
               />
               
               {/* Main image on top */}
@@ -199,7 +199,7 @@ export function SavedImages() {
                 src={image.url || "/placeholder.svg"}
                 alt={image.prompt}
                 fill
-                className="object-contain transition-transform duration-300 group-hover:scale-105 relative z-[1]"
+                className="object-contain transition-transform duration-300 group-hover:scale-105 absolute inset-0 z-10"
               />
               <div
                 className={`absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent transition-opacity ${activeImageId === image.id ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}

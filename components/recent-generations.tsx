@@ -235,7 +235,7 @@ export function RecentGenerations() {
                 src={image.url || "/placeholder.svg"}
                 alt=""
                 fill
-                className="object-cover blur-3xl opacity-60 scale-110"
+                className="object-cover blur-3xl opacity-60 scale-110 absolute inset-0 z-0"
               />
               
               {/* Main image on top */}
@@ -243,7 +243,7 @@ export function RecentGenerations() {
                 src={image.url || "/placeholder.svg"}
                 alt={image.prompt}
                 fill
-                className="object-contain relative z-[1]"
+                className="object-contain absolute inset-0 z-10"
               />
               
               {/* Action icons - bottom right corner - always visible */}
