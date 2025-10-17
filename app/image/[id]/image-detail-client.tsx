@@ -249,7 +249,7 @@ export function ImageDetailClient({ imageId }: ImageDetailClientProps) {
 
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Controls section - shows second on mobile, left on desktop */}
-          <div className="lg:w-[420px] lg:min-w-[420px] flex-shrink-0 space-y-4 lg:order-1">
+          <div className="lg:w-[420px] lg:min-w-[420px] flex-shrink-0 space-y-4 order-2 lg:order-1">
             {/* Info Card */}
             <Card className="border-0 bg-gradient-to-br from-card/50 to-muted/30 shadow-xl shadow-primary/5 p-6 rounded-2xl">
               <div className="space-y-3 mb-6 text-sm">
@@ -373,7 +373,7 @@ export function ImageDetailClient({ imageId }: ImageDetailClientProps) {
           </div>
 
           {/* Image section - shows first on mobile, right on desktop */}
-          <div className="flex-1 min-w-0 lg:order-2">
+          <div className="flex-1 min-w-0 order-1 lg:order-2">
             <div 
               className="relative bg-muted/30 rounded-xl overflow-hidden mx-auto flex items-center justify-center group"
               style={{ 
