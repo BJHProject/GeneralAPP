@@ -254,7 +254,7 @@ export function ImageDetailClient({ imageId }: ImageDetailClientProps) {
             <Card className="border-0 bg-gradient-to-br from-card/50 to-muted/30 shadow-xl shadow-primary/5 p-6 rounded-2xl">
               <div className="space-y-3 mb-6 text-sm">
                 <div>
-                  <p className="text-sm text-white mb-1.5">Positive Prompt</p>
+                  <p className="text-sm lg:text-[15px] text-white mb-1.5">Positive Prompt</p>
                   <p className="text-sm leading-relaxed bg-muted/30 p-2.5 rounded-lg">
                     {image.prompt}
                   </p>
@@ -262,14 +262,14 @@ export function ImageDetailClient({ imageId }: ImageDetailClientProps) {
                 
                 {image.negative_prompt && (
                   <div>
-                    <p className="text-sm text-white mb-1.5">Negative Prompt</p>
+                    <p className="text-sm lg:text-[15px] text-white mb-1.5">Negative Prompt</p>
                     <p className="text-sm leading-relaxed bg-muted/30 p-2.5 rounded-lg">
                       {image.negative_prompt}
                     </p>
                   </div>
                 )}
 
-                <div className="pt-1 space-y-1.5 text-white">
+                <div className="pt-1 space-y-1.5 text-sm lg:text-[15px] text-white">
                   <div className="flex items-center justify-between">
                     <span>Dimensions:</span>
                     <span className="font-medium text-foreground">{image.width}×{image.height}</span>
