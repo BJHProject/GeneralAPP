@@ -28,23 +28,11 @@ export async function GET() {
 
     const supabase = await createClient()
 
-    const { data: savedImages, error: savedError } = await supabase
-      .from("images")
-      .select("*")
-      .eq("user_id", user.id)
-      .eq("is_saved", true)
-      .order("created_at", { ascending: false })
-
-    if (savedError) {
-      console.error("[v0] Database error fetching saved images:", savedError)
-      return NextResponse.json({ images: [] })
-    }
-
+    // Fetch last 20 images chronologically, regardless of saved status
     const { data: recentImages, error: recentError } = await supabase
       .from("images")
       .select("*")
       .eq("user_id", user.id)
-      .eq("is_saved", false)
       .order("created_at", { ascending: false })
       .limit(20)
 
@@ -53,19 +41,8 @@ export async function GET() {
       return NextResponse.json({ images: [] })
     }
 
-    // Combine saved and recent images
-    const allImages = [...(savedImages || []), ...(recentImages || [])]
-
-    console.log(
-      "[v0] Found images:",
-      allImages.length,
-      "(",
-      savedImages?.length || 0,
-      "saved,",
-      recentImages?.length || 0,
-      "recent)",
-    )
-    return NextResponse.json({ images: allImages })
+    console.log("[v0] Found recent images:", recentImages?.length || 0)
+    return NextResponse.json({ images: recentImages || [] })
   } catch (error) {
     console.error("[v0] Failed to fetch images:", error)
     return NextResponse.json({ images: [] })

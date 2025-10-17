@@ -52,10 +52,10 @@ export function RecentGenerations() {
 
       const data = await response.json()
       console.log("[v0] Received images:", data.images ? data.images.length : 0)
-      // Show all images in past generations (both saved and unsaved)
-      const allImages = data.images || []
-      console.log("[v0] Showing all images in past generations:", allImages.length)
-      setImages(allImages)
+      // Display last 20 images chronologically (API returns them in correct order)
+      const recentImages = data.images || []
+      console.log("[v0] Displaying recent images chronologically:", recentImages.length)
+      setImages(recentImages)
     } catch (error) {
       console.error("[v0] Failed to load images:", error)
       setError("Unable to load images. This may not work in preview mode.")
