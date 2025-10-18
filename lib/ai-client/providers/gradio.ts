@@ -188,9 +188,17 @@ export class GradioProvider implements ProviderAdapter {
         },
       }
       } catch (error) {
-        const errorMsg = error instanceof Error ? error.message : String(error)
-        console.log(`[Gradio ${requestId}] API key ${tokenNum} error: ${errorMsg}`)
-        errors.push(`Key ${tokenNum}: ${errorMsg.substring(0, 50)}`)
+        let errorMsg: string
+        if (error instanceof Error) {
+          errorMsg = error.message
+        } else if (typeof error === 'object' && error !== null) {
+          errorMsg = JSON.stringify(error)
+        } else {
+          errorMsg = String(error)
+        }
+        console.error(`[Gradio ${requestId}] API key ${tokenNum} error:`, error)
+        console.log(`[Gradio ${requestId}] Error message: ${errorMsg}`)
+        errors.push(`Key ${tokenNum}: ${errorMsg.substring(0, 150)}`)
         continue // Try next key
       }
     }
