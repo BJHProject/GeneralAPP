@@ -26,6 +26,7 @@ export class WavespeedProvider implements ProviderAdapter {
       const url = `${baseUrl}${config.endpoint}`
 
       let payload: any
+      const isFemaleHumanEndpoint = config.endpoint.includes('female-human')
 
       if (request.type === 'edited-image') {
         payload = {
@@ -34,6 +35,19 @@ export class WavespeedProvider implements ProviderAdapter {
           images: [request.inputImageUrl],
           prompt: request.prompt,
           size: '1024x1024',
+        }
+      } else if (isFemaleHumanEndpoint) {
+        // Female-human endpoint (Realistic W) uses different format
+        const width = request.width || 1024
+        const height = request.height || 1024
+        
+        payload = {
+          enable_base64_output: false,
+          enable_sync_mode: false,
+          output_format: 'jpeg',
+          prompt: request.prompt,
+          seed: request.seed !== undefined && request.seed !== -1 ? request.seed : -1,
+          size: `${width}*${height}`,
         }
       } else {
         payload = {
@@ -45,8 +59,7 @@ export class WavespeedProvider implements ProviderAdapter {
         if (request.height) payload.height = request.height
         if (request.steps) payload.num_inference_steps = request.steps
         
-        // Skip guidance scale for female-human endpoint (Realistic W model)
-        if (request.guidance && !config.endpoint.includes('female-human')) {
+        if (request.guidance) {
           payload.guidance_scale = request.guidance
         }
         
@@ -103,7 +116,7 @@ export class WavespeedProvider implements ProviderAdapter {
 
       console.log(`[Wavespeed ${requestId}] Job submitted: ${jobId}, polling...`)
 
-      const mediaUrl = await this.pollJobStatus(jobId, token, requestId, baseUrl, request.type)
+      const mediaUrl = await this.pollJobStatus(jobId, token, requestId, baseUrl, request.type, isFemaleHumanEndpoint)
 
       const fileName = `${request.type}/${request.userId}/${Date.now()}-${requestId}.${config.type === 'video' ? 'mp4' : 'png'}`
       const mediaResponse = await fetch(mediaUrl)
@@ -152,6 +165,7 @@ export class WavespeedProvider implements ProviderAdapter {
     requestId: string,
     baseUrl: string,
     mediaType: 'image' | 'video' | 'edited-image',
+    isFemaleHumanEndpoint: boolean = false,
   ): Promise<string> {
     const maxAttempts = 60
     const pollInterval = 2000
@@ -159,9 +173,14 @@ export class WavespeedProvider implements ProviderAdapter {
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
       await sleep(pollInterval)
 
-      const statusUrl = mediaType === 'edited-image' 
-        ? `${baseUrl}/api/v3/predictions/${jobId}/result`
-        : `${baseUrl}/api/v3/wavespeed-ai/job/${jobId}`
+      // Use different polling endpoints based on the model
+      let statusUrl: string
+      if (mediaType === 'edited-image' || isFemaleHumanEndpoint) {
+        statusUrl = `${baseUrl}/api/v3/predictions/${jobId}/result`
+      } else {
+        statusUrl = `${baseUrl}/api/v3/wavespeed-ai/job/${jobId}`
+      }
+      
       const statusResponse = await fetch(statusUrl, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -181,7 +200,8 @@ export class WavespeedProvider implements ProviderAdapter {
       if (status === 'completed' || status === 'succeeded') {
         let mediaUrl: string | undefined
         
-        if (mediaType === 'edited-image') {
+        if (mediaType === 'edited-image' || isFemaleHumanEndpoint) {
+          // For edited-image and female-human endpoints, outputs is an array
           if (Array.isArray(outputs) && outputs.length > 0) {
             mediaUrl = outputs[0]
           } else if (outputs && !Array.isArray(outputs)) {

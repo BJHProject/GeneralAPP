@@ -1,0 +1,81 @@
+[Gradio 1760827887933-hjkl1fd3m] Trying API key 2/3
+[Gradio 1760827887933-hjkl1fd3m] Connecting to space: Menyu/wainsfw
+[Gradio 1760827887933-hjkl1fd3m] API endpoint: /infer
+[Gradio 1760827887933-hjkl1fd3m] Predict params: [
+  ', twin tails, blue hair, bedroom, white platform high heels,',
+  'child, childish, toddler, underage, fused bodies, crossed eyes, (low quality, worst quality:1.2), very displeasing, 3d, watermark, signature, ugly, poorly drawn, ugly face, ugly eyes, bad quality, open heels, (feet:1.3), (feet visible:1.2.), ',
+  true,
+  1026664464,
+  832,
+  1216,
+  7,
+  20,
+  true
+]
+[Gradio 1760827887933-hjkl1fd3m] API key 2 error: {
+  type: 'status',
+  endpoint: '/infer',
+  fn_index: 3,
+  time: 2025-10-18T22:51:32.563Z,
+  original_msg: undefined,
+  queue: true,
+  title: 'ZeroGPU worker error',
+  message: 'ValueError',
+  visible: true,
+  duration: 10,
+  stage: 'error',
+  code: undefined,
+  success: false
+}
+[Gradio 1760827887933-hjkl1fd3m] Error message: {"type":"status","endpoint":"/infer","fn_index":3,"time":"2025-10-18T22:51:32.563Z","queue":true,"title":"ZeroGPU worker error","message":"ValueError","visible":true,"duration":10,"stage":"error","success":false}
+[Gradio 1760827887933-hjkl1fd3m] Trying API key 3/3
+[Gradio 1760827887933-hjkl1fd3m] Connecting to space: Menyu/wainsfw
+[Gradio 1760827887933-hjkl1fd3m] API endpoint: /infer
+[Gradio 1760827887933-hjkl1fd3m] Predict params: [
+  'Teen, skinny, twin tails, blue hair, bedroom, white platform high heels, showing heels to viewer, skirt, sitting, red lipstick, black eyeliner, ribbon on high heels, cleavage, pussy fully visible, cum on heels, blue eyes, (ribbon on top of high heels), (ribbon on high heels), penis, man masturbating, man cumming on heels, man in frame,',
+  'child, childish, toddler, underage, fused bodies, crossed eyes, (low quality, worst quality:1.2), very displeasing, 3d, watermark, signature, ugly, poorly drawn, ugly face, ugly eyes, bad quality, open heels, (feet:1.3), (feet visible:1.2.), ',
+  true,
+  1915554699,
+  832,
+  1216,
+  7,
+  20,
+  true
+]
+[Gradio 1760827887933-hjkl1fd3m] API key 3 error: {
+  type: 'status',
+  endpoint: '/infer',
+  fn_index: 3,
+  time: 2025-10-18T22:51:34.667Z,
+  original_msg: undefined,
+  queue: true,
+  title: 'ZeroGPU worker error',
+  message: 'ValueError',
+  visible: true,
+  duration: 10,
+  stage: 'error',
+  code: undefined,
+  success: false
+}
+[Gradio 1760827887933-hjkl1fd3m] Error message: {"type":"status","endpoint":"/infer","fn_index":3,"time":"2025-10-18T22:51:34.667Z","queue":true,"title":"ZeroGPU worker error","message":"ValueError","visible":true,"duration":10,"stage":"error","success":false}
+[Gradio 1760827887933-hjkl1fd3m] All 3 API keys failed: [
+  'Key 1: {"type":"status","endpoint":"/infer","fn_index":3,"time":"2025-10-18T22:51:30.543Z","queue":true,"title":"ZeroGPU worker error","message":"ValueError"',
+  'Key 2: {"type":"status","endpoint":"/infer","fn_index":3,"time":"2025-10-18T22:51:32.563Z","queue":true,"title":"ZeroGPU worker error","message":"ValueError"',
+  'Key 3: {"type":"status","endpoint":"/infer","fn_index":3,"time":"2025-10-18T22:51:34.667Z","queue":true,"title":"ZeroGPU worker error","message":"ValueError"'
+]
+[AIClient 1760827887933-hjkl1fd3m] Error occurred (Image generation failed after trying all API keys. Please try again. [Debug: Key 3: {"type":"status","endpoint":"/infer","fn_index":3,"time":"2025-10-18T22:51:34.667Z","queue":true,"title":"ZeroGPU worker error","message":"ValueError"]), retryable: false
+[AIClient 1760827887933-hjkl1fd3m] Fatal error: Error: Image generation failed after trying all API keys. Please try again. [Debug: Key 3: {"type":"status","endpoint":"/infer","fn_index":3,"time":"2025-10-18T22:51:34.667Z","queue":true,"title":"ZeroGPU worker error","message":"ValueError"]
+    at a.maxRetries (.next/server/chunks/9535.js:1:21301)
+    at async a (.next/server/chunks/9535.js:1:5249)
+    at async f.generate (.next/server/chunks/9535.js:1:21126)
+    at async y (.next/server/app/api/generate/route.js:1:3711) {
+  code: 'PROVIDER_ERROR',
+  provider: 'gradio',
+  originalResponse: [Object]
+}
+[Security] Generation failed, refunding credits: Image generation failed after trying all API keys. Please try again. [Debug: Key 3: {"type":"status","endpoint":"/infer","fn_index":3,"time":"2025-10-18T22:51:34.667Z","queue":true,"title":"ZeroGPU worker error","message":"ValueError"]
+[Security] Refunding failed job: {
+  jobId: 'b6a64339-f5e0-4eb8-b4d9-362f64ffcf6e',
+  reason: 'Image generation failed after trying all API keys. Please try again. [Debug: Key 3: {"type":"status","endpoint":"/infer","fn_index":3,"time":"2025-10-18T22:51:34.667Z","queue":true,"title":"ZeroGPU worker error","message":"ValueError"]'
+}
+[Security] ✓ Credits refunded: 500
