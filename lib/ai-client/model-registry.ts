@@ -30,6 +30,7 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
       width: 1024,
       height: 1024,
     },
+    supportsNegativePrompt: false,
     pricing: {
       credits: 500,
     },

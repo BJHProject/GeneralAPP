@@ -78,6 +78,8 @@ export interface ModelConfig {
   
   gradioApiName?: string  // Optional: specify custom Gradio API endpoint (default: '/infer')
   
+  supportsNegativePrompt?: boolean  // Optional: specify if model supports negative prompts (default: true)
+  
   pricing: {
     credits: number
   }
