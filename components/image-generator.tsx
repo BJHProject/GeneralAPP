@@ -12,6 +12,7 @@ import { AuthModal } from "@/components/auth-modal"
 import { createClient } from "@/lib/supabase/client"
 import { DiamondIcon } from "@/components/ui/diamond-icon"
 import { Progress } from "@/components/ui/progress"
+import { MODEL_REGISTRY } from "@/lib/ai-client/model-registry"
 
 const PRESET_RESOLUTIONS = [
   { label: "Portrait", ratio: "2:3", width: 832, height: 1216 },
@@ -302,18 +303,20 @@ export function ImageGenerator() {
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="negative-prompt" className="text-base font-semibold">
-              Negative Prompt (Optional)
-            </Label>
-            <Textarea
-              id="negative-prompt"
-              placeholder="What you DON'T want to see in the image..."
-              value={negativePrompt}
-              onChange={(e) => setNegativePrompt(e.target.value)}
-              className="min-h-[80px] resize-none bg-secondary/50 text-foreground border-primary/10 backdrop-blur-sm focus:border-primary/30 transition-colors"
-            />
-          </div>
+          {MODEL_REGISTRY[model]?.supportsNegativePrompt !== false && (
+            <div className="space-y-2">
+              <Label htmlFor="negative-prompt" className="text-base font-semibold">
+                Negative Prompt (Optional)
+              </Label>
+              <Textarea
+                id="negative-prompt"
+                placeholder="What you DON'T want to see in the image..."
+                value={negativePrompt}
+                onChange={(e) => setNegativePrompt(e.target.value)}
+                className="min-h-[80px] resize-none bg-secondary/50 text-foreground border-primary/10 backdrop-blur-sm focus:border-primary/30 transition-colors"
+              />
+            </div>
+          )}
 
           <div className="space-y-2 mb-6">
             <Label className="text-base font-semibold">Adherence to prompt</Label>
