@@ -47,7 +47,7 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
     defaults: {
       width: 1024,
       height: 1024,
-      steps: 30,
+      steps: 40,
       guidance: 7,
     },
     loras: [
