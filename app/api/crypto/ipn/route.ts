@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createServiceRoleClient } from '@/lib/supabase/service-role'
+import { atomicCreditAdd } from '@/lib/credits/transactions'
 import crypto from 'crypto'
 
 function sortObject(obj: any): any {
@@ -44,7 +45,7 @@ export async function POST(request: NextRequest) {
 
     console.log('[IPN] Signature verified successfully')
 
-    const supabase = await createClient()
+    const supabase = createServiceRoleClient()
 
     const { invoice_id, payment_id, payment_status, actually_paid, pay_currency } = payload
 
@@ -76,48 +77,34 @@ export async function POST(request: NextRequest) {
     }
 
     if (payment_status === 'finished' && !purchase.credited) {
-      console.log('[IPN] Payment finished, crediting user:', {
+      console.log('[IPN] Payment finished, crediting user atomically:', {
         user_id: purchase.user_id,
         credits: purchase.credits_amount,
       })
 
-      const { data: userData } = await supabase
-        .from('users')
-        .select('credits')
-        .eq('id', purchase.user_id)
-        .single()
+      const idempotencyKey = `crypto_purchase_${payment_id || invoice_id}`
+      
+      const result = await atomicCreditAdd(
+        purchase.user_id,
+        purchase.credits_amount,
+        'CRYPTO_PURCHASE',
+        `Crypto purchase: $${purchase.amount_usd} → ${purchase.credits_amount} credits`,
+        idempotencyKey,
+        {
+          invoice_id,
+          payment_id,
+          pay_currency,
+          amount_usd: purchase.amount_usd,
+        }
+      )
 
-      const currentCredits = userData?.credits || 0
-      const newCredits = currentCredits + purchase.credits_amount
-
-      const { error: creditError } = await supabase
-        .from('users')
-        .update({ credits: newCredits })
-        .eq('id', purchase.user_id)
-
-      if (creditError) {
-        console.error('[IPN] Failed to credit user:', creditError)
-        return NextResponse.json({ error: 'Failed to credit user' }, { status: 500 })
-      }
-
-      const { error: ledgerError } = await supabase
-        .from('credit_ledger')
-        .insert({
-          user_id: purchase.user_id,
-          delta: purchase.credits_amount,
-          balance_after: newCredits,
-          operation_type: 'CRYPTO_PURCHASE',
-          description: `Crypto purchase: $${purchase.amount_usd} → ${purchase.credits_amount} credits`,
-          metadata: {
-            invoice_id,
-            payment_id,
-            pay_currency,
-            amount_usd: purchase.amount_usd,
-          },
-        })
-
-      if (ledgerError) {
-        console.error('[IPN] Failed to record in ledger:', ledgerError)
+      if (!result.success) {
+        if (result.code === 'DUPLICATE_REQUEST') {
+          console.log('[IPN] Credits already added for this payment (idempotency)')
+        } else {
+          console.error('[IPN] Failed to credit user:', result.error)
+          return NextResponse.json({ error: 'Failed to credit user' }, { status: 500 })
+        }
       }
 
       const { error: markCreditedError } = await supabase

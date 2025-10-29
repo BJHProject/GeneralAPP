@@ -142,6 +142,85 @@ export async function completeGenerationJob(
   }
 }
 
+export interface AtomicCreditAddResult {
+  success: boolean
+  newBalance?: number
+  error?: string
+  code?: 'DUPLICATE_REQUEST' | 'DATABASE_ERROR'
+}
+
+export async function atomicCreditAdd(
+  userId: string,
+  amount: number,
+  operationType: string,
+  description: string,
+  idempotencyKey?: string,
+  metadata?: any
+): Promise<AtomicCreditAddResult> {
+  const supabase = createServiceRoleClient()
+
+  console.log('[Security] Starting atomic credit addition:', { userId, amount, operationType, idempotencyKey })
+
+  try {
+    const result = await supabase.rpc('atomic_add_credits', {
+      p_user_id: userId,
+      p_amount: amount,
+      p_operation_type: operationType,
+      p_description: description,
+      p_idempotency_key: idempotencyKey || null,
+      p_metadata: metadata || {},
+    })
+
+    if (result.error) {
+      console.error('[Security] Atomic credit addition failed:', result.error)
+
+      if (result.error.message?.includes('already being processed')) {
+        return {
+          success: false,
+          error: 'Request already being processed',
+          code: 'DUPLICATE_REQUEST',
+        }
+      }
+
+      return {
+        success: false,
+        error: result.error.message,
+        code: 'DATABASE_ERROR',
+      }
+    }
+
+    // RPC functions that return TABLE return an array
+    const addData = Array.isArray(result.data) ? result.data[0] : result.data
+
+    // If success is false, it means the idempotency key was already processed
+    if (!addData?.success) {
+      console.log('[Security] Credits already added (idempotency check)')
+      return {
+        success: false,
+        error: 'Credits already added for this payment',
+        code: 'DUPLICATE_REQUEST',
+      }
+    }
+
+    console.log('[Security] ✓ Atomic credit addition successful:', {
+      amount,
+      newBalance: addData?.new_balance,
+    })
+
+    return {
+      success: true,
+      newBalance: addData?.new_balance,
+    }
+  } catch (error: any) {
+    console.error('[Security] Exception in atomic credit addition:', error)
+    return {
+      success: false,
+      error: error.message || 'Failed to add credits',
+      code: 'DATABASE_ERROR',
+    }
+  }
+}
+
 export async function refundFailedJob(jobId: string, reason: string): Promise<void> {
   const supabase = createServiceRoleClient()
 

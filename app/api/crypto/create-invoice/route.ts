@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { createServiceRoleClient } from '@/lib/supabase/service-role'
 import NowPaymentsApi from '@nowpaymentsio/nowpayments-api-js'
 
 const CREDIT_PACKAGES = {
@@ -56,7 +57,8 @@ export async function POST(request: NextRequest) {
 
     const invoice = invoiceResult as any
 
-    const { error: dbError } = await supabase
+    const supabaseAdmin = createServiceRoleClient()
+    const { error: dbError } = await supabaseAdmin
       .from('crypto_purchases')
       .insert({
         user_id: user.id,
@@ -68,6 +70,7 @@ export async function POST(request: NextRequest) {
 
     if (dbError) {
       console.error('Failed to save crypto purchase:', dbError)
+      return NextResponse.json({ error: 'Failed to record purchase' }, { status: 500 })
     }
 
     return NextResponse.json({
