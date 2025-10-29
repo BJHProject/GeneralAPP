@@ -34,11 +34,13 @@ Supabase Auth handles authentication via email/password and Google OAuth, with s
 
 ### Data Storage
 
-The application uses Supabase (PostgreSQL) for its database, with tables for `users`, `images`, `videos`, `edited_images`, `credit_ledger`, `idempotency_keys`, and `user_sessions`. New users receive initial credits, and temporary media is managed with expiry and cleanup. Vercel Blob is used for storing generated media, organized into temporary and permanent folders, with automated cleanup for expired temporary files.
+The application uses Supabase (PostgreSQL) for its database, with tables for `users`, `images`, `videos`, `edited_images`, `credit_ledger`, `idempotency_keys`, `crypto_purchases`, and `user_sessions`. New users receive initial credits, and temporary media is managed with expiry and cleanup. The `crypto_purchases` table tracks all cryptocurrency payment transactions with NOWPayments. Vercel Blob is used for storing generated media, organized into temporary and permanent folders, with automated cleanup for expired temporary files.
 
 ### Credit System
 
 A server-enforced credit system dictates pricing for generations (e.g., 500 credits for image generation, 1000 for editing, 2000-3000 for video). All credit operations are atomic database transactions with pre-flight checks, an audit trail in the `credit_ledger`, and automatic refunds for failed generations. Security features include rate limiting, model whitelisting, and Zod schema validation.
+
+**Credit Purchases**: Users can purchase credits via cryptocurrency payments through NOWPayments integration. Four packages are available: Starter ($5/5,000 credits), Popular ($9.99/10,000 credits), Pro ($19.99/20,000 credits), and Elite ($49.99/50,000 credits). The system uses invoice-based checkout flow with webhook notifications for payment confirmation. All credit additions use the `atomic_add_credits()` database RPC function to ensure race-condition-free transactions with full idempotency protection against duplicate webhooks.
 
 ### Admin Features
 
@@ -54,6 +56,7 @@ A password-protected admin control panel (`/admin-control`) allows app-wide togg
 4.  **HuggingFace**: Hosts various AI models, accessed with multiple API tokens for load distribution.
 5.  **Gradio Client**: NPM package for interacting with Gradio-hosted AI models.
 6.  **FAL.ai**: Utilized for elite-tier video generation.
+7.  **NOWPayments**: Cryptocurrency payment processor supporting 160+ cryptocurrencies for credit purchases.
 
 ### Development & Deployment
 
