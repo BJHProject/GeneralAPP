@@ -1,6 +1,6 @@
 "use client"
 
-import { Sparkles, LogOut, User, Images } from "lucide-react"
+import { Sparkles, LogOut, User, Images, Coins } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import {
@@ -106,6 +106,12 @@ export function Header() {
                         <Link href="/gallery" className="flex items-center cursor-pointer">
                           <Images className="mr-2 h-4 w-4" />
                           <span>View Gallery</span>
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="/buy-credits" className="flex items-center cursor-pointer">
+                          <Coins className="mr-2 h-4 w-4" />
+                          <span>Buy Credits</span>
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
