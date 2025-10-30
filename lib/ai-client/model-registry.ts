@@ -42,20 +42,14 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
     id: 'realistic_v2',
     name: 'Realistic V2',
     provider: 'huggingface-inference',
-    endpoint: 'https://tqgkx09yo5301t6u.us-east-1.aws.endpoints.huggingface.cloud',
+    endpoint: 'https://jczopg9f2r7erqtf.us-east-1.aws.endpoints.huggingface.cloud',
     type: 'image',
+    useSimpleInputs: true,
     defaults: {
       width: 1024,
       height: 1024,
       steps: 40,
       guidance: 7,
-    },
-    loras: [
-      { name: 'MoriiMee_Gothic', scale: 0.2 }
-    ],
-    mandatoryPrompts: {
-      positive: 'score_9, score_8_up, score_7_up',
-      negative: 'score_6, score_5, score_4',
     },
     pricing: {
       credits: 500,

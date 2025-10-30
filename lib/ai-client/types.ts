@@ -82,6 +82,8 @@ export interface ModelConfig {
   
   useDirectPayload?: boolean  // Optional: for HF inference endpoints that expect direct parameters instead of wrapped in 'inputs' (default: false)
   
+  useSimpleInputs?: boolean  // Optional: for HF inference endpoints that expect simple format {"inputs": "prompt", "parameters": {}} (default: false)
+  
   pricing: {
     credits: number
   }

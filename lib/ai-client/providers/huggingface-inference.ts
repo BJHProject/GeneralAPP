@@ -52,28 +52,38 @@ export class HuggingFaceInferenceProvider implements ProviderAdapter {
       }
 
       // Build payload for HF Inference Endpoint
-      // Some custom handlers expect direct parameters, others expect them wrapped in 'inputs'
-      const baseParams: any = {
-        prompt: finalPrompt,
-        negative_prompt: finalNegativePrompt,
-        width: request.width || config.defaults?.width || 1024,
-        height: request.height || config.defaults?.height || 1024,
-        num_inference_steps: request.steps || config.defaults?.steps || 30,
-        guidance_scale: request.guidance || config.defaults?.guidance || 6.5,
-        num_images: 1,
-        seed: request.seed !== undefined ? request.seed : Math.floor(Math.random() * 1000000000),
-      }
+      let payload: any
+      
+      if (config.useSimpleInputs) {
+        // Simple format: {"inputs": "prompt", "parameters": {}}
+        payload = {
+          inputs: finalPrompt,
+          parameters: {}
+        }
+      } else {
+        // Standard format with detailed parameters
+        const baseParams: any = {
+          prompt: finalPrompt,
+          negative_prompt: finalNegativePrompt,
+          width: request.width || config.defaults?.width || 1024,
+          height: request.height || config.defaults?.height || 1024,
+          num_inference_steps: request.steps || config.defaults?.steps || 30,
+          guidance_scale: request.guidance || config.defaults?.guidance || 6.5,
+          num_images: 1,
+          seed: request.seed !== undefined ? request.seed : Math.floor(Math.random() * 1000000000),
+        }
 
-      // Add LoRA configuration if specified
-      if (config.loras && config.loras.length > 0) {
-        baseParams.loras = config.loras
-        baseParams.fuse_lora = false
-      }
+        // Add LoRA configuration if specified
+        if (config.loras && config.loras.length > 0) {
+          baseParams.loras = config.loras
+          baseParams.fuse_lora = false
+        }
 
-      // Use direct payload format for custom handlers (anime_pd), or wrapped format for standard endpoints
-      const payload: any = config.useDirectPayload 
-        ? baseParams
-        : { inputs: baseParams }
+        // Use direct payload format for custom handlers, or wrapped format for standard endpoints
+        payload = config.useDirectPayload 
+          ? baseParams
+          : { inputs: baseParams }
+      }
 
       console.log(`[HF-Inference ${requestId}] Request payload:`, JSON.stringify(payload, null, 2))
 
@@ -82,6 +92,7 @@ export class HuggingFaceInferenceProvider implements ProviderAdapter {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
+          'Accept': 'image/png',
         },
         body: JSON.stringify(payload),
       })
@@ -93,26 +104,35 @@ export class HuggingFaceInferenceProvider implements ProviderAdapter {
         continue // Try next key
       }
 
-      const data = await response.json()
-      console.log(`[HF-Inference ${requestId}] Response structure:`, Object.keys(data))
-
-      // Handle base64 image response
-      let base64Image: string | undefined
+      // Check if response is binary image or JSON
+      const contentType = response.headers.get('content-type') || ''
+      let imageBuffer: Buffer
       
-      if (data.images && Array.isArray(data.images) && data.images.length > 0) {
-        base64Image = data.images[0].b64_json
-      } else if (data.image) {
-        base64Image = data.image
-      }
+      if (contentType.includes('image/png') || contentType.includes('image/jpeg')) {
+        // Binary image response
+        const arrayBuffer = await response.arrayBuffer()
+        imageBuffer = Buffer.from(arrayBuffer)
+        console.log(`[HF-Inference ${requestId}] ✓ API key ${tokenNum} succeeded. Received binary image: ${imageBuffer.byteLength} bytes`)
+      } else {
+        // JSON response with base64 image
+        const data = await response.json()
+        console.log(`[HF-Inference ${requestId}] Response structure:`, Object.keys(data))
 
-      if (!base64Image) {
-        throw new Error('No image in response')
-      }
+        let base64Image: string | undefined
+        
+        if (data.images && Array.isArray(data.images) && data.images.length > 0) {
+          base64Image = data.images[0].b64_json
+        } else if (data.image) {
+          base64Image = data.image
+        }
 
-      // Convert base64 to buffer
-      // Success! Process the image
-      const imageBuffer = Buffer.from(base64Image, 'base64')
-      console.log(`[HF-Inference ${requestId}] ✓ API key ${tokenNum} succeeded. Received image: ${imageBuffer.byteLength} bytes`)
+        if (!base64Image) {
+          throw new Error('No image in response')
+        }
+
+        imageBuffer = Buffer.from(base64Image, 'base64')
+        console.log(`[HF-Inference ${requestId}] ✓ API key ${tokenNum} succeeded. Received image: ${imageBuffer.byteLength} bytes`)
+      }
 
       const fileName = `${request.type}/${request.userId}/${Date.now()}-${requestId}.png`
       const blob = await put(fileName, imageBuffer, {
