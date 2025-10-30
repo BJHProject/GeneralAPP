@@ -286,6 +286,7 @@ export function ImageGenerator() {
                 <SelectItem value="anime">Anime</SelectItem>
                 <SelectItem value="anime_v2">Anime V2</SelectItem>
                 <SelectItem value="anime_v3">Anime V3</SelectItem>
+                <SelectItem value="anime_pd">Anime PD</SelectItem>
               </SelectContent>
             </Select>
           </div>
