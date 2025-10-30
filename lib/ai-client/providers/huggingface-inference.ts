@@ -104,9 +104,14 @@ export class HuggingFaceInferenceProvider implements ProviderAdapter {
         }
 
         // Use direct payload format for custom handlers, or wrapped format for standard endpoints
-        payload = config.useDirectPayload 
-          ? baseParams
-          : { inputs: baseParams }
+        if (config.useDirectPayload) {
+          payload = baseParams
+        } else {
+          payload = { 
+            inputs: baseParams,
+            accept: "image/jpeg"
+          }
+        }
       }
 
       console.log(`[HF-Inference ${requestId}] Request payload:`, JSON.stringify(payload, null, 2))
