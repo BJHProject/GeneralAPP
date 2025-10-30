@@ -116,7 +116,7 @@ export class HuggingFaceInferenceProvider implements ProviderAdapter {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
-          'Accept': config.useSimpleInputs ? 'application/json' : 'image/png',
+          'Accept': config.useSimpleInputs ? 'application/json' : config.useDirectPayload ? 'application/json' : 'image/png',
         },
         body: JSON.stringify(payload),
       })
