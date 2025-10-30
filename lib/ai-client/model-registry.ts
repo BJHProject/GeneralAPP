@@ -51,10 +51,6 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
       steps: 40,
       guidance: 7,
     },
-    mandatoryPrompts: {
-      positive: 'score_9, score_8_up, score_7_up',
-      negative: 'score_6, score_5, score_4',
-    },
     pricing: {
       credits: 500,
     },
@@ -155,10 +151,6 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
       height: 1024,
       steps: 30,
       guidance: 7,
-    },
-    mandatoryPrompts: {
-      positive: 'score_9, score_8_up, score_7_up',
-      negative: 'score_6, score_5, score_4',
     },
     pricing: {
       credits: 500,
