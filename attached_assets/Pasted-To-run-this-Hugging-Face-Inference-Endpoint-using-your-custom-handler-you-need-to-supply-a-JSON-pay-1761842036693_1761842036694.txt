@@ -1,0 +1,63 @@
+To run this Hugging Face Inference Endpoint using your custom handler, you need to supply a JSON payload containing key parameters such as the prompt, optional negative prompt, image dimensions, scheduler, and other generation controls. This payload can be sent via the endpoint's UI, API, or directly as a POST request.
+
+Below is a sample prompt and payload structure you can use for your endpoint:
+
+Example: Inference Point Payload
+You can enter this in the Hugging Face Inference UI, or send as a JSON POST to the endpoint:
+
+json
+{
+  "prompt": "a scenic landscape with mountains and a lake at sunrise, high detail, vibrant colors",
+  "negative_prompt": "low quality, blurry, distorted",
+  "width": 1024,
+  "height": 1024,
+  "num_inference_steps": 30,
+  "guidance_scale": 7.0,
+  "num_images": 1,
+  "seed": 12345,
+  "scheduler": "euler_a",
+  "accept": "image/jpeg"
+}
+Key Fields Explained
+prompt: Describes what you want the model to generate. Tailor this to your desired output.
+
+negative_prompt (optional): Describes what you do NOT want in the output (e.g., "blurry").
+
+width/height: Image dimensions. Default is 1024x1024 for SDXL, else 512x512.
+
+num_inference_steps: Generation steps; higher means more detail.
+
+guidance_scale: Controls prompt adherence (6.5–8 generally).
+
+num_images: Number of images to generate per prompt.
+
+seed: Sets randomness; use for repeatable results.
+
+scheduler: Name of the sampler: options are "euler_a", "euler", "ddim", "lms", "pndm", "dpmpp_2m".
+
+accept: "image/jpeg" for direct image; "json" (default) for base64 PNG.
+
+Example Usage Scenarios
+Simple Image:
+
+json
+{ "prompt": "a futuristic city skyline at night" }
+Negative Prompt:
+
+json
+{ "prompt": "a cute cat", "negative_prompt": "angry, scary" }
+Multiple Images:
+
+json
+{ "prompt": "bright nebula in space", "num_images": 2 }
+Custom Scheduler:
+
+json
+{ "prompt": "fantasy forest", "scheduler": "ddim" }
+You can adjust these values to experiment with output quality and style.
+
+How To Use
+Paste your JSON payload into the endpoint request box or use CURL/requests for API calls.
+For the UI, use each key as an input field if supported.
+
+This will generate the requested image(s) using your Stable Diffusion pipeline and return either a JPEG (for easy preview) or a JSON base64 (for programmatic access).

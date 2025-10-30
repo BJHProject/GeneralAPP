@@ -80,6 +80,8 @@ export interface ModelConfig {
   
   supportsNegativePrompt?: boolean  // Optional: specify if model supports negative prompts (default: true)
   
+  useDirectPayload?: boolean  // Optional: for HF inference endpoints that expect direct parameters instead of wrapped in 'inputs' (default: false)
+  
   pricing: {
     credits: number
   }

@@ -145,6 +145,26 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
     maxRetries: 5,
   },
 
+  'anime_pd': {
+    id: 'anime_pd',
+    name: 'Anime PD',
+    provider: 'huggingface-inference',
+    endpoint: 'https://pvilbukpcv9mvo3g.us-east-1.aws.endpoints.huggingface.cloud',
+    type: 'image',
+    useDirectPayload: true,
+    defaults: {
+      width: 1024,
+      height: 1024,
+      steps: 30,
+      guidance: 7,
+    },
+    pricing: {
+      credits: 500,
+    },
+    timeout: 90000,
+    maxRetries: 5,
+  },
+
   'wavespeed-edit': {
     id: 'wavespeed-edit',
     name: 'Wavespeed Edit',

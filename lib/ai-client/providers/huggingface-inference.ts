@@ -51,24 +51,28 @@ export class HuggingFaceInferenceProvider implements ProviderAdapter {
       }
 
       // Build payload for HF Inference Endpoint
-      const payload: any = {
-        inputs: {
-          prompt: finalPrompt,
-          negative_prompt: finalNegativePrompt,
-          width: request.width || config.defaults?.width || 1024,
-          height: request.height || config.defaults?.height || 1024,
-          num_inference_steps: request.steps || config.defaults?.steps || 30,
-          guidance_scale: request.guidance || config.defaults?.guidance || 6.5,
-          num_images: 1,
-          seed: request.seed !== undefined ? request.seed : Math.floor(Math.random() * 1000000000),
-        }
+      // Some custom handlers expect direct parameters, others expect them wrapped in 'inputs'
+      const baseParams: any = {
+        prompt: finalPrompt,
+        negative_prompt: finalNegativePrompt,
+        width: request.width || config.defaults?.width || 1024,
+        height: request.height || config.defaults?.height || 1024,
+        num_inference_steps: request.steps || config.defaults?.steps || 30,
+        guidance_scale: request.guidance || config.defaults?.guidance || 6.5,
+        num_images: 1,
+        seed: request.seed !== undefined ? request.seed : Math.floor(Math.random() * 1000000000),
       }
 
       // Add LoRA configuration if specified
       if (config.loras && config.loras.length > 0) {
-        payload.inputs.loras = config.loras
-        payload.inputs.fuse_lora = false
+        baseParams.loras = config.loras
+        baseParams.fuse_lora = false
       }
+
+      // Use direct payload format for custom handlers (anime_pd), or wrapped format for standard endpoints
+      const payload: any = config.useDirectPayload 
+        ? baseParams
+        : { inputs: baseParams }
 
       console.log(`[HF-Inference ${requestId}] Request payload:`, JSON.stringify(payload, null, 2))
 
