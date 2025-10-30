@@ -55,10 +55,31 @@ export class HuggingFaceInferenceProvider implements ProviderAdapter {
       let payload: any
       
       if (config.useSimpleInputs) {
-        // Simple format: {"inputs": "prompt", "parameters": {}}
+        // Simple format with parameters: {"inputs": "prompt", "parameters": {...}}
+        const parameters: any = {}
+        
+        // Add dimensions if provided
+        if (request.width || config.defaults?.width) {
+          parameters.width = request.width || config.defaults?.width
+        }
+        if (request.height || config.defaults?.height) {
+          parameters.height = request.height || config.defaults?.height
+        }
+        
+        // Add other generation parameters if needed
+        if (request.steps || config.defaults?.steps) {
+          parameters.num_inference_steps = request.steps || config.defaults?.steps
+        }
+        if (request.guidance || config.defaults?.guidance) {
+          parameters.guidance_scale = request.guidance || config.defaults?.guidance
+        }
+        if (request.seed !== undefined) {
+          parameters.seed = request.seed
+        }
+        
         payload = {
           inputs: finalPrompt,
-          parameters: {}
+          parameters: parameters
         }
       } else {
         // Standard format with detailed parameters
@@ -92,7 +113,7 @@ export class HuggingFaceInferenceProvider implements ProviderAdapter {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
-          'Accept': 'image/png',
+          'Accept': config.useSimpleInputs ? 'application/json' : 'image/png',
         },
         body: JSON.stringify(payload),
       })
