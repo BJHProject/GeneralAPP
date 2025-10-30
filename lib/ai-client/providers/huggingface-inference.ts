@@ -12,6 +12,7 @@ export class HuggingFaceInferenceProvider implements ProviderAdapter {
       process.env.HUGGINGFACE_API_TOKEN,
       process.env.HUGGINGFACE_API_TOKEN_2,
       process.env.HUGGINGFACE_API_TOKEN_3,
+      process.env.HUGGINGFACE_API_TOKEN_4,
     ].filter(Boolean)
 
     if (tokens.length === 0) {
