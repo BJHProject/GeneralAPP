@@ -44,7 +44,7 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
     provider: 'huggingface-inference',
     endpoint: 'https://jczopg9f2r7erqtf.us-east-1.aws.endpoints.huggingface.cloud',
     type: 'image',
-    useSimpleInputs: true,
+    useDirectPayload: false,
     defaults: {
       width: 1024,
       height: 1024,
