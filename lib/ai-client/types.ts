@@ -84,6 +84,8 @@ export interface ModelConfig {
   
   useSimpleInputs?: boolean  // Optional: for HF inference endpoints that expect simple format {"inputs": "prompt", "parameters": {}} (default: false)
   
+  useMinimalParams?: boolean  // Optional: send empty parameters object when using useSimpleInputs (default: false)
+  
   pricing: {
     credits: number
   }

@@ -58,23 +58,26 @@ export class HuggingFaceInferenceProvider implements ProviderAdapter {
         // Simple format with parameters: {"inputs": "prompt", "parameters": {...}}
         const parameters: any = {}
         
-        // Add dimensions if provided
-        if (request.width || config.defaults?.width) {
-          parameters.width = request.width || config.defaults?.width
-        }
-        if (request.height || config.defaults?.height) {
-          parameters.height = request.height || config.defaults?.height
-        }
-        
-        // Add other generation parameters if needed
-        if (request.steps || config.defaults?.steps) {
-          parameters.num_inference_steps = request.steps || config.defaults?.steps
-        }
-        if (request.guidance || config.defaults?.guidance) {
-          parameters.guidance_scale = request.guidance || config.defaults?.guidance
-        }
-        if (request.seed !== undefined) {
-          parameters.seed = request.seed
+        // Only add parameters if not minimal mode
+        if (!config.useMinimalParams) {
+          // Add dimensions if provided
+          if (request.width || config.defaults?.width) {
+            parameters.width = request.width || config.defaults?.width
+          }
+          if (request.height || config.defaults?.height) {
+            parameters.height = request.height || config.defaults?.height
+          }
+          
+          // Add other generation parameters if needed
+          if (request.steps || config.defaults?.steps) {
+            parameters.num_inference_steps = request.steps || config.defaults?.steps
+          }
+          if (request.guidance || config.defaults?.guidance) {
+            parameters.guidance_scale = request.guidance || config.defaults?.guidance
+          }
+          if (request.seed !== undefined) {
+            parameters.seed = request.seed
+          }
         }
         
         payload = {

@@ -146,6 +146,7 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
     endpoint: 'https://pvilbukpcv9mvo3g.us-east-1.aws.endpoints.huggingface.cloud',
     type: 'image',
     useSimpleInputs: true,
+    useMinimalParams: true,
     defaults: {
       width: 1024,
       height: 1024,
