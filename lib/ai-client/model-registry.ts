@@ -116,7 +116,7 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
     defaults: {
       width: 832,
       height: 1216,
-      steps: 28,
+      steps: 40,
       guidance: 7,
     },
     pricing: {
