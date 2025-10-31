@@ -18,10 +18,43 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const { imageUrl, prompt, width, height, metadata } = await request.json()
+    const contentType = request.headers.get("content-type")
+    let imageUrl: string
+    let prompt: string | undefined
+    let width: number | undefined
+    let height: number | undefined
+    let metadata: any
 
-    if (!imageUrl) {
-      return NextResponse.json({ error: "Image URL is required" }, { status: 400 })
+    if (contentType?.includes("multipart/form-data")) {
+      // Handle file upload
+      const formData = await request.formData()
+      const file = formData.get("image") as File
+      
+      if (!file) {
+        return NextResponse.json({ error: "Image file is required" }, { status: 400 })
+      }
+
+      // Convert file to data URL
+      const buffer = await file.arrayBuffer()
+      const base64 = Buffer.from(buffer).toString('base64')
+      imageUrl = `data:${file.type};base64,${base64}`
+      
+      prompt = formData.get("prompt") as string | undefined
+      width = formData.get("width") ? Number(formData.get("width")) : undefined
+      height = formData.get("height") ? Number(formData.get("height")) : undefined
+      metadata = {}
+    } else {
+      // Handle JSON with URL
+      const body = await request.json()
+      imageUrl = body.imageUrl
+      prompt = body.prompt
+      width = body.width
+      height = body.height
+      metadata = body.metadata
+      
+      if (!imageUrl) {
+        return NextResponse.json({ error: "Image URL is required" }, { status: 400 })
+      }
     }
 
     console.log("[v0] Ingesting image for user:", user.id)
