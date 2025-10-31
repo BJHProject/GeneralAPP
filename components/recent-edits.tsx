@@ -1,10 +1,12 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import Image from "next/image"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Loader2, Download, Trash2, Heart } from "lucide-react"
+import { X, RefreshCw } from "lucide-react"
+import Image from "next/image"
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 
 interface EditedImage {
   id: string
@@ -16,19 +18,45 @@ interface EditedImage {
 }
 
 export function RecentEdits() {
+  const router = useRouter()
   const [images, setImages] = useState<EditedImage[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [deletingImages, setDeletingImages] = useState<Set<string>>(new Set())
+  const [savingImages, setSavingImages] = useState<Set<string>>(new Set())
+  const [error, setError] = useState<string | null>(null)
+  const [fullscreenImage, setFullscreenImage] = useState<string | null>(null)
 
   const loadImages = async () => {
+    console.log("[v0] Loading edited images from API")
+    setIsLoading(true)
+    setError(null)
     try {
       const response = await fetch("/api/edited-images")
-      if (!response.ok) throw new Error("Failed to fetch images")
+      console.log("[v0] API response status:", response.status)
+
+      const contentType = response.headers.get("content-type")
+      console.log("[v0] Content type:", contentType)
+
+      if (!contentType || !contentType.includes("application/json")) {
+        console.error("[v0] API returned non-JSON response:", contentType)
+        setError("Unable to load edited images in preview environment")
+        setImages([])
+        return
+      }
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
 
       const data = await response.json()
-      // Filter out saved images, only show recent unsaved ones
-      setImages(data.recent || [])
+      console.log("[v0] Received edited images:", data.recent ? data.recent.length : 0)
+      const recentImages = data.recent || []
+      console.log("[v0] Displaying recent edited images:", recentImages.length)
+      setImages(recentImages)
     } catch (error) {
-      console.error("[v0] Error loading edited images:", error)
+      console.error("[v0] Failed to load edited images:", error)
+      setError("Unable to load edited images. This may not work in preview mode.")
+      setImages([])
     } finally {
       setIsLoading(false)
     }
@@ -37,121 +65,243 @@ export function RecentEdits() {
   useEffect(() => {
     loadImages()
 
-    // Listen for new edits
     const handleImageEdited = () => {
+      console.log("[v0] Image edited event received, refreshing gallery")
       loadImages()
     }
 
     window.addEventListener("imageEdited", handleImageEdited)
-    return () => window.removeEventListener("imageEdited", handleImageEdited)
+
+    return () => {
+      window.removeEventListener("imageEdited", handleImageEdited)
+    }
   }, [])
 
-  const handleSave = async (imageId: string) => {
-    try {
-      const response = await fetch("/api/save-edited-image", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imageId }),
-      })
-
-      if (!response.ok) throw new Error("Failed to save image")
-
-      loadImages()
-    } catch (error) {
-      console.error("[v0] Error saving image:", error)
-    }
-  }
-
   const handleDelete = async (imageId: string) => {
+    console.log("[v0] Deleting edited image:", imageId)
+    setDeletingImages((prev) => new Set(prev).add(imageId))
+
     try {
       const response = await fetch("/api/delete-edited-image", {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({ imageId }),
       })
 
-      if (!response.ok) throw new Error("Failed to delete image")
+      if (!response.ok) {
+        throw new Error("Failed to delete edited image")
+      }
 
-      loadImages()
+      console.log("[v0] Edited image deleted successfully")
+      setImages((prev) => prev.filter((img) => img.id !== imageId))
     } catch (error) {
-      console.error("[v0] Error deleting image:", error)
+      console.error("[v0] Delete error:", error)
+    } finally {
+      setDeletingImages((prev) => {
+        const newSet = new Set(prev)
+        newSet.delete(imageId)
+        return newSet
+      })
     }
   }
 
-  const handleDownload = async (imageUrl: string) => {
+  const handleSave = async (imageId: string) => {
+    console.log("[v0] Saving edited image:", imageId)
+    setSavingImages((prev) => new Set(prev).add(imageId))
+
     try {
-      const response = await fetch(imageUrl)
-      const blob = await response.blob()
-      const url = window.URL.createObjectURL(blob)
-      const a = document.createElement("a")
-      a.href = url
-      a.download = `edited-${Date.now()}.png`
-      document.body.appendChild(a)
-      a.click()
-      window.URL.revokeObjectURL(url)
-      document.body.removeChild(a)
+      const response = await fetch("/api/save-edited-image", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ imageId }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to save edited image")
+      }
+
+      console.log("[v0] Edited image saved successfully")
+      setImages((prev) => prev.map((img) => 
+        img.id === imageId ? { ...img, is_saved: true } : img
+      ))
+      toast.success("Edited image saved to gallery")
     } catch (error) {
-      console.error("[v0] Error downloading image:", error)
+      console.error("[v0] Save error:", error)
+      toast.error("Failed to save edited image")
+    } finally {
+      setSavingImages((prev) => {
+        const newSet = new Set(prev)
+        newSet.delete(imageId)
+        return newSet
+      })
     }
   }
 
   if (isLoading) {
     return (
-      <Card className="border-0 bg-gradient-to-br from-card/50 to-muted/30 shadow-xl shadow-primary/5 p-12 rounded-2xl">
+      <div className="space-y-4">
         <div className="flex items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          <h2 className="text-2xl font-bold text-foreground">Recent Edits</h2>
         </div>
-      </Card>
+        <div className="flex items-center justify-center py-12">
+          <RefreshCw className="h-8 w-8 animate-spin text-muted-foreground" />
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center justify-center">
+          <h2 className="text-2xl font-bold text-foreground">Recent Edits</h2>
+        </div>
+        <Card className="border-0 bg-gradient-to-br from-card/50 to-muted/30 shadow-xl shadow-primary/5 p-12 rounded-2xl">
+          <div className="text-center">
+            <p className="text-muted-foreground">{error}</p>
+            <p className="mt-2 text-sm text-muted-foreground">Try using the deployed version for full functionality.</p>
+          </div>
+        </Card>
+      </div>
     )
   }
 
   if (images.length === 0) {
     return (
-      <Card className="border-0 bg-gradient-to-br from-card/50 to-muted/30 shadow-xl shadow-primary/5 p-12 rounded-2xl">
-        <div className="text-center text-muted-foreground">
-          <p>No recent edits yet. Start editing images to see them here!</p>
+      <div className="space-y-4">
+        <div className="flex items-center justify-center">
+          <h2 className="text-2xl font-bold text-foreground">Recent Edits</h2>
         </div>
-      </Card>
+        <Card className="border-0 bg-gradient-to-br from-card/50 to-muted/30 shadow-xl shadow-primary/5 p-12 rounded-2xl">
+          <div className="text-center">
+            <p className="text-muted-foreground">No edited images yet. Edit your first image to see it here!</p>
+          </div>
+        </Card>
+      </div>
     )
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-      {images.map((image) => (
-        <Card key={image.id} className="border-0 bg-card/50 shadow-xl shadow-primary/5 overflow-hidden group transition-all hover:shadow-2xl hover:shadow-primary/10 hover:scale-[1.02] rounded-2xl">
-          <div className="relative aspect-square bg-muted/30">
-            <Image
-              src={image.output_image_url || "/placeholder.svg"}
-              alt={image.prompt}
-              fill
-              className={`${
-                image.output_image_url.includes("width") && image.output_image_url.includes("height")
-                  ? "object-contain"
-                  : "object-cover"
-              }`}
+    <div className="space-y-4">
+      <div className="flex items-center justify-center">
+        <h2 className="text-2xl font-bold text-foreground">Recent Edits</h2>
+      </div>
+
+      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {images.map((image) => (
+          <Card
+            key={image.id}
+            className="group overflow-hidden border-0 bg-card/50 shadow-xl shadow-primary/5 transition-all hover:shadow-2xl hover:shadow-primary/10 hover:scale-[1.02] rounded-2xl"
+          >
+            <div
+              className="relative overflow-hidden flex items-center justify-center cursor-pointer aspect-[2/3]"
+              onClick={() => setFullscreenImage(image.output_image_url)}
+            >
+              {/* Blurred background layer */}
+              <div 
+                className="absolute inset-0"
+                style={{
+                  backgroundImage: `url(${image.output_image_url})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  filter: 'blur(60px)',
+                  opacity: 0.6,
+                  transform: 'scale(1.1)'
+                }}
+              />
+              
+              {/* Main image on top - centered */}
+              <div className="absolute inset-0 z-10">
+                <Image
+                  src={image.output_image_url || "/placeholder.svg"}
+                  alt={image.prompt}
+                  fill
+                  className="object-contain"
+                />
+              </div>
+              
+              {/* Action icons - bottom right corner - always visible */}
+              <div className="absolute bottom-0 right-0 flex flex-col gap-0 z-20">
+                {/* Heart (save) icon - white when unsaved, pink when saved, turns pink on hover */}
+                <button
+                  className="w-7 h-7 p-0 border-0 bg-transparent cursor-pointer group/heart-btn"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    if (!image.is_saved) {
+                      handleSave(image.id)
+                    }
+                  }}
+                  disabled={savingImages.has(image.id)}
+                >
+                  <img
+                    src={image.is_saved ? "/icons/heart-saved.png" : "/icons/heart-unsaved.png"}
+                    alt={image.is_saved ? "Saved" : "Save"}
+                    className={`w-7 h-7 object-contain transition-opacity duration-200 ${
+                      image.is_saved ? '' : 'group-hover/heart-btn:opacity-0'
+                    }`}
+                  />
+                  {!image.is_saved && (
+                    <img
+                      src="/icons/heart-saved.png"
+                      alt="Save"
+                      className="w-7 h-7 object-contain absolute top-0 left-0 opacity-0 group-hover/heart-btn:opacity-100 transition-opacity duration-200"
+                    />
+                  )}
+                </button>
+                
+                {/* Resize/Fullscreen icon - hugging bottom right corner */}
+                <button
+                  className="w-7 h-7 p-0 border-0 bg-transparent cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setFullscreenImage(image.output_image_url)
+                  }}
+                >
+                  <img
+                    src="/icons/resize.png"
+                    alt="Fullscreen"
+                    className="w-7 h-7 object-contain"
+                  />
+                </button>
+              </div>
+            </div>
+          </Card>
+        ))}
+      </div>
+
+      {fullscreenImage && (
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-background/95 p-4 backdrop-blur-2xl"
+          onClick={() => {
+            console.log("[v0] Closing fullscreen")
+            setFullscreenImage(null)
+          }}
+        >
+          <Button
+            size="icon"
+            variant="ghost"
+            className="absolute right-4 top-4 z-[10000] text-white hover:bg-white/20"
+            onClick={(e) => {
+              e.stopPropagation()
+              console.log("[v0] Close button clicked")
+              setFullscreenImage(null)
+            }}
+          >
+            <X className="h-6 w-6" />
+          </Button>
+          <div className="relative max-h-[90vh] max-w-[90vw]">
+            <img
+              src={fullscreenImage || "/placeholder.svg"}
+              alt="Fullscreen view"
+              className="max-h-[90vh] max-w-[90vw] object-contain"
             />
           </div>
-          <div className="p-4">
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                className="flex-1 bg-transparent"
-                onClick={() => handleSave(image.id)}
-              >
-                <Heart className="h-4 w-4 mr-1" />
-                Save
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => handleDownload(image.output_image_url)}>
-                <Download className="h-4 w-4" />
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => handleDelete(image.id)}>
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        </Card>
-      ))}
+        </div>
+      )}
     </div>
   )
 }
