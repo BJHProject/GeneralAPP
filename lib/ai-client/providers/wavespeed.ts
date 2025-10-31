@@ -29,12 +29,15 @@ export class WavespeedProvider implements ProviderAdapter {
       const isFemaleHumanEndpoint = config.endpoint.includes('female-human')
 
       if (request.type === 'edited-image') {
+        const width = request.width || 1024
+        const height = request.height || 1024
+        
         payload = {
           enable_base64_output: false,
           enable_sync_mode: false,
           images: [request.inputImageUrl],
           prompt: request.prompt,
-          size: '1024x1024',
+          size: `${width}*${height}`,
         }
       } else if (isFemaleHumanEndpoint) {
         // Female-human endpoint (Realistic W) uses different format
