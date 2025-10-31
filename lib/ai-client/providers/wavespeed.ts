@@ -29,31 +29,10 @@ export class WavespeedProvider implements ProviderAdapter {
       const isFemaleHumanEndpoint = config.endpoint.includes('female-human')
 
       if (request.type === 'edited-image') {
-        const inputWidth = request.width || 1024
-        const inputHeight = request.height || 1024
+        const outputWidth = request.width || 1024
+        const outputHeight = request.height || 1024
 
-        // Calculate output dimensions maintaining aspect ratio
-        // If minimum dimension is under 1024, scale up proportionally
-        const minDimension = Math.min(inputWidth, inputHeight)
-        let outputWidth = inputWidth
-        let outputHeight = inputHeight
-        
-        if (minDimension < 1024) {
-          // Scale up to meet minimum requirement
-          const scaleFactor = 1024 / minDimension
-          outputWidth = Math.round(inputWidth * scaleFactor)
-          outputHeight = Math.round(inputHeight * scaleFactor)
-        }
-
-        // Ensure we don't exceed maximum of 4096
-        const maxDimension = Math.max(outputWidth, outputHeight)
-        if (maxDimension > 4096) {
-          const downscale = 4096 / maxDimension
-          outputWidth = Math.round(outputWidth * downscale)
-          outputHeight = Math.round(outputHeight * downscale)
-        }
-
-        console.log(`[Wavespeed ${requestId}] Edit dimensions: input ${inputWidth}x${inputHeight} -> output ${outputWidth}x${outputHeight}`)
+        console.log(`[Wavespeed ${requestId}] Edit dimensions: ${outputWidth}x${outputHeight}`)
 
         payload = {
           enable_base64_output: false,
