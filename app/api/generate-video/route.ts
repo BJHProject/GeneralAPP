@@ -13,7 +13,7 @@ import type { CreditOperation } from "@/lib/credits"
 
 const STYLE_TO_MODEL: Record<string, { modelId: string; operation: CreditOperation }> = {
   lovely: { modelId: "video-lovely", operation: "video3" },
-  express: { modelId: "video-express", operation: "video3" },
+  express: { modelId: "video-express", operation: "video5" },
   "express-hd": { modelId: "video-express-hd", operation: "video5" },
   elite: { modelId: "video-elite", operation: "video5" },
   elitist: { modelId: "video-elite", operation: "video5" },
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     const validation = videoGenerationSchema.safeParse({
       ...body,
       duration: body.style ? 
-        (body.style === 'lovely' || body.style === 'express' ? '3' : '5') : 
+        (body.style === 'lovely' ? '3' : '5') : 
         '3',
     })
     

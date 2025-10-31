@@ -52,10 +52,10 @@ A password-protected admin control panel (`/admin-control`) allows app-wide togg
 
 1.  **Supabase**: Provides authentication and PostgreSQL database services.
 2.  **Vercel Blob**: Used for storing all generated image and video media files.
-3.  **Wavespeed AI**: Powers high-quality image generation and video creation.
+3.  **Wavespeed AI**: Powers high-quality image generation and video creation. Video models include Express (5s, 480p) and Express HD (5s, 720p) using the wan-2.2 endpoint. Note: Wavespeed video API only supports 5 and 8 second durations.
 4.  **HuggingFace**: Hosts various AI models, accessed with multiple API tokens for load distribution.
-5.  **Gradio Client**: NPM package for interacting with Gradio-hosted AI models.
-6.  **FAL.ai**: Utilized for elite-tier video generation.
+5.  **Gradio Client**: NPM package for interacting with Gradio-hosted AI models. Used for the Lovely (3s) video model.
+6.  **FAL.ai**: Utilized for elite-tier video generation (5s videos).
 7.  **NOWPayments**: Cryptocurrency payment processor supporting 160+ cryptocurrencies for credit purchases.
 
 ### Development & Deployment

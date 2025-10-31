@@ -190,12 +190,12 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
   
   'video-express': {
     id: 'video-express',
-    name: 'Express (3s)',
+    name: 'Express (5s)',
     provider: 'wavespeed',
     endpoint: '/api/v3/wavespeed-ai/wan-2.2/i2v-480p-ultra-fast',
     type: 'video',
     defaults: {
-      duration: 3,
+      duration: 5,
     },
     pricing: {
       credits: 2000,
