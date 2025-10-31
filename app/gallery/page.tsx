@@ -2,7 +2,7 @@
 
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Download, Trash2, RefreshCw } from "lucide-react"
+import { Download, Trash2, RefreshCw, ImageIcon, VideoIcon, PencilIcon } from "lucide-react"
 import Image from "next/image"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
@@ -27,12 +27,26 @@ interface GalleryVideo {
   is_saved: boolean
 }
 
+interface EditedImage {
+  id: string
+  input_image_url: string
+  output_image_url: string
+  prompt: string
+  created_at: string
+  is_saved: boolean
+}
+
+type FilterType = "images" | "videos" | "edits"
+
 export default function GalleryPage() {
+  const [activeFilter, setActiveFilter] = useState<FilterType>("images")
   const [images, setImages] = useState<GalleryImage[]>([])
   const [videos, setVideos] = useState<GalleryVideo[]>([])
+  const [editedImages, setEditedImages] = useState<EditedImage[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [deletingImages, setDeletingImages] = useState<Set<string>>(new Set())
   const [deletingVideos, setDeletingVideos] = useState<Set<string>>(new Set())
+  const [deletingEdits, setDeletingEdits] = useState<Set<string>>(new Set())
   const [savingImages, setSavingImages] = useState<Set<string>>(new Set())
   const [savingVideos, setSavingVideos] = useState<Set<string>>(new Set())
   const [error, setError] = useState<string | null>(null)
@@ -108,10 +122,40 @@ export default function GalleryPage() {
     }
   }
 
+  const loadEditedImages = async () => {
+    setIsLoading(true)
+    setError(null)
+    try {
+      const response = await fetch("/api/saved-edited-images")
+
+      const contentType = response.headers.get("content-type")
+      if (!contentType || !contentType.includes("application/json")) {
+        console.error("[v0] API returned non-JSON response:", contentType)
+        setError("Unable to load edited images in preview environment")
+        setEditedImages([])
+        return
+      }
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      setEditedImages(data.images || [])
+    } catch (error) {
+      console.error("[v0] Failed to load edited images:", error)
+      setError("Unable to load edited images. This may not work in preview mode.")
+      setEditedImages([])
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   useEffect(() => {
     if (user) {
       loadImages()
       loadVideos()
+      loadEditedImages()
     }
   }, [user])
 
@@ -264,6 +308,34 @@ export default function GalleryPage() {
     }
   }
 
+  const handleEditDelete = async (imageId: string) => {
+    setDeletingEdits((prev) => new Set(prev).add(imageId))
+
+    try {
+      const response = await fetch("/api/delete-edited-image", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ imageId }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to delete edited image")
+      }
+
+      setEditedImages((prev) => prev.filter((img) => img.id !== imageId))
+    } catch (error) {
+      console.error("Delete error:", error)
+    } finally {
+      setDeletingEdits((prev) => {
+        const newSet = new Set(prev)
+        newSet.delete(imageId)
+        return newSet
+      })
+    }
+  }
+
   const getImageObjectFit = (width: number, height: number) => {
     const aspectRatio = width / height
     // Portrait images (taller than wide) use object-cover to fill the frame
@@ -312,6 +384,7 @@ export default function GalleryPage() {
 
   const savedImages = images
   const savedVideos = videos.filter((vid) => vid.is_saved)
+  const savedEdits = editedImages
 
   return (
     <div className="min-h-screen bg-background">
@@ -325,6 +398,7 @@ export default function GalleryPage() {
               onClick={() => {
                 loadImages()
                 loadVideos()
+                loadEditedImages()
               }}
             >
               <RefreshCw className="h-4 w-4 mr-2" />
@@ -332,121 +406,245 @@ export default function GalleryPage() {
             </Button>
           </div>
 
-          {/* Saved Images Section */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-foreground">Saved Images</h2>
-              <p className="text-sm text-muted-foreground">
-                {savedImages.length} {savedImages.length === 1 ? "image" : "images"}
-              </p>
+          {/* Filter Buttons */}
+          <div className="flex justify-center">
+            <div className="inline-flex items-center gap-2 rounded-lg bg-muted p-1">
+              <Button
+                variant={activeFilter === "images" ? "default" : "ghost"}
+                onClick={() => setActiveFilter("images")}
+                className="gap-2"
+                size="sm"
+              >
+                <ImageIcon className="h-4 w-4" />
+                Images
+              </Button>
+              <Button
+                variant={activeFilter === "videos" ? "default" : "ghost"}
+                onClick={() => setActiveFilter("videos")}
+                className="gap-2"
+                size="sm"
+              >
+                <VideoIcon className="h-4 w-4" />
+                Videos
+              </Button>
+              <Button
+                variant={activeFilter === "edits" ? "default" : "ghost"}
+                onClick={() => setActiveFilter("edits")}
+                className="gap-2"
+                size="sm"
+              >
+                <PencilIcon className="h-4 w-4" />
+                Edits
+              </Button>
             </div>
-
-            {savedImages.length === 0 ? (
-              <Card className="border-border bg-card p-12">
-                <div className="text-center">
-                  <p className="text-muted-foreground">
-                    No saved images yet. Save some images to keep them permanently!
-                  </p>
-                </div>
-              </Card>
-            ) : (
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {savedImages.map((image) => (
-                  <Card
-                    key={image.id}
-                    className="group overflow-hidden border-border bg-card transition-all hover:border-primary/50 cursor-pointer"
-                    onClick={() => router.push(`/image/${image.id}`)}
-                  >
-                    <div className="relative overflow-hidden aspect-[2/3]">
-                      {/* Blurred background layer */}
-                      <div 
-                        className="absolute inset-0"
-                        style={{
-                          backgroundImage: `url(${image.url})`,
-                          backgroundSize: 'cover',
-                          backgroundPosition: 'center',
-                          filter: 'blur(60px)',
-                          opacity: 0.6,
-                          transform: 'scale(1.1)'
-                        }}
-                      />
-                      
-                      {/* Main image on top - centered */}
-                      <div className="absolute inset-0 z-10">
-                        <Image
-                          src={image.url || "/placeholder.svg"}
-                          alt={image.prompt}
-                          fill
-                          className="object-contain transition-transform duration-300 group-hover:scale-105"
-                        />
-                      </div>
-                      
-                      <div className="absolute top-2 right-2 bg-primary/80 text-primary-foreground text-xs px-2 py-1 rounded z-20">
-                        Saved
-                      </div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100 z-20" />
-                    </div>
-                  </Card>
-                ))}
-              </div>
-            )}
           </div>
+
+          {/* Saved Images Section */}
+          {activeFilter === "images" && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-bold text-foreground">Saved Images</h2>
+                <p className="text-sm text-muted-foreground">
+                  {savedImages.length} {savedImages.length === 1 ? "image" : "images"}
+                </p>
+              </div>
+
+              {savedImages.length === 0 ? (
+                <Card className="border-border bg-card p-12">
+                  <div className="text-center">
+                    <p className="text-muted-foreground">
+                      No saved images yet. Save some images to keep them permanently!
+                    </p>
+                  </div>
+                </Card>
+              ) : (
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  {savedImages.map((image) => (
+                    <Card
+                      key={image.id}
+                      className="group overflow-hidden border-border bg-card transition-all hover:border-primary/50 cursor-pointer"
+                      onClick={() => router.push(`/image/${image.id}`)}
+                    >
+                      <div className="relative overflow-hidden aspect-[2/3]">
+                        {/* Blurred background layer */}
+                        <div 
+                          className="absolute inset-0"
+                          style={{
+                            backgroundImage: `url(${image.url})`,
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                            filter: 'blur(60px)',
+                            opacity: 0.6,
+                            transform: 'scale(1.1)'
+                          }}
+                        />
+                        
+                        {/* Main image on top - centered */}
+                        <div className="absolute inset-0 z-10">
+                          <Image
+                            src={image.url || "/placeholder.svg"}
+                            alt={image.prompt}
+                            fill
+                            className="object-contain transition-transform duration-300 group-hover:scale-105"
+                          />
+                        </div>
+                        
+                        <div className="absolute top-2 right-2 bg-primary/80 text-primary-foreground text-xs px-2 py-1 rounded z-20">
+                          Saved
+                        </div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100 z-20" />
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Saved Videos Section */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-foreground">Saved Videos</h2>
-              <p className="text-sm text-muted-foreground">
-                {savedVideos.length} {savedVideos.length === 1 ? "video" : "videos"}
-              </p>
-            </div>
-
-            {savedVideos.length === 0 ? (
-              <Card className="border-border bg-card p-12">
-                <div className="text-center">
-                  <p className="text-muted-foreground">
-                    No saved videos yet. Save some videos to keep them permanently!
-                  </p>
-                </div>
-              </Card>
-            ) : (
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {savedVideos.map((video) => (
-                  <Card
-                    key={video.id}
-                    className="group overflow-hidden border-border bg-card transition-all hover:border-primary/50"
-                  >
-                    <div className="relative aspect-video overflow-hidden bg-black">
-                      <video src={video.url} className="h-full w-full object-cover" muted loop playsInline />
-                      <div className="absolute top-2 right-2 bg-primary/80 text-primary-foreground text-xs px-2 py-1 rounded">
-                        Saved
-                      </div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
-                      <div className="absolute bottom-0 left-0 right-0 flex items-center justify-center gap-2 p-4 opacity-0 transition-opacity group-hover:opacity-100">
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          className="gap-2"
-                          onClick={() => handleVideoDownload(video.url, video.prompt)}
-                        >
-                          <Download className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          className="gap-2 text-red-500 hover:text-red-600"
-                          onClick={() => handleVideoDelete(video.id)}
-                          disabled={deletingVideos.has(video.id)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  </Card>
-                ))}
+          {activeFilter === "videos" && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-bold text-foreground">Saved Videos</h2>
+                <p className="text-sm text-muted-foreground">
+                  {savedVideos.length} {savedVideos.length === 1 ? "video" : "videos"}
+                </p>
               </div>
-            )}
-          </div>
+
+              {savedVideos.length === 0 ? (
+                <Card className="border-border bg-card p-12">
+                  <div className="text-center">
+                    <p className="text-muted-foreground">
+                      No saved videos yet. Save some videos to keep them permanently!
+                    </p>
+                  </div>
+                </Card>
+              ) : (
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  {savedVideos.map((video) => (
+                    <Card
+                      key={video.id}
+                      className="group overflow-hidden border-border bg-card transition-all hover:border-primary/50"
+                    >
+                      <div className="relative aspect-video overflow-hidden bg-black">
+                        <video src={video.url} className="h-full w-full object-cover" muted loop playsInline />
+                        <div className="absolute top-2 right-2 bg-primary/80 text-primary-foreground text-xs px-2 py-1 rounded">
+                          Saved
+                        </div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+                        <div className="absolute bottom-0 left-0 right-0 flex items-center justify-center gap-2 p-4 opacity-0 transition-opacity group-hover:opacity-100">
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            className="gap-2"
+                            onClick={() => handleVideoDownload(video.url, video.prompt)}
+                          >
+                            <Download className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            className="gap-2 text-red-500 hover:text-red-600"
+                            onClick={() => handleVideoDelete(video.id)}
+                            disabled={deletingVideos.has(video.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Saved Edits Section */}
+          {activeFilter === "edits" && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-bold text-foreground">Saved Edits</h2>
+                <p className="text-sm text-muted-foreground">
+                  {savedEdits.length} {savedEdits.length === 1 ? "edit" : "edits"}
+                </p>
+              </div>
+
+              {savedEdits.length === 0 ? (
+                <Card className="border-border bg-card p-12">
+                  <div className="text-center">
+                    <p className="text-muted-foreground">
+                      No saved edits yet. Save some edited images to keep them permanently!
+                    </p>
+                  </div>
+                </Card>
+              ) : (
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  {savedEdits.map((image) => (
+                    <Card
+                      key={image.id}
+                      className="group overflow-hidden border-border bg-card transition-all hover:border-primary/50 cursor-pointer"
+                    >
+                      <div className="relative overflow-hidden aspect-[2/3]">
+                        {/* Blurred background layer */}
+                        <div 
+                          className="absolute inset-0"
+                          style={{
+                            backgroundImage: `url(${image.output_image_url})`,
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                            filter: 'blur(60px)',
+                            opacity: 0.6,
+                            transform: 'scale(1.1)'
+                          }}
+                        />
+                        
+                        {/* Main image on top - centered */}
+                        <div className="absolute inset-0 z-10">
+                          <Image
+                            src={image.output_image_url || "/placeholder.svg"}
+                            alt={image.prompt}
+                            fill
+                            className="object-contain transition-transform duration-300 group-hover:scale-105"
+                          />
+                        </div>
+                        
+                        <div className="absolute top-2 right-2 bg-primary/80 text-primary-foreground text-xs px-2 py-1 rounded z-20">
+                          Saved
+                        </div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100 z-20">
+                          <div className="absolute bottom-0 left-0 right-0 flex items-center justify-center gap-2 p-4">
+                            <Button
+                              size="sm"
+                              variant="secondary"
+                              className="gap-2"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                handleDownload(image.output_image_url, image.prompt)
+                              }}
+                            >
+                              <Download className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="secondary"
+                              className="gap-2 text-red-500 hover:text-red-600"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                handleEditDelete(image.id)
+                              }}
+                              disabled={deletingEdits.has(image.id)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

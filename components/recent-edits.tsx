@@ -2,7 +2,7 @@
 
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { X, RefreshCw } from "lucide-react"
+import { X, RefreshCw, Download, Trash2 } from "lucide-react"
 import Image from "next/image"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
@@ -104,6 +104,23 @@ export function RecentEdits() {
         newSet.delete(imageId)
         return newSet
       })
+    }
+  }
+
+  const handleDownload = async (imageUrl: string, prompt: string) => {
+    try {
+      const response = await fetch(imageUrl)
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = `edited-${prompt.slice(0, 30)}.png`
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(a)
+    } catch (error) {
+      console.error("Download error:", error)
     }
   }
 
@@ -224,8 +241,11 @@ export function RecentEdits() {
                 />
               </div>
               
+              {/* Gradient overlay on hover */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100 z-20" />
+              
               {/* Action icons - bottom right corner - always visible */}
-              <div className="absolute bottom-0 right-0 flex flex-col gap-0 z-20">
+              <div className="absolute bottom-0 right-0 flex flex-col gap-0 z-30">
                 {/* Heart (save) icon - white when unsaved, pink when saved, turns pink on hover */}
                 <button
                   className="w-7 h-7 p-0 border-0 bg-transparent cursor-pointer group/heart-btn"
@@ -267,6 +287,33 @@ export function RecentEdits() {
                     className="w-7 h-7 object-contain"
                   />
                 </button>
+              </div>
+
+              {/* Download and Delete buttons on hover - bottom center */}
+              <div className="absolute bottom-0 left-0 right-0 flex items-center justify-center gap-2 pb-4 opacity-0 transition-opacity group-hover:opacity-100 z-30">
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  className="gap-2 bg-background/90 hover:bg-background"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleDownload(image.output_image_url, image.prompt)
+                  }}
+                >
+                  <Download className="h-4 w-4" />
+                </Button>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  className="gap-2 bg-background/90 hover:bg-background text-red-500 hover:text-red-600"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleDelete(image.id)
+                  }}
+                  disabled={deletingImages.has(image.id)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
               </div>
             </div>
           </Card>
