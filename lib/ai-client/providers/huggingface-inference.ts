@@ -60,6 +60,14 @@ export class HuggingFaceInferenceProvider implements ProviderAdapter {
         
         // Only add parameters if not minimal mode
         if (!config.useMinimalParams) {
+          // Add prompt parameter
+          parameters.prompt = finalPrompt
+          
+          // Add negative prompt if provided
+          if (finalNegativePrompt) {
+            parameters.negative_prompt = finalNegativePrompt
+          }
+          
           // Add dimensions if provided
           if (request.width || config.defaults?.width) {
             parameters.width = request.width || config.defaults?.width
@@ -78,6 +86,8 @@ export class HuggingFaceInferenceProvider implements ProviderAdapter {
           if (request.seed !== undefined) {
             parameters.seed = request.seed
           }
+          
+          parameters.num_images = 1
         }
         
         payload = {
@@ -104,14 +114,9 @@ export class HuggingFaceInferenceProvider implements ProviderAdapter {
         }
 
         // Use direct payload format for custom handlers, or wrapped format for standard endpoints
-        if (config.useDirectPayload) {
-          payload = baseParams
-        } else {
-          payload = { 
-            inputs: baseParams,
-            accept: "image/jpeg"
-          }
-        }
+        payload = config.useDirectPayload 
+          ? baseParams
+          : { inputs: baseParams }
       }
 
       console.log(`[HF-Inference ${requestId}] Request payload:`, JSON.stringify(payload, null, 2))
