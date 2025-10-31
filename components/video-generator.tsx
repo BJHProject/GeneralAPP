@@ -146,30 +146,45 @@ export function VideoGenerator() {
     setError(null)
 
     try {
-      const formData = new FormData()
-      formData.append("image", inputImage)
-      formData.append("prompt", prompt.trim())
-      formData.append("duration_seconds", duration.toString())
-      formData.append("style", style)
-      formData.append("steps", steps.toString())
-      formData.append("guidance_scale", guidanceScale.toString())
-      formData.append("randomize_seed", "true")
-      formData.append("seed", Math.floor(Math.random() * 1000000).toString())
+      // If we have a gallery image URL, use it directly
+      let imageUrl = galleryImageUrl
+
+      // Otherwise, upload the image file first
+      if (!imageUrl && inputImage) {
+        console.log("[v0] Uploading image to Blob storage...")
+        const formData = new FormData()
+        formData.append("image", inputImage)
+
+        const uploadResponse = await fetch("/api/ingest", {
+          method: "POST",
+          body: formData,
+        })
+
+        if (!uploadResponse.ok) {
+          throw new Error("Failed to upload image")
+        }
+
+        const uploadData = await uploadResponse.json()
+        imageUrl = uploadData.url
+        console.log("[v0] Image uploaded:", imageUrl)
+      }
+
+      if (!imageUrl) {
+        throw new Error("No image URL available")
+      }
 
       console.log("[v0] Sending request to /api/generate-video")
-      console.log("[v0] FormData contents:", {
-        prompt: prompt.trim(),
-        duration_seconds: duration,
-        style,
-        steps,
-        guidance_scale: guidanceScale,
-        imageSize: inputImage.size,
-        imageType: inputImage.type,
-      })
 
       const response = await fetch("/api/generate-video", {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          imageUrl,
+          prompt: prompt.trim(),
+          style,
+        }),
       })
 
       console.log("[v0] Response status:", response.status)
@@ -237,17 +252,19 @@ export function VideoGenerator() {
       console.log(`[v0] Poll attempt ${attempts}/${maxAttempts}`)
 
       try {
-        const formData = new FormData()
-        formData.append("style", videoStyle)
-        formData.append("elite_job_id", jobId)
-        formData.append("elite_status_url", statusUrl)
-        formData.append("elite_endpoint", endpoint)
-        formData.append("prompt", prompt)
-        formData.append("duration_seconds", duration.toString())
-
         const response = await fetch("/api/generate-video", {
           method: "POST",
-          body: formData,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            style: videoStyle,
+            elite_job_id: jobId,
+            elite_status_url: statusUrl,
+            elite_endpoint: endpoint,
+            prompt,
+            imageUrl: galleryImageUrl || "",
+          }),
         })
 
         const data = await response.json()
