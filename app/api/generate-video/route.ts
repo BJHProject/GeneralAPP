@@ -44,12 +44,7 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json()
     
-    const validation = videoGenerationSchema.safeParse({
-      ...body,
-      duration: body.style ? 
-        (body.style === 'lovely' ? '3' : '5') : 
-        '3',
-    })
+    const validation = videoGenerationSchema.safeParse(body)
     
     if (!validation.success) {
       console.warn("[Security] Invalid request payload:", validation.error.format())
@@ -64,7 +59,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { imageUrl, prompt, idempotency_key } = validation.data
+    const { imageUrl, prompt, duration, idempotency_key } = validation.data
     const style = body.style?.toLowerCase() || 'lovely'
 
     if (!imageUrl || !prompt) {
@@ -116,6 +111,7 @@ export async function POST(request: NextRequest) {
       prompt,
       userId: user.id,
       inputImageUrl: imageUrl,
+      duration: parseInt(duration || '3'),
     })
 
     if (!result.success) {

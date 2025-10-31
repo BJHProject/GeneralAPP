@@ -42,7 +42,7 @@ export const videoGenerationSchema = z.object({
   model: z.string().optional(),
   prompt: z.string().min(1, 'Please describe the video you want to create').max(MAX_PROMPT_LENGTH, 'Your prompt is too long. Please keep it under 2000 characters.'),
   imageUrl: z.string().url('Please upload a valid image').optional(),
-  duration: z.enum(['1', '3', '5']).optional().default('3'),
+  duration: z.enum(['1', '3', '5', '8']).optional().default('3'),
   idempotency_key: z.string().uuid().optional(),
 })
 

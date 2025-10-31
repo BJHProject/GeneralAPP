@@ -190,7 +190,7 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
   
   'video-express': {
     id: 'video-express',
-    name: 'Express (5s)',
+    name: 'Express',
     provider: 'wavespeed',
     endpoint: '/api/v3/wavespeed-ai/wan-2.2/i2v-480p-ultra-fast',
     type: 'video',
@@ -206,7 +206,7 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
   
   'video-express-hd': {
     id: 'video-express-hd',
-    name: 'Express HD (5s)',
+    name: 'Express HD',
     provider: 'wavespeed',
     endpoint: '/api/v3/wavespeed-ai/wan-2.2/i2v-720p-ultra-fast',
     type: 'video',

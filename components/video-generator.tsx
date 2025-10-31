@@ -184,6 +184,7 @@ export function VideoGenerator() {
           imageUrl,
           prompt: prompt.trim(),
           style,
+          duration: duration.toString(),
         }),
       })
 
@@ -264,6 +265,7 @@ export function VideoGenerator() {
             elite_endpoint: endpoint,
             prompt,
             imageUrl: galleryImageUrl || "",
+            duration: duration.toString(),
           }),
         })
 
