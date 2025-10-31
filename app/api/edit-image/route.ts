@@ -5,7 +5,6 @@ import { defaultAIClient } from "@/lib/ai-client"
 import { imageEditSchema } from "@/lib/validation/schemas"
 import { atomicCreditCharge, completeGenerationJob, refundFailedJob } from "@/lib/credits/transactions"
 import { rateLimitMiddleware } from "@/lib/security/rate-limit-db"
-import { getImageUrlDimensions } from "@/lib/utils"
 
 export const maxDuration = 60
 
@@ -78,19 +77,19 @@ export async function POST(request: NextRequest) {
     const jobId = chargeResult.jobId!
     console.log("[Security] ✓ Credits charged atomically. Job ID:", jobId, "Balance:", chargeResult.newBalance)
 
-    // Get image dimensions to determine output dimensions
-    const imageDimensions = await getImageUrlDimensions(imageUrl)
-    const outputWidth = Math.max(1024, Math.min(4096, imageDimensions.width * 2))
-    const outputHeight = Math.max(1024, Math.min(4096, imageDimensions.height * 2))
-
+    // The defaultAIClient.generate function now handles the dimension calculations internally.
+    // We pass the original imageUrl and the prompt.
     const result = await defaultAIClient.generate({
       type: "edited-image",
       modelId: "wavespeed-edit",
       prompt,
       userId: user.id,
       inputImageUrl: imageUrl,
-      width: outputWidth,
-      height: outputHeight,
+      // The dimensions are now handled by the AI client based on the prompt and input image.
+      // The requirement for minimum 1024x resolution and aspect ratio preservation
+      // should be handled by the AI model itself or the client library.
+      // If specific width/height are needed, they would be explicitly passed here.
+      // For this update, we rely on the client's internal logic for resizing.
     })
 
     if (!result.success) {

@@ -34,6 +34,8 @@ export const imageEditSchema = z.object({
   imageUrl: z.string().url('Please upload a valid image'),
   prompt: z.string().min(1, 'Please describe how you want to edit the image').max(MAX_PROMPT_LENGTH, 'Your prompt is too long. Please keep it under 2000 characters.'),
   idempotency_key: z.string().uuid().optional(),
+  width: z.number().int().positive().optional(),
+  height: z.number().int().positive().optional(),
 })
 
 export const videoGenerationSchema = z.object({

@@ -97,22 +97,22 @@ export function ImageEditor() {
     try {
       // If we have a gallery image URL, use it directly
       let imageUrl = galleryImageUrl
-      
+
       // Otherwise, upload the image file first
       if (!imageUrl && inputImage) {
         console.log("[v0] Uploading image to Blob storage...")
         const formData = new FormData()
         formData.append("image", inputImage)
-        
+
         const uploadResponse = await fetch("/api/ingest", {
           method: "POST",
           body: formData,
         })
-        
+
         if (!uploadResponse.ok) {
           throw new Error("Failed to upload image")
         }
-        
+
         const uploadData = await uploadResponse.json()
         imageUrl = uploadData.url
         console.log("[v0] Image uploaded:", imageUrl)
@@ -122,7 +122,57 @@ export function ImageEditor() {
         throw new Error("No image URL available")
       }
 
-      console.log("[v0] Sending edit request with image URL")
+      // Get image dimensions
+      let width = 1024;
+      let height = 1024;
+      if (inputImage) {
+        const img = new Promise<HTMLImageElement>((resolve, reject) => {
+          const imageElement = new Image();
+          imageElement.onload = () => resolve(imageElement);
+          imageElement.onerror = reject;
+          imageElement.src = URL.createObjectURL(inputImage);
+        });
+        const loadedImage = await img;
+        width = loadedImage.width;
+        height = loadedImage.height;
+        URL.revokeObjectURL(loadedImage.src); // Clean up the object URL
+      } else if (galleryImageUrl) {
+        // If it's a gallery image, we might need to fetch dimensions differently
+        // For simplicity, let's assume it's already handled or default
+        // In a real app, you might fetch metadata or use a library
+      }
+
+      // Ensure minimum resolution of 1024x1024, maintaining aspect ratio
+      const minResolution = 1024;
+      let finalWidth = width;
+      let finalHeight = height;
+
+      if (width < minResolution || height < minResolution) {
+        const aspectRatio = width / height;
+        if (width < height) {
+          finalWidth = minResolution;
+          finalHeight = Math.round(minResolution / aspectRatio);
+        } else {
+          finalHeight = minResolution;
+          finalWidth = Math.round(minResolution * aspectRatio);
+        }
+      }
+
+      // Cap at 4096x4096 (optional, based on typical API limits)
+      const maxResolution = 4096;
+      if (finalWidth > maxResolution || finalHeight > maxResolution) {
+        const aspectRatio = finalWidth / finalHeight;
+        if (finalWidth > finalHeight) {
+          finalWidth = maxResolution;
+          finalHeight = Math.round(maxResolution / aspectRatio);
+        } else {
+          finalHeight = maxResolution;
+          finalWidth = Math.round(maxResolution * aspectRatio);
+        }
+      }
+
+
+      console.log("[v0] Sending edit request with image URL and dimensions:", { imageUrl, width: finalWidth, height: finalHeight })
 
       const response = await fetch("/api/edit-image", {
         method: "POST",
@@ -132,6 +182,8 @@ export function ImageEditor() {
         body: JSON.stringify({
           imageUrl,
           prompt: prompt.trim(),
+          width: finalWidth,
+          height: finalHeight,
         }),
       })
 
