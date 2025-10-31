@@ -98,14 +98,13 @@ export async function POST(request: NextRequest) {
     // Prune old temp items (keep only 10 most recent)
     await pruneTempMedia(user.id)
 
-    // Return full URL instead of relative URL for API compatibility
-    const protocol = request.headers.get('x-forwarded-proto') || 'https'
-    const host = request.headers.get('host') || request.headers.get('x-forwarded-host')
-    const fullUrl = `${protocol}://${host}/api/media/${mediaRecord.id}`
+    // Return the direct blob URL for public access by external APIs (e.g., Wavespeed)
+    // The media proxy URL requires authentication and won't work with external services
+    console.log("[v0] Returning blob URL:", blobUrl)
 
     return NextResponse.json({
       id: mediaRecord.id,
-      url: fullUrl,
+      url: blobUrl,
       expiresAt: expiresAt.toISOString(),
       status: "temp",
     })
