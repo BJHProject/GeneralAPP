@@ -56,7 +56,10 @@ export class WavespeedProvider implements ProviderAdapter {
         }
       } else if (request.type === 'video') {
         // Video generation endpoints (Express, Express HD)
-        const duration = config.defaults?.duration || 5
+        // Use user-selected duration, fallback to default if not provided
+        const duration = request.duration || config.defaults?.duration || 5
+
+        console.log(`[Wavespeed ${requestId}] Video duration: ${duration}s (user selected: ${request.duration}, default: ${config.defaults?.duration})`)
 
         payload = {
           image: request.inputImageUrl,
@@ -187,9 +190,11 @@ export class WavespeedProvider implements ProviderAdapter {
 
       // Use different polling endpoints based on the model
       let statusUrl: string
-      if (mediaType === 'edited-image' || isFemaleHumanEndpoint) {
+      if (mediaType === 'edited-image' || isFemaleHumanEndpoint || mediaType === 'video') {
+        // Video, edited-image, and female-human endpoints use the predictions API
         statusUrl = `${baseUrl}/api/v3/predictions/${jobId}/result`
       } else {
+        // Image generation uses the legacy job endpoint
         statusUrl = `${baseUrl}/api/v3/wavespeed-ai/job/${jobId}`
       }
 
@@ -212,20 +217,23 @@ export class WavespeedProvider implements ProviderAdapter {
       if (status === 'completed' || status === 'succeeded') {
         let mediaUrl: string | undefined
 
-        if (mediaType === 'edited-image' || isFemaleHumanEndpoint) {
-          // For edited-image and female-human endpoints, outputs is an array
+        if (mediaType === 'edited-image' || isFemaleHumanEndpoint || mediaType === 'video') {
+          // For video, edited-image, and female-human endpoints, outputs is an array
           if (Array.isArray(outputs) && outputs.length > 0) {
             mediaUrl = outputs[0]
           } else if (outputs && !Array.isArray(outputs)) {
             mediaUrl = outputs
           }
         } else {
-          mediaUrl = mediaType === 'video' ? statusData.video_url : statusData.image_url
+          // Legacy image generation endpoint
+          mediaUrl = statusData.image_url
         }
 
         if (!mediaUrl) {
           throw new Error(`No ${mediaType === 'video' ? 'video' : 'image'} URL in completed job`)
         }
+        
+        console.log(`[Wavespeed ${requestId}] ✓ Job completed, media URL: ${mediaUrl.substring(0, 80)}...`)
         return mediaUrl
       }
 
