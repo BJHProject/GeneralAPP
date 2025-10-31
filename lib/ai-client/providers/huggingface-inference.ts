@@ -55,44 +55,39 @@ export class HuggingFaceInferenceProvider implements ProviderAdapter {
       let payload: any
       
       if (config.useSimpleInputs) {
-        // Simple format with parameters: {"inputs": "prompt", "parameters": {...}}
-        const parameters: any = {}
-        
-        // Only add parameters if not minimal mode
-        if (!config.useMinimalParams) {
-          // Add prompt parameter
-          parameters.prompt = finalPrompt
-          
-          // Add negative prompt if provided
-          if (finalNegativePrompt) {
-            parameters.negative_prompt = finalNegativePrompt
-          }
-          
-          // Add dimensions if provided
-          if (request.width || config.defaults?.width) {
-            parameters.width = request.width || config.defaults?.width
-          }
-          if (request.height || config.defaults?.height) {
-            parameters.height = request.height || config.defaults?.height
-          }
-          
-          // Add other generation parameters if needed
-          if (request.steps || config.defaults?.steps) {
-            parameters.num_inference_steps = request.steps || config.defaults?.steps
-          }
-          if (request.guidance || config.defaults?.guidance) {
-            parameters.guidance_scale = request.guidance || config.defaults?.guidance
-          }
-          if (request.seed !== undefined) {
-            parameters.seed = request.seed
-          }
-          
-          parameters.num_images = 1
+        // Format: {"inputs": {...all params...}} for custom handlers
+        const inputParams: any = {
+          prompt: finalPrompt,
         }
         
+        // Add negative prompt if provided
+        if (finalNegativePrompt) {
+          inputParams.negative_prompt = finalNegativePrompt
+        }
+        
+        // Add dimensions if provided
+        if (request.width || config.defaults?.width) {
+          inputParams.width = request.width || config.defaults?.width
+        }
+        if (request.height || config.defaults?.height) {
+          inputParams.height = request.height || config.defaults?.height
+        }
+        
+        // Add other generation parameters
+        if (request.steps || config.defaults?.steps) {
+          inputParams.num_inference_steps = request.steps || config.defaults?.steps
+        }
+        if (request.guidance || config.defaults?.guidance) {
+          inputParams.guidance_scale = request.guidance || config.defaults?.guidance
+        }
+        if (request.seed !== undefined) {
+          inputParams.seed = request.seed
+        }
+        
+        inputParams.num_images = 1
+        
         payload = {
-          inputs: finalPrompt,
-          parameters: parameters
+          inputs: inputParams
         }
       } else {
         // Standard format with detailed parameters
