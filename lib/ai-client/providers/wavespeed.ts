@@ -54,7 +54,18 @@ export class WavespeedProvider implements ProviderAdapter {
           seed: request.seed !== undefined && request.seed !== -1 ? request.seed : -1,
           size: `${width}*${height}`,
         }
+      } else if (request.type === 'video') {
+        // Video generation endpoints (Express, Express HD)
+        const duration = config.defaults?.duration || 5
+
+        payload = {
+          image: request.inputImageUrl,
+          prompt: request.prompt,
+          duration: duration,
+          seed: request.seed !== undefined && request.seed !== -1 ? request.seed : -1,
+        }
       } else {
+        // Image generation endpoints
         payload = {
           prompt: request.prompt,
         }
@@ -69,10 +80,6 @@ export class WavespeedProvider implements ProviderAdapter {
         }
 
         payload.seed = request.seed !== undefined ? request.seed : Math.floor(Math.random() * 1000000000)
-
-        if (request.type === 'video' && request.inputImageUrl) {
-          payload.image_url = request.inputImageUrl
-        }
       }
 
       console.log(`[Wavespeed ${requestId}] Request payload:`, JSON.stringify(payload, null, 2))
