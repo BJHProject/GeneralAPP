@@ -95,15 +95,44 @@ export function ImageEditor() {
     setEditedImage(null)
 
     try {
-      const formData = new FormData()
-      formData.append("image", inputImage)
-      formData.append("prompt", prompt.trim())
+      // If we have a gallery image URL, use it directly
+      let imageUrl = galleryImageUrl
+      
+      // Otherwise, upload the image file first
+      if (!imageUrl && inputImage) {
+        console.log("[v0] Uploading image to Blob storage...")
+        const formData = new FormData()
+        formData.append("image", inputImage)
+        
+        const uploadResponse = await fetch("/api/ingest", {
+          method: "POST",
+          body: formData,
+        })
+        
+        if (!uploadResponse.ok) {
+          throw new Error("Failed to upload image")
+        }
+        
+        const uploadData = await uploadResponse.json()
+        imageUrl = uploadData.url
+        console.log("[v0] Image uploaded:", imageUrl)
+      }
 
-      console.log("[v0] Sending request to /api/edit-image")
+      if (!imageUrl) {
+        throw new Error("No image URL available")
+      }
+
+      console.log("[v0] Sending edit request with image URL")
 
       const response = await fetch("/api/edit-image", {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          imageUrl,
+          prompt: prompt.trim(),
+        }),
       })
 
       console.log("[v0] Response status:", response.status)
@@ -116,7 +145,7 @@ export function ImageEditor() {
       }
 
       console.log("[v0] Image editing successful")
-      setEditedImage(data.imageUrl)
+      setEditedImage(data.url)
       window.dispatchEvent(new CustomEvent("imageEdited"))
     } catch (err) {
       console.error("[v0] Image editing error:", err)
