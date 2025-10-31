@@ -29,21 +29,40 @@ export class WavespeedProvider implements ProviderAdapter {
       const isFemaleHumanEndpoint = config.endpoint.includes('female-human')
 
       if (request.type === 'edited-image') {
-        const width = request.width || 1024
-        const height = request.height || 1024
-        
+        // Calculate output dimensions to meet Edit API constraints (1024x1024 min, 4096x4096 max)
+        const inputWidth = request.width || 1024
+        const inputHeight = request.height || 1024
+
+        // Find the scaling factor needed to meet minimum dimension of 1024
+        const minDimension = Math.min(inputWidth, inputHeight)
+        const scaleFactor = minDimension < 1024 ? Math.ceil(1024 / minDimension) : 1
+
+        // Calculate output dimensions
+        let outputWidth = inputWidth * scaleFactor
+        let outputHeight = inputHeight * scaleFactor
+
+        // Ensure we don't exceed maximum of 4096
+        const maxDimension = Math.max(outputWidth, outputHeight)
+        if (maxDimension > 4096) {
+          const downscale = 4096 / maxDimension
+          outputWidth = Math.floor(outputWidth * downscale)
+          outputHeight = Math.floor(outputHeight * downscale)
+        }
+
+        console.log(`[Wavespeed ${requestId}] Edit dimensions: input ${inputWidth}x${inputHeight} -> output ${outputWidth}x${outputHeight}`)
+
         payload = {
           enable_base64_output: false,
           enable_sync_mode: false,
           images: [request.inputImageUrl],
           prompt: request.prompt,
-          size: `${width}*${height}`,
+          size: `${outputWidth}*${outputHeight}`,
         }
       } else if (isFemaleHumanEndpoint) {
         // Female-human endpoint (Realistic W) uses different format
         const width = request.width || 1024
         const height = request.height || 1024
-        
+
         payload = {
           enable_base64_output: false,
           enable_sync_mode: false,
@@ -61,11 +80,11 @@ export class WavespeedProvider implements ProviderAdapter {
         if (request.width) payload.width = request.width
         if (request.height) payload.height = request.height
         if (request.steps) payload.num_inference_steps = request.steps
-        
+
         if (request.guidance) {
           payload.guidance_scale = request.guidance
         }
-        
+
         payload.seed = request.seed !== undefined ? request.seed : Math.floor(Math.random() * 1000000000)
 
         if (request.type === 'video' && request.inputImageUrl) {
@@ -183,7 +202,7 @@ export class WavespeedProvider implements ProviderAdapter {
       } else {
         statusUrl = `${baseUrl}/api/v3/wavespeed-ai/job/${jobId}`
       }
-      
+
       const statusResponse = await fetch(statusUrl, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -197,12 +216,12 @@ export class WavespeedProvider implements ProviderAdapter {
       const statusData = await statusResponse.json()
       const status = statusData.data?.status || statusData.status
       const outputs = statusData.data?.outputs || statusData.outputs || statusData.output
-      
+
       console.log(`[Wavespeed ${requestId}] Poll ${attempt + 1}: ${status}`)
 
       if (status === 'completed' || status === 'succeeded') {
         let mediaUrl: string | undefined
-        
+
         if (mediaType === 'edited-image' || isFemaleHumanEndpoint) {
           // For edited-image and female-human endpoints, outputs is an array
           if (Array.isArray(outputs) && outputs.length > 0) {
@@ -213,7 +232,7 @@ export class WavespeedProvider implements ProviderAdapter {
         } else {
           mediaUrl = mediaType === 'video' ? statusData.video_url : statusData.image_url
         }
-        
+
         if (!mediaUrl) {
           throw new Error(`No ${mediaType === 'video' ? 'video' : 'image'} URL in completed job`)
         }

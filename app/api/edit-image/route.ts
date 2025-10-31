@@ -5,6 +5,7 @@ import { defaultAIClient } from "@/lib/ai-client"
 import { imageEditSchema } from "@/lib/validation/schemas"
 import { atomicCreditCharge, completeGenerationJob, refundFailedJob } from "@/lib/credits/transactions"
 import { rateLimitMiddleware } from "@/lib/security/rate-limit-db"
+import { getImageUrlDimensions } from "@/lib/utils"
 
 export const maxDuration = 60
 
@@ -32,7 +33,7 @@ export async function POST(request: NextRequest) {
     await ensureUserExists(user.id, user.email!, user.user_metadata?.full_name, user.user_metadata?.avatar_url)
 
     const body = await request.json()
-    
+
     const validation = imageEditSchema.safeParse(body)
     if (!validation.success) {
       console.warn("[Security] Invalid request payload:", validation.error.format())
@@ -77,12 +78,19 @@ export async function POST(request: NextRequest) {
     const jobId = chargeResult.jobId!
     console.log("[Security] ✓ Credits charged atomically. Job ID:", jobId, "Balance:", chargeResult.newBalance)
 
+    // Get image dimensions to determine output dimensions
+    const imageDimensions = await getImageUrlDimensions(imageUrl)
+    const outputWidth = Math.max(1024, Math.min(4096, imageDimensions.width * 2))
+    const outputHeight = Math.max(1024, Math.min(4096, imageDimensions.height * 2))
+
     const result = await defaultAIClient.generate({
       type: "edited-image",
       modelId: "wavespeed-edit",
       prompt,
       userId: user.id,
       inputImageUrl: imageUrl,
+      width: outputWidth,
+      height: outputHeight,
     })
 
     if (!result.success) {
