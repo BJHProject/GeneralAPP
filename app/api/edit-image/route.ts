@@ -47,9 +47,13 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { imageUrl, prompt, idempotency_key } = validation.data
+    const { imageUrl, prompt, idempotency_key, width, height } = validation.data
 
-    console.log("[Security] Edit request validated:", { prompt: prompt.substring(0, 50) + "..." })
+    console.log("[Security] Edit request validated:", { 
+      prompt: prompt.substring(0, 50) + "...",
+      width,
+      height 
+    })
 
     const chargeResult = await atomicCreditCharge(
       user.id,
@@ -77,19 +81,14 @@ export async function POST(request: NextRequest) {
     const jobId = chargeResult.jobId!
     console.log("[Security] ✓ Credits charged atomically. Job ID:", jobId, "Balance:", chargeResult.newBalance)
 
-    // The defaultAIClient.generate function now handles the dimension calculations internally.
-    // We pass the original imageUrl and the prompt.
     const result = await defaultAIClient.generate({
       type: "edited-image",
       modelId: "wavespeed-edit",
       prompt,
       userId: user.id,
       inputImageUrl: imageUrl,
-      // The dimensions are now handled by the AI client based on the prompt and input image.
-      // The requirement for minimum 1024x resolution and aspect ratio preservation
-      // should be handled by the AI model itself or the client library.
-      // If specific width/height are needed, they would be explicitly passed here.
-      // For this update, we rely on the client's internal logic for resizing.
+      width,
+      height,
     })
 
     if (!result.success) {
