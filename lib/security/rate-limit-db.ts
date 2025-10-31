@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createServiceRoleClient } from '@/lib/supabase/service-role'
 
 interface RateLimitConfig {
   windowSeconds: number
@@ -28,7 +28,7 @@ export async function checkDatabaseRateLimit(
   type: 'user' | 'ip',
   config: RateLimitConfig
 ): Promise<RateLimitResult> {
-  const supabase = await createClient()
+  const supabase = createServiceRoleClient()
 
   const { data, error } = await supabase.rpc('check_rate_limit', {
     p_identifier: identifier,
@@ -116,7 +116,7 @@ export async function rateLimitMiddleware(
 
 // Cleanup function to be called periodically (e.g., via cron or background job)
 export async function cleanupExpiredRateLimits(): Promise<number> {
-  const supabase = await createClient()
+  const supabase = createServiceRoleClient()
   const { data, error } = await supabase.rpc('cleanup_expired_rate_limits')
 
   if (error) {
