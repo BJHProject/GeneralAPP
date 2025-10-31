@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Card } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
+import { Slider } from "@/components/ui/slider"
 import { Loader2, Wand2, AlertCircle, Upload, X, ImageIcon } from "lucide-react"
 import { AuthModal } from "@/components/auth-modal"
 import { GalleryImageSelector } from "@/components/gallery-image-selector"
@@ -24,6 +25,8 @@ export function ImageEditor() {
   const [editedImage, setEditedImage] = useState<string | null>(null)
   const [showGallerySelector, setShowGallerySelector] = useState(false)
   const [galleryImageUrl, setGalleryImageUrl] = useState<string | null>(null)
+  const [width, setWidth] = useState(1024)
+  const [height, setHeight] = useState(1024)
 
   useEffect(() => {
     const supabase = createClient()
@@ -122,57 +125,7 @@ export function ImageEditor() {
         throw new Error("No image URL available")
       }
 
-      // Get image dimensions
-      let width = 1024;
-      let height = 1024;
-      if (inputImage) {
-        const img = new Promise<HTMLImageElement>((resolve, reject) => {
-          const imageElement = new Image();
-          imageElement.onload = () => resolve(imageElement);
-          imageElement.onerror = reject;
-          imageElement.src = URL.createObjectURL(inputImage);
-        });
-        const loadedImage = await img;
-        width = loadedImage.width;
-        height = loadedImage.height;
-        URL.revokeObjectURL(loadedImage.src); // Clean up the object URL
-      } else if (galleryImageUrl) {
-        // If it's a gallery image, we might need to fetch dimensions differently
-        // For simplicity, let's assume it's already handled or default
-        // In a real app, you might fetch metadata or use a library
-      }
-
-      // Ensure minimum resolution of 1024x1024, maintaining aspect ratio
-      const minResolution = 1024;
-      let finalWidth = width;
-      let finalHeight = height;
-
-      if (width < minResolution || height < minResolution) {
-        const aspectRatio = width / height;
-        if (width < height) {
-          finalWidth = minResolution;
-          finalHeight = Math.round(minResolution / aspectRatio);
-        } else {
-          finalHeight = minResolution;
-          finalWidth = Math.round(minResolution * aspectRatio);
-        }
-      }
-
-      // Cap at 4096x4096 (optional, based on typical API limits)
-      const maxResolution = 4096;
-      if (finalWidth > maxResolution || finalHeight > maxResolution) {
-        const aspectRatio = finalWidth / finalHeight;
-        if (finalWidth > finalHeight) {
-          finalWidth = maxResolution;
-          finalHeight = Math.round(maxResolution / aspectRatio);
-        } else {
-          finalHeight = maxResolution;
-          finalWidth = Math.round(maxResolution * aspectRatio);
-        }
-      }
-
-
-      console.log("[v0] Sending edit request with image URL and dimensions:", { imageUrl, width: finalWidth, height: finalHeight })
+      console.log("[v0] Sending edit request with image URL and dimensions:", { imageUrl, width, height })
 
       const response = await fetch("/api/edit-image", {
         method: "POST",
@@ -182,8 +135,8 @@ export function ImageEditor() {
         body: JSON.stringify({
           imageUrl,
           prompt: prompt.trim(),
-          width: finalWidth,
-          height: finalHeight,
+          width,
+          height,
         }),
       })
 
@@ -266,6 +219,38 @@ export function ImageEditor() {
               onChange={(e) => setPrompt(e.target.value)}
               className="min-h-[120px] resize-none bg-secondary/50 text-foreground border-primary/10 backdrop-blur-sm focus:border-primary/30 transition-colors"
             />
+          </div>
+
+          {/* Resolution Sliders */}
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="width-slider" className="text-base font-semibold">
+                Width: {width}px
+              </Label>
+              <Slider
+                id="width-slider"
+                min={1024}
+                max={4096}
+                step={128}
+                value={[width]}
+                onValueChange={(values) => setWidth(values[0])}
+                className="w-full"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="height-slider" className="text-base font-semibold">
+                Height: {height}px
+              </Label>
+              <Slider
+                id="height-slider"
+                min={1024}
+                max={4096}
+                step={128}
+                value={[height]}
+                onValueChange={(values) => setHeight(values[0])}
+                className="w-full"
+              />
+            </div>
           </div>
 
           <Button
