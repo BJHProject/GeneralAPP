@@ -60,8 +60,9 @@ export class GradioProvider implements ProviderAdapter {
       // DB2169 /txt2img: [prompt, negative, width, height, steps, guidance, images, seed, scheduler, loras, lora_scale, fuse_lora]
       const width = request.width || config.defaults?.width || 1024
       const height = request.height || config.defaults?.height || 1024
-      const steps = request.steps || config.defaults?.steps || 28
-      const guidance = request.guidance || config.defaults?.guidance || 7
+      // Use config defaults first, then request value only if defaults not set
+      const steps = config.defaults?.steps || request.steps || 28
+      const guidance = config.defaults?.guidance || request.guidance || 7
       
       // Generate a new random seed for each request when seed is not explicitly provided
       const shouldRandomize = request.seed === undefined || request.seed === -1
