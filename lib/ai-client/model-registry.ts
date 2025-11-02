@@ -219,6 +219,22 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
     timeout: 120000,
     maxRetries: 5,
   },
+  
+  'video-basic': {
+    id: 'video-basic',
+    name: 'Basic',
+    provider: 'huggingface-router',
+    endpoint: 'https://router.huggingface.co/fal-ai/fal-ai/wan/v2.2-a14b/image-to-video?_subdomain=queue',
+    type: 'video',
+    defaults: {
+      duration: 5,
+    },
+    pricing: {
+      credits: 1500,
+    },
+    timeout: 180000,
+    maxRetries: 3,
+  },
 }
 
 export function getModelConfig(modelId: string): ModelConfig {

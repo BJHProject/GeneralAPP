@@ -12,6 +12,7 @@ import { validateModelId } from "@/lib/security/model-validator"
 import type { CreditOperation } from "@/lib/credits"
 
 const STYLE_TO_MODEL: Record<string, { modelId: string; operation: CreditOperation }> = {
+  basic: { modelId: "video-basic", operation: "video3" },
   lovely: { modelId: "video-lovely", operation: "video3" },
   express: { modelId: "video-express", operation: "video5" },
   "express-hd": { modelId: "video-express-hd", operation: "video5" },

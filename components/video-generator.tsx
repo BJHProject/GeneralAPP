@@ -24,7 +24,7 @@ export function VideoGenerator() {
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const [duration, setDuration] = useState(3)
-  const [style, setStyle] = useState<"lovely" | "express" | "express_hd" | "elite" | "elitist">("lovely")
+  const [style, setStyle] = useState<"basic" | "lovely" | "express" | "express_hd" | "elite" | "elitist">("basic")
   const steps = 4
   const seed = Math.floor(Math.random() * 1000000)
   const guidanceScale = 1
@@ -319,7 +319,7 @@ export function VideoGenerator() {
             <Select
               value={style}
               onValueChange={(value) => {
-                const newStyle = value as "lovely" | "express" | "express_hd" | "elite" | "elitist"
+                const newStyle = value as "basic" | "lovely" | "express" | "express_hd" | "elite" | "elitist"
                 setStyle(newStyle)
                 // Reset duration to valid value for the new style
                 if (newStyle === "express_hd") {
@@ -339,6 +339,7 @@ export function VideoGenerator() {
                 <SelectValue placeholder="Select a style" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="basic">Basic</SelectItem>
                 <SelectItem value="lovely">Lovely</SelectItem>
                 <SelectItem value="express">Express</SelectItem>
                 <SelectItem value="express_hd">Express HD</SelectItem>
@@ -400,7 +401,26 @@ export function VideoGenerator() {
           {/* Duration */}
           <div className="space-y-2">
             <Label className="text-base font-semibold">Duration</Label>
-            {style === "express" ? (
+            {style === "basic" ? (
+              <div className="flex gap-3">
+                <Button
+                  type="button"
+                  variant={duration === 3 ? "default" : "outline"}
+                  className="flex-1"
+                  onClick={() => setDuration(3)}
+                >
+                  3 seconds
+                </Button>
+                <Button
+                  type="button"
+                  variant={duration === 5 ? "default" : "outline"}
+                  className="flex-1"
+                  onClick={() => setDuration(5)}
+                >
+                  5 seconds
+                </Button>
+              </div>
+            ) : style === "express" ? (
               <div className="flex gap-3">
                 <Button
                   type="button"
@@ -488,7 +508,7 @@ export function VideoGenerator() {
             ) : (
               <>
                 <VideoIcon className="mr-2 h-5 w-5" />
-                Generate Video ({duration === 1 ? "1,000" : duration === 3 ? "2,000" : duration === 5 ? "3,000" : "4,000"} credits <DiamondIcon className="h-4 w-4 text-white inline ml-1" />)
+                Generate Video ({style === "basic" ? "1,500" : duration === 1 ? "1,000" : duration === 3 ? "2,000" : duration === 5 ? "3,000" : "4,000"} credits <DiamondIcon className="h-4 w-4 text-white inline ml-1" />)
               </>
             )}
           </Button>
